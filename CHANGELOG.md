@@ -45,6 +45,7 @@ they don't get lost between sessions.
 
 ### Changed
 
+- Show rent history three years at a time, allow hiding and restoring year columns, and compare rent with the last recorded amount.
 - Use Keyturn in the app, public pages, and default email sender.
 - Refresh the landlord workspace with warm neutrals, brick-red actions, photo-led property cards, and a mobile navigation menu.
 

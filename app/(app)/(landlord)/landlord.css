@@ -98,7 +98,8 @@
 }
 
 .ld-property-action:hover,
-.ld-rent-cell:hover {
+.ld-rent-cell:hover,
+.ld-rent-remove:hover {
   background: var(--ld-accent-tint) !important;
   color: var(--ld-accent-hover) !important;
 }

@@ -13,7 +13,9 @@ import {
   RENT_HISTORY_MAX_RENT,
   RENT_HISTORY_MAX_YEAR,
   RENT_HISTORY_MIN_YEAR,
+  previousRentEntry,
   rentChange,
+  rentHistoryYearPage,
   saveUnitRentHistory,
 } from '@/lib/units/rent-history'
 
@@ -22,6 +24,17 @@ const backLink = { display: 'inline-flex', gap: 6, alignItems: 'center', marginB
 const tableStyle = { width: '100%', borderCollapse: 'separate', borderSpacing: 0, textAlign: 'left' }
 const heading = { background: 'var(--ld-subtle)', color: 'var(--ld-ink)', padding: '12px 16px', fontSize: 13 }
 const firstColumn = { position: 'sticky', left: 0, zIndex: 1, minWidth: 72, borderRight: '1px solid var(--ld-border)' }
+const currentHeading = { background: 'var(--ld-accent-tint)', color: 'var(--ld-accent-hover)' }
+const currentCell = { background: 'color-mix(in srgb, var(--ld-accent-tint) 45%, var(--ld-surface))' }
+const toolbar = { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 12 }
+const yearHeading = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }
+const yearLabel = { display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 7 }
+const currentLabel = { fontSize: 11, fontWeight: 650 }
+const removeButton = {
+  display: 'grid', placeItems: 'center', flexShrink: 0, width: 32, height: 32,
+  padding: 0, border: 0, borderRadius: 6, background: 'transparent',
+  color: 'inherit', cursor: 'pointer',
+}
 const bodyCell = { borderTop: '1px solid var(--ld-border)', verticalAlign: 'top' }
 const cellButton = {
   width: '100%', minWidth: 202, padding: '12px 16px', border: 0, background: 'transparent',
@@ -35,6 +48,21 @@ const field = {
 }
 const formLabel = { color: 'var(--ld-ink)', fontSize: 14, fontWeight: 600 }
 const errorText = { color: '#b42318', fontSize: 14 }
+
+const emptyYearPreferences = { added: [], hidden: [] }
+
+function readYearPreferences(key) {
+  if (typeof window === 'undefined') return emptyYearPreferences
+  try {
+    const saved = JSON.parse(localStorage.getItem(key))
+    return {
+      added: Array.isArray(saved?.added) ? saved.added.filter(Number.isInteger) : [],
+      hidden: Array.isArray(saved?.hidden) ? saved.hidden.filter(Number.isInteger) : [],
+    }
+  } catch {
+    return emptyYearPreferences
+  }
+}
 
 function useUnitRentHistory(propertyId) {
   const [history, setHistory] = useState(null)
@@ -123,28 +151,50 @@ function RentEntryEditor({ entry, save, close, t }) {
 
 export function RentIncreaseManager({ property, units, tenants, lang, t }) {
   const [currentYear] = useState(() => new Date().getFullYear())
-  const [addedYears, setAddedYears] = useState([])
+  const preferenceKey = `propmanager_rent_history_years_${property.id}`
+  const [yearPreferences, setYearPreferences] = useState(() => readYearPreferences(preferenceKey))
+  const [anchorYear, setAnchorYear] = useState(currentYear)
   const [addingYear, setAddingYear] = useState(false)
   const [editor, setEditor] = useState(null)
   const opener = useRef(null)
+  const addYearAction = useRef(null)
   const { history, retry, save } = useUnitRentHistory(property.id)
   const entries = history?.entries ?? []
-  const rentByUnitYear = new Map(entries.map(entry => [`${entry.unitId}:${entry.year}`, entry]))
-  const years = [...new Set([currentYear, currentYear - 1, ...addedYears, ...entries.map(entry => entry.year)])]
-    .sort((left, right) => right - left)
+  const hiddenYears = new Set(yearPreferences.hidden)
+  const visibleYears = [currentYear, currentYear - 1, ...yearPreferences.added, ...entries.map(entry => entry.year)]
+    .filter(year => !hiddenYears.has(year))
+  const page = rentHistoryYearPage(visibleYears, anchorYear)
+  const entriesByUnit = new Map()
+  for (const entry of entries) {
+    if (!entriesByUnit.has(entry.unitId)) entriesByUnit.set(entry.unitId, [])
+    entriesByUnit.get(entry.unitId).push(entry)
+  }
+
   const sortedUnits = [...units].sort((left, right) => left.unitNumber.localeCompare(right.unitNumber, undefined, { numeric: true }))
   const percent = new Intl.NumberFormat(lang === 'zh' ? 'zh-CN' : 'en-US', { style: 'percent', maximumFractionDigits: 2 })
 
-  function amountForYear(unit, year) {
-    return rentByUnitYear.get(`${unit.id}:${year}`)?.monthlyRent
-      ?? (year === currentYear ? unit.monthlyRent : null)
+  function updateYearPreferences(preferences) {
+    setYearPreferences(preferences)
+    try { localStorage.setItem(preferenceKey, JSON.stringify(preferences)) } catch {}
   }
 
   function addYear(event) {
     event.preventDefault()
     const year = Number(new FormData(event.currentTarget).get('year'))
-    setAddedYears(previous => [...new Set([...previous, year])])
+    updateYearPreferences({
+      added: [...new Set([...yearPreferences.added, year])],
+      hidden: yearPreferences.hidden.filter(hidden => hidden !== year),
+    })
+    setAnchorYear(year)
     closeModal()
+  }
+
+  function removeYear(year) {
+    updateYearPreferences({
+      added: yearPreferences.added,
+      hidden: [...yearPreferences.hidden, year],
+    })
+    requestAnimationFrame(() => addYearAction.current?.querySelector('button')?.focus())
   }
 
   function closeModal() {
@@ -170,55 +220,87 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
           <p role="status" style={{ color: 'var(--ld-muted)' }}>{t.rentHistoryLoading}</p>
         ) : (
           <>
-            <div style={{ marginBottom: 12 }}>
-              <Btn variant="secondary" icon="plus" onClick={event => { opener.current = event.currentTarget; setAddingYear(true) }}>{t.rentHistoryAddYear}</Btn>
+            <div style={toolbar}>
+              {page.newerYear != null && (
+                <Btn variant="secondary" onClick={() => setAnchorYear(page.newerYear)}>{t.rentHistoryNewerYears}</Btn>
+              )}
+              <Btn variant="secondary" disabled={page.earlierYear == null}
+                onClick={() => setAnchorYear(page.earlierYear)}>{t.rentHistoryPreviousYears}</Btn>
+              <div ref={addYearAction} style={{ marginLeft: 'auto' }}>
+                <Btn variant="secondary" icon="plus" onClick={event => { opener.current = event.currentTarget; setAddingYear(true) }}>{t.rentHistoryAddYear}</Btn>
+              </div>
             </div>
-            <div style={{ ...panel, overflowX: 'auto', maxWidth: '100%' }} role="region" aria-label={t.rentIncreaseManager} tabIndex={0}>
-              <table style={tableStyle}>
-                <thead>
-                  <tr>
-                    <th scope="col" style={{ ...heading, ...firstColumn }}>{t.rentHistoryUnit}</th>
-                    {years.map(year => <th key={year} scope="col" style={heading}>{year}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedUnits.map(unit => (
-                    <tr key={unit.id}>
-                      <th scope="row" style={{ ...heading, ...firstColumn, ...bodyCell }}>{unit.unitNumber}</th>
-                      {years.map(year => {
-                        const entry = rentByUnitYear.get(`${unit.id}:${year}`)
-                        const monthlyRent = amountForYear(unit, year)
-                        const isUnitRent = !entry && monthlyRent != null
-                        const change = rentChange(monthlyRent, amountForYear(unit, year - 1))
-                        const increaseStartDate = entry?.increaseStartDate
-                        const detailsId = `rent-${unit.id}-${year}`
-
-                        return (
-                          <td key={year} style={bodyCell}>
-                            <button type="button" className="ld-rent-cell" aria-label={t.rentHistoryEdit(unit.unitNumber, year)}
-                              aria-describedby={detailsId} style={cellButton}
-                              onClick={event => {
-                                opener.current = event.currentTarget
-                                setEditor({ unit, year, monthlyRent, increaseStartDate })
-                              }}>
-                              <span id={detailsId}>
-                                <span style={cellAmount}>
-                                  {monthlyRent == null ? '–' : fmt(monthlyRent)}
-                                  <Icon name="edit" size={14} />
-                                </span>
-                                {isUnitRent && <span style={cellDetail}>{t.rentHistoryUnitRate}</span>}
-                                <span style={cellDetail}>{t.rentHistoryPercent} · {change == null ? '–' : percent.format(change)}</span>
-                                <span style={cellDetail}>{t.rentHistoryDate} · {fmtDate(increaseStartDate)}</span>
-                              </span>
+            {page.years.length === 0 ? (
+              <div style={{ ...panel, padding: 16, color: 'var(--ld-muted)' }}>{t.rentHistoryNoYears}</div>
+            ) : (
+              <div style={{ ...panel, overflowX: 'auto', maxWidth: '100%' }} role="region" aria-label={t.rentIncreaseManager} tabIndex={0}>
+                <table style={tableStyle}>
+                  <thead>
+                    <tr>
+                      <th scope="col" style={{ ...heading, ...firstColumn }}>{t.rentHistoryUnit}</th>
+                      {page.years.map(year => (
+                        <th key={year} scope="col" style={year === currentYear ? { ...heading, ...currentHeading } : heading}>
+                          <div style={yearHeading}>
+                            <span style={yearLabel}>
+                              {year}
+                              {year === currentYear && <span style={currentLabel}>{t.rentHistoryCurrentYear}</span>}
+                            </span>
+                            <button type="button" className="ld-rent-remove" style={removeButton}
+                              aria-label={t.rentHistoryRemoveYear(year)} title={t.rentHistoryRemoveYear(year)} onClick={() => removeYear(year)}>
+                              <Icon name="trash" size={15} />
                             </button>
-                          </td>
-                        )
-                      })}
+                          </div>
+                        </th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {sortedUnits.map(unit => {
+                      const rentByYear = new Map((entriesByUnit.get(unit.id) || []).map(entry => [entry.year, entry]))
+                      if (!rentByYear.has(currentYear) && unit.monthlyRent != null) {
+                        rentByYear.set(currentYear, { year: currentYear, monthlyRent: unit.monthlyRent, isUnitRent: true })
+                      }
+
+                      return (
+                        <tr key={unit.id}>
+                          <th scope="row" style={{ ...heading, ...firstColumn, ...bodyCell }}>{unit.unitNumber}</th>
+                          {page.years.map(year => {
+                            const entry = rentByYear.get(year)
+                            const monthlyRent = entry?.monthlyRent
+                            const previous = previousRentEntry(rentByYear.values(), year)
+                            const change = rentChange(monthlyRent, previous?.monthlyRent)
+                            const comparison = change == null ? '–' : t.rentHistoryComparison(percent.format(change), previous.year)
+                            const increaseStartDate = entry?.increaseStartDate
+                            const detailsId = `rent-${unit.id}-${year}`
+
+                            return (
+                              <td key={year} style={year === currentYear ? { ...bodyCell, ...currentCell } : bodyCell}>
+                                <button type="button" className="ld-rent-cell" aria-label={t.rentHistoryEdit(unit.unitNumber, year)}
+                                  aria-describedby={detailsId} style={cellButton}
+                                  onClick={event => {
+                                    opener.current = event.currentTarget
+                                    setEditor({ unit, year, monthlyRent, increaseStartDate })
+                                  }}>
+                                  <span id={detailsId}>
+                                    <span style={cellAmount}>
+                                      {monthlyRent == null ? '–' : fmt(monthlyRent)}
+                                      <Icon name="edit" size={14} />
+                                    </span>
+                                    {entry?.isUnitRent && <span style={cellDetail}>{t.rentHistoryUnitRate}</span>}
+                                    <span style={cellDetail}>{t.rentHistoryPercent} · {comparison}</span>
+                                    <span style={cellDetail}>{t.rentHistoryDate} · {fmtDate(increaseStartDate)}</span>
+                                  </span>
+                                </button>
+                              </td>
+                            )
+                          })}
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </>
         )}
         {history?.entries && sortedUnits.length > 0 && (
@@ -236,7 +318,7 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
             <label style={formLabel}>
               {t.rentHistoryYear}
               <input name="year" type="number" min={RENT_HISTORY_MIN_YEAR} max={RENT_HISTORY_MAX_YEAR}
-                step="1" defaultValue={currentYear + 1} required autoFocus style={field} />
+                step="1" defaultValue={yearPreferences.hidden.at(-1) ?? currentYear + 1} required autoFocus style={field} />
             </label>
             <Btn>{t.rentHistoryAddYear}</Btn>
           </form>
