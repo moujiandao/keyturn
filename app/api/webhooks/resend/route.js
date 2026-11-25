@@ -133,12 +133,13 @@ export async function POST(request) {
             return emailData
           },
           async loadLandlordContext(landlordId) {
-            const [tenRes, propRes, conRes, payRes, parkRes] = await Promise.all([
+            const [tenRes, propRes, conRes, payRes, parkRes, aliasRes] = await Promise.all([
               supabase.from('tenant_profiles').select('*').eq('landlord_id', landlordId),
               supabase.from('properties').select('*').eq('landlord_id', landlordId),
               supabase.from('contracts').select('*, contract_tenants(tenant_id)').eq('landlord_id', landlordId),
               supabase.from('payments').select('*').eq('landlord_id', landlordId),
               supabase.from('parking_leases').select('*').eq('landlord_id', landlordId),
+              supabase.from('zelle_payer_aliases').select('*').eq('landlord_id', landlordId),
             ])
             const propIds = (propRes.data || []).map((p) => p.id)
             const unitsRes = propIds.length
@@ -151,7 +152,7 @@ export async function POST(request) {
               payments: payRes.data || [],
               parkingLeases: parkRes.data || [],
               units: unitsRes.data || [],
-              aliases: [],
+              aliases: aliasRes.data || [],
             }
           },
           async insertZelleEvent(row) {

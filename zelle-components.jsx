@@ -4,7 +4,7 @@ import { Btn, Icon } from './property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
 import { isPaidRent } from '@/lib/payments/status'
 import { createZelleAdapter } from '@/lib/zelle/adapter'
-import { undoZelleEvent, resolveZelleEventClient } from '@/lib/zelle/core'
+import { undoZelleEvent, resolveZelleEventClient, deleteZelleAliasClient } from '@/lib/zelle/core'
 import { isZellePending, isZelleAutoPosted, isZelleResolved, ZELLE_CATEGORIES } from '@/lib/zelle/status'
 
 const card = {
@@ -135,6 +135,7 @@ export function useZelleMutations() {
   return {
     undoEvent: (eventId) => undoZelleEvent(adapter, eventId),
     resolveEvent: (payload) => resolveZelleEventClient(adapter, payload),
+    deleteAlias: (aliasId) => deleteZelleAliasClient(adapter, aliasId),
   }
 }
 
@@ -158,17 +159,20 @@ export function ZelleInboxPanel({ data, t, refresh }) {
 
   const mx = useZelleMutations()
   const events = data.zelleEvents || []
+  const aliases = data.zellePayerAliases || []
   const tenants = data.tenants || []
   const contracts = data.contracts || []
   const payments = data.payments || []
   const properties = data.properties || []
 
+  const savedAliasNormalizedSet = new Set(aliases.map((a) => a.payerNameNormalized))
   const nonProdPropIds = new Set(properties.filter((p) => p.inProduction === false).map((p) => p.id))
   const currentTenants = tenants.filter(
     (ten) => ten.status === 'current tenant' && (!ten.propertyId || !nonProdPropIds.has(ten.propertyId))
   )
   const otherTenants = tenants.filter((ten) => !currentTenants.includes(ten))
   const tenantsById = new Map(tenants.map((ten) => [ten.id, ten]))
+  const contractsById = new Map(contracts.map((c) => [c.id, c]))
   const paymentsById = new Map(payments.map((p) => [p.id, p]))
 
   const pendingEvents = events.filter(isZellePending)
@@ -185,11 +189,13 @@ export function ZelleInboxPanel({ data, t, refresh }) {
   const getDraft = (ev) => {
     const existing = drafts[ev.id]
     if (existing) return existing
+    const alreadySaved = Boolean(ev.payerNameNormalized && savedAliasNormalizedSet.has(ev.payerNameNormalized))
     return {
       category: ev.category || 'rent',
       tenantId: ev.suggestedTenantIds?.[0] || '',
       targetMonth: ev.targetMonth ? String(ev.targetMonth).slice(0, 7) : '',
       amount: ev.amount != null ? String(ev.amount) : '',
+      rememberAlias: Boolean(ev.payerName && !alreadySaved && ev.matchReason === 'unknown_payer'),
     }
   }
 
@@ -233,10 +239,25 @@ export function ZelleInboxPanel({ data, t, refresh }) {
     setBusyId(null)
   }
 
+  const handleDeleteAlias = async (aliasId) => {
+    setBusyId(aliasId)
+    setError(null)
+    setNotice(null)
+    try {
+      await mx.deleteAlias(aliasId)
+      await refresh()
+      setNotice(t.zelleAliasRemoved)
+    } catch (e) {
+      setError(e.message || t.zelleAliasRemoveFailed)
+    }
+    setBusyId(null)
+  }
+
   const subTabs = [
     { key: 'needs_review', label: t.zelleSubNeedsReview, count: pendingEvents.length },
     { key: 'auto_posted', label: t.zelleSubAutoPosted, count: autoPostedEvents.length },
     { key: 'history', label: t.zelleSubHistory, count: historyEvents.length },
+    { key: 'aliases', label: t.zelleSubAliases, count: aliases.length },
   ]
 
   const emptyMessage =
@@ -292,7 +313,54 @@ export function ZelleInboxPanel({ data, t, refresh }) {
         })}
       </div>
 
-      {visibleEvents.length === 0 ? (
+      {subTab === 'aliases' ? (
+        aliases.length === 0 ? (
+          <div style={emptyBox}>{t.zelleNoAliases}</div>
+        ) : (
+          aliases.map((alias) => {
+            const targetTenant = alias.tenantId ? tenantsById.get(alias.tenantId) : null
+            const targetContract = alias.contractId ? contractsById.get(alias.contractId) : null
+            const contractNames = targetContract
+              ? (targetContract.tenantIds || [])
+                  .map((tid) => tenantDisplayName(tenantsById.get(tid)))
+                  .filter(Boolean)
+                  .join(', ')
+              : ''
+            return (
+              <div key={alias.id} style={card}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: '#111111' }}>
+                      {alias.payerNameDisplay}
+                    </div>
+                    <div style={{ fontSize: 13, color: '#6b7280', marginTop: 4 }}>
+                      {alias.tenantId ? (
+                        <span>
+                          {t.zelleAliasMappedToTenant}:{' '}
+                          <strong style={{ color: '#111827' }}>{tenantDisplayName(targetTenant) || alias.tenantId}</strong>
+                        </span>
+                      ) : (
+                        <span>
+                          {t.zelleAliasMappedToContract}:{' '}
+                          <strong style={{ color: '#111827' }}>{contractNames || alias.contractId}</strong>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <Btn
+                    size="sm"
+                    variant="danger"
+                    disabled={busyId === alias.id}
+                    onClick={() => handleDeleteAlias(alias.id)}
+                  >
+                    {busyId === alias.id ? t.zelleRemovingAlias : t.zelleRemoveAlias}
+                  </Btn>
+                </div>
+              </div>
+            )
+          })
+        )
+      ) : visibleEvents.length === 0 ? (
         <div style={emptyBox}>{emptyMessage}</div>
       ) : (
         visibleEvents.map((ev) => {
@@ -481,6 +549,18 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                     </div>
                   )}
 
+                  {draft.category === 'rent' && ev.payerName && (
+                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={Boolean(draft.rememberAlias)}
+                        onChange={(e) => updateDraft(ev.id, { ...draft, rememberAlias: e.target.checked })}
+                        style={{ width: 15, height: 15, accentColor: '#111111', cursor: 'pointer' }}
+                      />
+                      <span>{t.zelleRememberPayer}</span>
+                    </label>
+                  )}
+
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                     {draft.category === 'rent' && existingPaidRent && (
                       <Btn
@@ -494,6 +574,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                               paymentId: existingPaidRent.id,
                               targetMonth: draft.targetMonth,
                               category: 'rent',
+                              rememberAlias: Boolean(draft.rememberAlias),
                             },
                             t.zelleResolvedLinked
                           )
@@ -516,6 +597,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                               contractId: selectedContract?.id || null,
                               targetMonth: draft.targetMonth,
                               amount: Number(draft.amount),
+                              rememberAlias: Boolean(draft.rememberAlias),
                             },
                             t.zelleResolvedConfirmed
                           )

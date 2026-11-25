@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { requireLandlord, rejectMismatchedLandlord } from '@/lib/auth/authorize'
 import { resolveZelleEvent } from '@/lib/zelle/core'
-import { mapZelleEvent } from '@/lib/zelle/mappers'
+import { mapZelleEvent, mapZellePayerAlias } from '@/lib/zelle/mappers'
 import { mapPayment } from '@/lib/payments/mappers'
 
 export async function POST(request) {
@@ -74,6 +74,24 @@ export async function POST(request) {
           if (error) throw new Error(error.message)
           return data || []
         },
+        async getContract(id) {
+          const { data, error } = await supabase
+            .from('contracts')
+            .select('id, landlord_id')
+            .eq('id', id)
+            .maybeSingle()
+          if (error) throw new Error(error.message)
+          return data || null
+        },
+        async upsertAlias(row) {
+          const { data, error } = await supabase
+            .from('zelle_payer_aliases')
+            .upsert(row, { onConflict: 'landlord_id,payer_name_normalized' })
+            .select('*')
+            .single()
+          if (error) throw new Error(error.message)
+          return data
+        },
         async updateEvent(id, patch) {
           const { data, error } = await supabase
             .from('zelle_events')
@@ -97,6 +115,7 @@ export async function POST(request) {
         amount: body?.amount ?? null,
         category: body?.category || null,
         paymentId: body?.paymentId || null,
+        rememberAlias: Boolean(body?.rememberAlias),
       }
     )
 
@@ -104,6 +123,7 @@ export async function POST(request) {
       event: mapZelleEvent(result.event),
       createdPayments: (result.createdPayments || []).map(mapPayment),
       linkedPaymentId: result.linkedPaymentId || null,
+      savedAlias: result.savedAlias ? mapZellePayerAlias(result.savedAlias) : null,
     })
   } catch (err) {
     return Response.json({ error: err.message || 'Resolution failed.' }, { status: err.status || 400 })
