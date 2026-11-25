@@ -115,6 +115,7 @@ export async function POST(request) {
         amount: body?.amount ?? null,
         category: body?.category || null,
         paymentId: body?.paymentId || null,
+        splits: Array.isArray(body?.splits) ? body.splits : null,
         rememberAlias: Boolean(body?.rememberAlias),
       }
     )
