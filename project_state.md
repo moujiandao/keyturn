@@ -1,33 +1,33 @@
 ---
 project: Keyturn
 priority: P1
-state: DONE
-attention: NONE
-human_blocked: false
+state: READY
+attention: ACTION
+human_blocked: true
 owner: brian
 agent: none
-current_task: Release rent-history year controls
-next_action: Open Rent Increase Manager on a production property
-waiting_on: none
-updated: 2026-11-24T22:20:55-08:00
+current_task: Provision live Chase/Resend Zelle dogfooding (#25)
+next_action: Follow docs/zelle-dogfood-runbook.md to run Supabase SQL migrations, provision inbound token, and connect Resend Inbound MX + Gmail filter
+waiting_on: Manual Supabase migrations, Resend Inbound MX DNS, and Gmail Chase forward filter (#25)
+updated: 2026-11-25T11:42:00-08:00
 ---
 
 # Current State
 
-[PR #18](https://github.com/moujiandao/propmanager/pull/18) merged. Vercel deployed main commit `e5a7c0f` successfully.
+[PR #26](https://github.com/moujiandao/propmanager/pull/26) rebase-merged to `main` (`cc7a2d0`), closing `#19`-`#24`. All 280 tests, ESLint (0 errors), Next.js production build, PII scan, and read-only code review passed.
 
 # Recent Work
 
-Released three-year paging and the ability to hide and restore year columns without deleting rent records. Fixed the notice editor to use the same rent data as the table. A local signed-in browser check verified hiding, reload, restoration, and the notice contents. All 238 tests, lint, and the production build passed.
+Merged Chase Zelle email ingestion and rent reconciliation: HTML-only Chase parser, deterministic memo classifier, month attribution, 6-gate auto-poster, bilingual Zelle Inbox UI with 1-click Undo, review triage actions, `zelle_payer_aliases` memory, housemate 1-to-N splits, grouped partial transfers, Claude Haiku fallback (never auto-posts), and the Ticket `#25` dogfood provisioning script/runbook.
 
 # Blocker
 
-None.
+Ticket `#25` (live dogfood verification) waits on manual production setup: running `scripts/add-zelle-ingestion.sql` and `scripts/add-zelle-payer-aliases.sql` in Supabase, provisioning the team inbound token, verifying Resend Inbound MX DNS records, and adding the Gmail Chase auto-forward filter.
 
 # Next Action
 
-Open Rent Increase Manager on a property from [production Properties](https://propmanager-rho.vercel.app/properties).
+Follow `docs/zelle-dogfood-runbook.md` to run the two SQL migrations in Supabase, provision your `zelle+<token>@<domain>` address, verify Resend Inbound MX + `email.received` webhook, and forward one real Chase Zelle alert end-to-end.
 
 # Notes
 
-The editable rent increase notice is on main. Year visibility is a browser preference.
+Merged via PR #26 without touching pre-existing uncommitted pine-theme edits in the local `main` checkout. `load.js` tolerates missing Zelle tables (`PGRST205`/`42P01`) until the two SQL migrations are executed.
