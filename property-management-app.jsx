@@ -2875,7 +2875,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
             type="button"
             onClick={() => setActiveTab("tracker")}
             style={{
-              padding: "8px 16px", borderRadius: 9, border: "none",
+              minHeight: 44, padding: "8px 16px", borderRadius: 9, border: "none",
               background: activeTab === "tracker" ? "#111111" : "transparent",
               color: activeTab === "tracker" ? "#fff" : "#6b7280",
               fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
@@ -2887,7 +2887,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
             type="button"
             onClick={() => setActiveTab("zelle")}
             style={{
-              padding: "8px 16px", borderRadius: 9, border: "none",
+              minHeight: 44, padding: "8px 16px", borderRadius: 9, border: "none",
               background: activeTab === "zelle" ? "#111111" : "transparent",
               color: activeTab === "zelle" ? "#fff" : "#6b7280",
               fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
@@ -2908,23 +2908,23 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
       {payError && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#dc2626" }}>{payError}</div>}
       {/* Property filter (persisted across sessions) */}
       <PropertyFilterBar chips={filterChips} hidden={hiddenProps} setHidden={setHiddenProps} t={t} />
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
         <button onClick={saveChanges} disabled={saving || !hasChanges}
-          style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: hasChanges ? "#111111" : "#eaeaea", color: hasChanges ? "#fff" : "#9ca3af", fontSize: 14, fontWeight: 600, cursor: (saving || !hasChanges) ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
+          style={{ minHeight: 44, padding: "9px 22px", borderRadius: 8, border: "none", background: hasChanges ? "#111111" : "#eaeaea", color: hasChanges ? "#fff" : "#9ca3af", fontSize: 14, fontWeight: 600, cursor: (saving || !hasChanges) ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
           {saving ? t.saving : t.saveChanges}
         </button>
         {hasChanges && (
           <button onClick={() => setEdits({})}
-            style={{ padding: "9px 16px", borderRadius: 8, border: `1px solid ${theme.border}`, background: "#fff", color: "#6b7280", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+            style={{ minHeight: 44, padding: "9px 16px", borderRadius: 8, border: `1px solid ${theme.border}`, background: "#fff", color: "#6b7280", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
             {t.discard}
           </button>
         )}
       </div>
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)", overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 800 }}>
+      <div className="ld-table-scroll" style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 780 }}>
           <thead style={{ background: theme.bgSubtle }}>
             <tr style={{ color: "#6b7280", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
-              <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.colTenant}</th>
+              <th className="ld-sticky-col-head" style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.colTenant}</th>
               <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.payZelleName}</th>
               <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.rent}</th>
               <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.payTotalCol}</th>
@@ -2933,22 +2933,23 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
               ))}
             </tr>
             <tr style={{ borderTop: "1px solid #eaeaea", background: "#f5f5f5" }}>
-              <td colSpan={4} style={{ padding: "5px 18px", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", textAlign: "right" }}>
+              <td className="ld-sticky-col-sub" style={{ padding: "5px 18px", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", whiteSpace: "nowrap" }}>
                 {t.paySelectAll}
               </td>
+              <td colSpan={3} />
               {months.map(m => {
                 const allChecked = allTenants.length > 0 && allTenants.every(t => !!checked[`${t.id}-${m.key}`]);
                 const someChecked = !allChecked && allTenants.some(t => !!checked[`${t.id}-${m.key}`]);
                 return (
-                  <td key={m.key} style={{ padding: "5px 10px", textAlign: "center" }}>
-                    <input
-                      type="checkbox"
-                      checked={allChecked}
-                      ref={el => { if (el) el.indeterminate = someChecked; }}
-                      onChange={() => toggleColumn(m.key)}
-                      style={{ width: 15, height: 15, cursor: "pointer", accentColor: "#111111" }}
-                      title={allChecked ? t.payUncheckAll : t.payCheckAll}
-                    />
+                  <td key={m.key} style={{ padding: "2px 6px", textAlign: "center" }}>
+                    <label className="ld-touch-check" title={allChecked ? t.payUncheckAll : t.payCheckAll}>
+                      <input
+                        type="checkbox"
+                        checked={allChecked}
+                        ref={el => { if (el) el.indeterminate = someChecked; }}
+                        onChange={() => toggleColumn(m.key)}
+                      />
+                    </label>
                   </td>
                 );
               })}
@@ -2968,22 +2969,22 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
                   const totalAmount = monthlyTotal(tenant);
                   return (
                     <tr key={tenant.id} style={{ borderTop: "1px solid #f5f5f5", background: "transparent" }}>
-                      <td style={{ padding: "13px 18px" }}>
+                      <td className="ld-sticky-col" style={{ padding: "12px 18px", whiteSpace: "nowrap" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                          <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700 }}>{(tenant.name || "?").charAt(0)}</div>
+                          <div style={{ width: 30, height: 30, flexShrink: 0, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700 }}>{(tenant.name || "?").charAt(0)}</div>
                           <Link href={routes.tenant(tenant)}
                             style={{ fontSize: 14, fontWeight: 600, color: "#111111", cursor: "pointer", textDecoration: "underline dotted", textUnderlineOffset: 3 }}>
                             <TenantName tenant={tenant} t={t} />
                           </Link>
                         </div>
                       </td>
-                      <td style={{ padding: "13px 18px", fontSize: 13, color: "#6b7280" }}>
+                      <td style={{ padding: "12px 18px", fontSize: 13, color: "#6b7280", whiteSpace: "nowrap" }}>
                         {tenant.zelleName || <span style={{ color: "#d1d5db" }}>-</span>}
                       </td>
-                      <td style={{ padding: "13px 18px", fontSize: 14, fontWeight: 600, color: "#111111" }}>
+                      <td style={{ padding: "12px 18px", fontSize: 14, fontWeight: 600, color: "#111111", whiteSpace: "nowrap" }}>
                         {rentAmount ? fmt(rentAmount) : <span style={{ color: "#d1d5db" }}>-</span>}
                       </td>
-                      <td style={{ padding: "13px 18px", fontSize: 14, fontWeight: 600, color: "#111111" }}>
+                      <td style={{ padding: "12px 18px", fontSize: 14, fontWeight: 600, color: "#111111", whiteSpace: "nowrap" }}>
                         {totalAmount ? fmt(totalAmount) : <span style={{ color: "#d1d5db" }}>-</span>}
                         {parkingAmount > 0 && (
                           <div style={{ fontSize: 12, fontWeight: 500, color: "#6b7280", marginTop: 2 }}>{t.payInclParking(fmt(parkingAmount))}</div>
@@ -2994,13 +2995,14 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
                         const isChecked = !!checked[mapKey];
                         const isDirty = !!checked[mapKey] !== !!saved[mapKey];
                         return (
-                          <td key={month.key} style={{ padding: "13px 10px", textAlign: "center", background: isDirty ? "#f5f5f5" : "transparent" }}>
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={() => toggle(tenant.id, month.key)}
-                              style={{ width: 17, height: 17, cursor: "pointer", accentColor: "#111111" }}
-                            />
+                          <td key={month.key} style={{ padding: "4px 6px", textAlign: "center", background: isDirty ? "#f5f5f5" : "transparent" }}>
+                            <label className="ld-touch-check">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => toggle(tenant.id, month.key)}
+                              />
+                            </label>
                           </td>
                         );
                       })}
@@ -3012,7 +3014,8 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
                   const unitTotal = tenants.reduce((s, ten) => s + monthlyTotal(ten), 0);
                   return unitTotal > 0 ? (
                     <tr style={{ borderTop: "1px solid #eaeaea", background: "#fafafa" }}>
-                      <td colSpan={2} style={{ padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#6b7280" }}>{t.payTotal}</td>
+                      <td className="ld-sticky-col-head" style={{ padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#6b7280" }}>{t.payTotal}</td>
+                      <td />
                       <td style={{ padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#111111" }}>{fmt(unitRent)}</td>
                       <td style={{ padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#111111" }}>{fmt(unitTotal)}</td>
                       <td colSpan={months.length} />
@@ -3034,7 +3037,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
           grid above manages. This is the only place a pending payment, an older
           one, or a wrong amount can actually be seen and corrected. */}
       <div style={{ marginTop: 28 }}>
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 10 }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 10 }}>
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>{t.payRecords}</div>
             <div style={{ fontSize: 13, color: "#9ca3af" }}>{t.payRecordsSub(sortedPayments.length)}</div>
@@ -3048,8 +3051,8 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
         {sortedPayments.length === 0 ? (
           <div style={{ textAlign: "center", color: "#9ca3af", fontSize: 14, padding: "30px 0", background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12 }}>{t.payNoRecords}</div>
         ) : (
-          <div style={{ background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12, overflow: "hidden" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <div className="ld-table-scroll" style={{ background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12 }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
               <thead>
                 <tr style={{ background: "#fafafa", borderBottom: "1px solid #eaeaea" }}>
                   {[t.tenant, t.payAmount, t.payDueDate, t.payPaidDate, t.colStatus, t.colType, ""].map((h, i) => (

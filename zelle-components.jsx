@@ -62,6 +62,7 @@ const rawEmailBox = {
   lineHeight: 1.55,
   color: '#374151',
   whiteSpace: 'pre-wrap',
+  overflowWrap: 'anywhere',
   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
 }
 const triageBox = {
@@ -92,13 +93,15 @@ const fieldLabel = {
   letterSpacing: '.4px',
 }
 const controlStyle = {
-  padding: '7px 10px',
+  padding: '8px 10px',
+  minHeight: 40,
   borderRadius: 8,
   border: '1px solid #d1d5db',
   fontSize: 13,
   color: '#111827',
   background: '#fff',
   fontFamily: 'inherit',
+  width: '100%',
 }
 const errBanner = {
   background: '#fef2f2',
@@ -361,6 +364,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
             <button
               key={tab.key}
               type="button"
+              className="ld-zelle-tab"
               onClick={() => setSubTab(tab.key)}
               style={{
                 padding: '8px 14px',
@@ -635,10 +639,11 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                     </div>
                   )}
 
-                  <div style={triageRow}>
-                    <label style={fieldWrap}>
+                  <div className="ld-zelle-triage-row" style={triageRow}>
+                    <label className="ld-zelle-field" style={fieldWrap}>
                       <span style={fieldLabel}>{t.zelleCategoryLabel}</span>
                       <select
+                        className="ld-zelle-control"
                         style={controlStyle}
                         value={draft.category}
                         onChange={(e) => updateDraft(ev.id, { ...draft, category: e.target.value })}
@@ -653,9 +658,10 @@ export function ZelleInboxPanel({ data, t, refresh }) {
 
                     {isSplitMode ? (
                       <>
-                        <label style={{ ...fieldWrap, minWidth: 220 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 220 }}>
                           <span style={fieldLabel}>{t.zelleContractLabel}</span>
                           <select
+                            className="ld-zelle-control"
                             style={controlStyle}
                             value={draft.contractId || ''}
                             onChange={(e) => {
@@ -675,21 +681,23 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                             ))}
                           </select>
                         </label>
-                        <label style={fieldWrap}>
+                        <label className="ld-zelle-field" style={fieldWrap}>
                           <span style={fieldLabel}>{t.zelleMonthLabel}</span>
                           <input
                             type="month"
+                            className="ld-zelle-control"
                             style={controlStyle}
                             value={draft.targetMonth}
                             onChange={(e) => updateDraft(ev.id, { ...draft, targetMonth: e.target.value })}
                           />
                         </label>
-                        <label style={{ ...fieldWrap, minWidth: 110 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 110 }}>
                           <span style={fieldLabel}>{t.zelleAmountLabel}</span>
                           <input
                             type="number"
                             step="0.01"
                             min="0"
+                            className="ld-zelle-control"
                             style={controlStyle}
                             value={draft.amount}
                             onChange={(e) => updateDraft(ev.id, { ...draft, amount: e.target.value })}
@@ -698,9 +706,10 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                       </>
                     ) : (draft.category === 'rent' || draft.category === 'deposit' || draft.category === 'other') && (
                       <>
-                        <label style={{ ...fieldWrap, minWidth: 200 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 200 }}>
                           <span style={fieldLabel}>{t.zelleTenantLabel}</span>
                           <select
+                            className="ld-zelle-control"
                             style={controlStyle}
                             value={draft.tenantId}
                             onChange={(e) => updateDraft(ev.id, { ...draft, tenantId: e.target.value })}
@@ -747,22 +756,24 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                           </select>
                         </label>
 
-                        <label style={fieldWrap}>
+                        <label className="ld-zelle-field" style={fieldWrap}>
                           <span style={fieldLabel}>{t.zelleMonthLabel}</span>
                           <input
                             type="month"
+                            className="ld-zelle-control"
                             style={controlStyle}
                             value={draft.targetMonth}
                             onChange={(e) => updateDraft(ev.id, { ...draft, targetMonth: e.target.value })}
                           />
                         </label>
 
-                        <label style={{ ...fieldWrap, minWidth: 110 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 110 }}>
                           <span style={fieldLabel}>{t.zelleAmountLabel}</span>
                           <input
                             type="number"
                             step="0.01"
                             min="0"
+                            className="ld-zelle-control"
                             style={controlStyle}
                             value={draft.amount}
                             onChange={(e) => updateDraft(ev.id, { ...draft, amount: e.target.value })}
@@ -807,12 +818,12 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                   )}
 
                   {draft.category === 'rent' && ev.payerName && (
-                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151', cursor: 'pointer' }}>
+                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: 10, minHeight: 40, fontSize: 13, color: '#374151', cursor: 'pointer' }}>
                       <input
                         type="checkbox"
                         checked={Boolean(draft.rememberAlias)}
                         onChange={(e) => updateDraft(ev.id, { ...draft, rememberAlias: e.target.checked })}
-                        style={{ width: 15, height: 15, accentColor: '#111111', cursor: 'pointer' }}
+                        style={{ width: 20, height: 20, accentColor: '#111111', cursor: 'pointer' }}
                       />
                       <span>{isSplitMode ? t.zelleRememberContractPayer : t.zelleRememberPayer}</span>
                     </label>

@@ -48,6 +48,91 @@
 .landlord-scroll {
   overflow-x: auto;
   max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.ld-table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.ld-sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 1px 0 0 #eaeaea;
+}
+
+.ld-sticky-col-head {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #fafafa;
+  box-shadow: 1px 0 0 #eaeaea;
+}
+
+.ld-sticky-col-sub {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #f5f5f5;
+  box-shadow: 1px 0 0 #eaeaea;
+}
+
+.ld-touch-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ld-touch-check:hover {
+  background: rgba(17, 17, 17, 0.04);
+}
+
+.ld-touch-check input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #111111;
+}
+
+.ld-zelle-triage-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.ld-zelle-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+@media (pointer: coarse) {
+  .ld-zelle-control {
+    min-height: 44px;
+  }
+
+  .ld-zelle-tab {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ld-zelle-field {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
 }
 
 .landlord-navigation {
