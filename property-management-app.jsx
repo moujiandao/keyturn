@@ -464,7 +464,7 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
   const todayStr = now.toISOString().split("T")[0];
   const paidTenantIds = new Set(
     payments
-      .filter(p => p.status === "completed" && p.dueDate && p.dueDate.startsWith(currentMonthKey))
+      .filter(p => isPaidRent(p) && p.dueDate && p.dueDate.startsWith(currentMonthKey))
       .map(p => p.tenantId)
   );
   // Only flag rent as unpaid once we're at the 5th of the month or later — gives tenants a grace window through the 4th.
