@@ -1,12 +1,23 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
-import { isPublicPath, resolveUser, gateDecision } from './lib/auth/session-gate.js'
+import {
+  isPublicPath,
+  shouldCheckSessionOnPublicPath,
+  publicRedirectTarget,
+  resolveUser,
+  gateDecision,
+} from './lib/auth/session-gate.js'
+import { withPersistentCookieOptions } from './lib/auth/session-cookies.js'
 
 export async function middleware(request) {
   let supabaseResponse = NextResponse.next({ request })
 
-  const { pathname, search } = request.nextUrl
-  if (isPublicPath(pathname)) return supabaseResponse
+  const { pathname, search, searchParams } = request.nextUrl
+  const onPublicPath = isPublicPath(pathname)
+
+  if (onPublicPath && !shouldCheckSessionOnPublicPath(pathname, searchParams, request.cookies.getAll())) {
+    return supabaseResponse
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -20,7 +31,7 @@ export async function middleware(request) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, withPersistentCookieOptions(options))
           )
         },
       },
@@ -30,6 +41,21 @@ export async function middleware(request) {
   // Refreshes the session and writes updated cookies to the response.
   // Do not add any logic between createServerClient and this call.
   const session = await resolveUser(() => supabase.auth.getUser())
+
+  if (onPublicPath) {
+    const target = publicRedirectTarget(pathname, searchParams, session)
+    if (target) {
+      const redirectUrl = new URL(target, request.url)
+      const redirectResponse = NextResponse.redirect(redirectUrl)
+      // Preserve any freshly refreshed Set-Cookie headers across the redirect.
+      for (const cookie of supabaseResponse.cookies.getAll()) {
+        redirectResponse.cookies.set(cookie)
+      }
+      return redirectResponse
+    }
+    return supabaseResponse
+  }
+
   const decision = gateDecision(pathname, session)
 
   if (decision === 'unavailable') {
@@ -39,14 +65,6 @@ export async function middleware(request) {
     })
   }
 
-  // Bounce unauthenticated requests for app paths, carrying the ACTUAL requested
-  // path in `next`. This lives here rather than in the (app) layout because a
-  // server layout cannot see the pathname — it used to hardcode
-  // `?next=/dashboard`, which was harmless when the app had one URL and became a
-  // real bug the moment it had twenty: every deep link sent you to the dashboard
-  // after login instead of where you asked for. The layout's own check stays as
-  // the authoritative one; this is the optimistic redirect that keeps `next`
-  // honest. The user is already resolved above, so this costs nothing extra.
   if (decision === 'login') {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
@@ -60,6 +78,6 @@ export async function middleware(request) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

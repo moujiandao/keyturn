@@ -159,6 +159,11 @@ export function Sidebar() {
   }
 
   const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {
+      // Fall through to client sign-out so logout still clears local state.
+    }
     await supabase.auth.signOut()
     // Leave the app surface entirely and land on the public marketing home.
     window.location.href = "/"

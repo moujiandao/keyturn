@@ -21,11 +21,12 @@ export function AuthCard({ title, subtitle, children }) {
   )
 }
 
-export function Field({ label, type = 'text', value, onChange, onKeyDown, autoFocus, autoComplete }) {
+export function Field({ label, name, type = 'text', value, onChange, onKeyDown, autoFocus, autoComplete }) {
   return (
     <label style={{ display: 'block', marginBottom: 16 }}>
       <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: palette.text, marginBottom: 6 }}>{label}</span>
       <input
+        name={name}
         type={type}
         value={value}
         onChange={onChange}
@@ -34,12 +35,13 @@ export function Field({ label, type = 'text', value, onChange, onKeyDown, autoFo
         autoComplete={autoComplete}
         style={{
           width: '100%',
+          minHeight: 44,
           padding: '11px 14px',
           background: '#fff',
           border: `1px solid ${palette.border}`,
           borderRadius: radius.sm,
           color: palette.text,
-          fontSize: 15,
+          fontSize: 16,
           outline: 'none',
           fontFamily: 'inherit',
         }}
@@ -48,19 +50,21 @@ export function Field({ label, type = 'text', value, onChange, onKeyDown, autoFo
   )
 }
 
-export function SubmitButton({ children, onClick, loading }) {
+export function SubmitButton({ children, onClick, loading, type = 'button' }) {
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={loading}
       style={{
         width: '100%',
+        minHeight: 44,
         padding: '13px',
         background: palette.accent,
         color: '#fff',
         border: 'none',
         borderRadius: radius.sm,
-        fontSize: 15,
+        fontSize: 16,
         fontWeight: 600,
         cursor: loading ? 'not-allowed' : 'pointer',
         opacity: loading ? 0.7 : 1,

@@ -14,6 +14,23 @@ import { AppProvider } from '@/components/app-store'
 export default async function AppLayout({ children }) {
   const user = await getCurrentUser()
 
+  // Do not kick signed-in users to /login on a transient Supabase Auth blip.
+  if (user?.unavailable) {
+    return (
+      <div style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#f6f5f3', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
+        <div style={{ maxWidth: 420, width: '100%', background: '#fff', border: '1px solid #dedfdd', borderRadius: 12, padding: 28, textAlign: 'center' }}>
+          <h1 style={{ margin: '0 0 8px', fontSize: 20, color: '#20262a' }}>Sign-in service temporarily unavailable</h1>
+          <p style={{ margin: '0 0 18px', fontSize: 14, color: '#566168', lineHeight: 1.5 }}>
+            Your session is safe. Please reload in a moment.
+          </p>
+          <a href="" style={{ display: 'inline-block', padding: '10px 18px', borderRadius: 8, background: '#20262a', color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>
+            Reload
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   if (!user) redirect('/login?next=/dashboard')
 
   // Valid session but no landlord_members and no tenant_profiles row: there is
