@@ -83,7 +83,6 @@ const fieldWrap = {
   display: 'flex',
   flexDirection: 'column',
   gap: 4,
-  minWidth: 130,
 }
 const fieldLabel = {
   fontSize: 11,
@@ -94,7 +93,6 @@ const fieldLabel = {
 }
 const controlStyle = {
   padding: '8px 10px',
-  minHeight: 40,
   borderRadius: 8,
   border: '1px solid #d1d5db',
   fontSize: 13,
@@ -658,7 +656,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
 
                     {isSplitMode ? (
                       <>
-                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 220 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, '--ld-zelle-field-min-w': '220px' }}>
                           <span style={fieldLabel}>{t.zelleContractLabel}</span>
                           <select
                             className="ld-zelle-control"
@@ -691,7 +689,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                             onChange={(e) => updateDraft(ev.id, { ...draft, targetMonth: e.target.value })}
                           />
                         </label>
-                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 110 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, '--ld-zelle-field-min-w': '110px' }}>
                           <span style={fieldLabel}>{t.zelleAmountLabel}</span>
                           <input
                             type="number"
@@ -706,7 +704,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                       </>
                     ) : (draft.category === 'rent' || draft.category === 'deposit' || draft.category === 'other') && (
                       <>
-                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 200 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, '--ld-zelle-field-min-w': '200px' }}>
                           <span style={fieldLabel}>{t.zelleTenantLabel}</span>
                           <select
                             className="ld-zelle-control"
@@ -767,7 +765,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                           />
                         </label>
 
-                        <label className="ld-zelle-field" style={{ ...fieldWrap, minWidth: 110 }}>
+                        <label className="ld-zelle-field" style={{ ...fieldWrap, '--ld-zelle-field-min-w': '110px' }}>
                           <span style={fieldLabel}>{t.zelleAmountLabel}</span>
                           <input
                             type="number"
@@ -794,6 +792,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                             type="number"
                             step="0.01"
                             min="0"
+                            className="ld-zelle-control"
                             style={{ ...controlStyle, width: 120, textAlign: 'right' }}
                             value={draft.splitAmounts?.[ten.id] ?? ''}
                             onChange={(e) =>

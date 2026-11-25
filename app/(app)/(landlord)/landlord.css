@@ -71,7 +71,7 @@
   position: sticky;
   left: 0;
   z-index: 3;
-  background: #fafafa;
+  background: var(--ld-subtle, #fafafa);
   box-shadow: 1px 0 0 #eaeaea;
 }
 
@@ -115,7 +115,11 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 140px;
+  min-width: var(--ld-zelle-field-min-w, 130px);
+}
+
+.ld-zelle-control {
+  min-height: 40px;
 }
 
 @media (pointer: coarse) {
@@ -132,6 +136,12 @@
   .ld-zelle-field {
     flex: 1 1 100%;
     min-width: 0;
+  }
+
+  .ld-sticky-col {
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

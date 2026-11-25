@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { withPersistentCookieOptions } from '@/lib/auth/session-cookies'
 
 export async function GET(request) {
   const { searchParams, origin } = new URL(request.url)
@@ -17,7 +18,11 @@ export async function GET(request) {
         cookies: {
           getAll() { return cookieStore.getAll() },
           setAll(cookiesToSet) {
-            try { cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options)) }
+            try {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore.set(name, value, withPersistentCookieOptions(options))
+              )
+            }
             catch {}
           },
         },
