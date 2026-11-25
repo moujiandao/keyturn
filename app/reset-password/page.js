@@ -1,5 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '../../lib/supabase/client'
 
 export default function ResetPassword() {
@@ -28,7 +29,7 @@ export default function ResetPassword() {
           <div style={{ fontSize: 32, marginBottom: 12 }}>✓</div>
           <h2 style={{ color: '#f1f5f9', margin: '0 0 8px' }}>Password updated</h2>
           <p style={{ color: '#94a3b8', marginBottom: 24 }}>You can now log in with your new password.</p>
-          <a href="/" style={{ display: 'inline-block', background: '#d97706', color: '#fff', padding: '12px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}>Go to login</a>
+          <Link href="/" style={{ display: 'inline-block', background: '#d97706', color: '#fff', padding: '12px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}>Go to login</Link>
         </div>
       </div>
     )

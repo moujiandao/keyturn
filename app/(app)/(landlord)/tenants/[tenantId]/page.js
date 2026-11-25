@@ -11,6 +11,7 @@ export default function Page({ params }) {
   const { data, setData, refresh, user, t } = useLandlordPageProps()
   return (
     <TenantContactPage
+      key={tenantId}
       data={data} setData={setData} refresh={refresh} user={user} t={t}
       tenantId={tenantId}
       // Deliberately an "up" link to the list, not router.back(): after a

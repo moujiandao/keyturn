@@ -4258,7 +4258,7 @@ const TenantLeasePage = ({ data, user }) => {
               <div style={{ fontSize: 13, color: "#6b7280" }}>{property?.address} · {tenant?.unit}</div>
             </div>
           </div>
-          {[["Tenant", user.name],["Address",`${property?.address}, ${property?.city}`],["Unit",contract.unit],["Monthly Rent",fmt(contract.rentAmount)],["Due Day",`${contract.dueDay}${contract.dueDay===1?"st":"th"} of month`],["Start",fmtDate(contract.startDate)],["End",fmtDate(contract.endDate)],["Status",<Badge status={contract.status} t={T.en} />]].map(([lbl,val]) => (
+          {[["Tenant", user.name],["Address",`${property?.address}, ${property?.city}`],["Unit",contract.unit],["Monthly Rent",fmt(contract.rentAmount)],["Due Day",`${contract.dueDay}${contract.dueDay===1?"st":"th"} of month`],["Start",fmtDate(contract.startDate)],["End",fmtDate(contract.endDate)],["Status",<Badge key="lease-status" status={contract.status} t={T.en} />]].map(([lbl,val]) => (
             <div key={lbl} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: "1px solid #fafafa" }}>
               <span style={{ fontSize: 13, color: "#6b7280" }}>{lbl}</span>
               <span style={{ fontSize: 14, fontWeight: 500, color: "#111111" }}>{val}</span>
@@ -4333,13 +4333,23 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
   const [deleteError, setDeleteError] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
 
-  const loadUsers = async () => {
-    const res = await fetch("/api/auth/list-users");
-    const json = await res.json();
-    if (json.users) setAllUsers(json.users.filter(u => u.role !== "tenant").map(u => ({ ...u, displayName: u.name || u.email })).sort((a, b) => a.displayName.localeCompare(b.displayName)));
-  };
+  const [userListVersion, setUserListVersion] = useState(0);
 
-  useEffect(() => { loadUsers(); }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/auth/list-users", { signal: controller.signal })
+      .then(res => res.json())
+      .then(({ users }) => {
+        if (controller.signal.aborted || !users) return;
+        setAllUsers(users.filter(u => u.role !== "tenant")
+          .map(u => ({ ...u, displayName: u.name || u.email }))
+          .sort((a, b) => a.displayName.localeCompare(b.displayName)));
+      })
+      .catch(error => {
+        if (!controller.signal.aborted) console.error("Could not load admin users", error);
+      });
+    return () => controller.abort();
+  }, [userListVersion]);
 
   const handleSubmit = async () => {
     setMsg(null);
@@ -4356,7 +4366,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
     if (json.error) { setMsg({ text: json.error, error: true }); return; }
     setMsg({ text: t.adminSuccess, error: false });
     setForm({ name: "", email: "", password: "" });
-    loadUsers();
+    setUserListVersion(version => version + 1);
     if (refresh) refresh();
   };
 
@@ -4370,7 +4380,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
     });
     const json = await res.json();
     if (!res.ok) { setDeleteError(json.error || "Delete failed"); setDeleting(false); return; }
-    loadUsers();
+    setUserListVersion(version => version + 1);
     if (refresh) await refresh();
     setConfirmDelete(null);
     setDeleting(false);

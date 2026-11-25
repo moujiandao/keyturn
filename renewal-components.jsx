@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Modal, Btn, Icon, PageHeader } from './property-management-app'
 import { deriveRenewalTerm, pickOriginalLeaseDate } from './lib/docuseal/renewal.js'
 import { fmtDate } from '@/lib/format'
@@ -219,11 +219,7 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
   const contractTenants = data.contractTenants || []
   const leaseRenewals = data.leaseRenewals || []
 
-  const tenantById = useMemo(() => {
-    const m = {}
-    tenants.forEach(x => { m[x.id] = x })
-    return m
-  }, [tenants])
+  const tenantById = Object.fromEntries(tenants.map(tenant => [tenant.id, tenant]))
 
   const propAddress = (id) => properties.find(p => p.id === id)?.address || ''
   const signerName = (ten) => ten ? [ten.name, ten.lastName].filter(Boolean).join(' ') : t.renewalUnknownTenant
@@ -245,48 +241,48 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
       !['declined', 'blocked'].includes(r.status))
   }
 
-  const today = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d }, [])
+  const [today] = useState(() => {
+    const date = new Date()
+    date.setHours(0, 0, 0, 0)
+    return date
+  })
 
   // "Renewals due": end_date within ~150 days and no active renewal for the term.
-  const due = useMemo(() => {
-    return contracts
-      .filter(c => c.endDate && (c.status === 'active' || !c.status))
-      .map(c => {
-        const daysLeft = daysBetween(today, toDate(c.endDate))
-        return { contract: c, daysLeft }
+  const due = contracts
+    .filter(c => c.endDate && (c.status === 'active' || !c.status))
+    .map(c => {
+      const daysLeft = daysBetween(today, toDate(c.endDate))
+      return { contract: c, daysLeft }
+    })
+    .filter(x => x.daysLeft >= 0 && x.daysLeft <= 150 && !hasActiveRenewal(x.contract))
+    .map(x => {
+      const ids = tenantIdsFor(x.contract)
+      const signers = ids.map(id => {
+        const ten = tenantById[id]
+        return { tenantId: id, name: signerName(ten), email: ten?.email || '' }
       })
-      .filter(x => x.daysLeft >= 0 && x.daysLeft <= 150 && !hasActiveRenewal(x.contract))
-      .map(x => {
-        const ids = tenantIdsFor(x.contract)
-        const signers = ids.map(id => {
-          const ten = tenantById[id]
-          return { tenantId: id, name: signerName(ten), email: ten?.email || '' }
-        })
-        const blocked = signers.length === 0 || signers.some(s => isPlaceholderEmail(s.email))
-        const chain = leaseRenewals.filter(r => r.contractId === x.contract.id)
-        return {
-          ...x,
-          propertyAddress: propAddress(x.contract.propertyId),
-          term: deriveTerm(x.contract),
-          originalLeaseDate: pickOriginalLeaseDate(chain, x.contract.startDate),
-          signers,
-          blocked,
-          urgent: x.daysLeft < 90,
-        }
-      })
-      .sort((a, b) => a.daysLeft - b.daysLeft)
-  }, [contracts, leaseRenewals, contractTenants, tenants, properties, today])
+      const blocked = signers.length === 0 || signers.some(s => isPlaceholderEmail(s.email))
+      const chain = leaseRenewals.filter(r => r.contractId === x.contract.id)
+      return {
+        ...x,
+        propertyAddress: propAddress(x.contract.propertyId),
+        term: deriveTerm(x.contract),
+        originalLeaseDate: pickOriginalLeaseDate(chain, x.contract.startDate),
+        signers,
+        blocked,
+        urgent: x.daysLeft < 90,
+      }
+    })
+    .sort((a, b) => a.daysLeft - b.daysLeft)
 
   // In-flight = any renewal not in a terminal-due state; surfaced for tracking.
-  const inFlight = useMemo(() => {
-    return leaseRenewals
-      .filter(r => ['pending_review', 'sent', 'signed', 'countersigned', 'declined', 'blocked'].includes(r.status))
-      .map(r => {
-        const ids = (r.signers || []).map(s => s.tenantId).filter(Boolean)
-        const names = ids.map(id => signerName(tenantById[id])).join(', ')
-        return { renewal: r, propertyAddress: propAddress(r.propertyId), signerNames: names }
-      })
-  }, [leaseRenewals, tenants, properties])
+  const inFlight = leaseRenewals
+    .filter(r => ['pending_review', 'sent', 'signed', 'countersigned', 'declined', 'blocked'].includes(r.status))
+    .map(r => {
+      const ids = (r.signers || []).map(s => s.tenantId).filter(Boolean)
+      const names = ids.map(id => signerName(tenantById[id])).join(', ')
+      return { renewal: r, propertyAddress: propAddress(r.propertyId), signerNames: names }
+    })
 
   const urgentCount = due.filter(d => d.urgent).length
   const blockedCount = due.filter(d => d.blocked).length
