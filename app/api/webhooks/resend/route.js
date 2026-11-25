@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
 import { Resend } from 'resend'
 import { extractZelleTokenFromAddresses, ingestZelleEmail } from '@/lib/zelle/ingest'
+import { createClaudeHaikuFallback } from '@/lib/zelle/llm-fallback'
 
 export const dynamic = 'force-dynamic'
 
@@ -179,6 +180,7 @@ export async function POST(request) {
             const { error } = await supabase.from('zelle_events').update(patch).eq('id', id)
             if (error) throw new Error(error.message)
           },
+          fallbackParse: createClaudeHaikuFallback(),
         },
         { token: zelleToken, resendEmailId, webhookData: data }
       )
