@@ -98,94 +98,113 @@ export async function POST(request) {
       const resendEmailId = data.email_id || data.id || null
       const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
-      const result = await ingestZelleEmail(
-        {
-          async findLandlordByToken(token) {
-            const { data: row } = await supabase
-              .from('landlord_profiles')
-              .select('id')
-              .eq('zelle_inbound_token', token)
-              .maybeSingle()
-            return row?.id || null
+      try {
+        const result = await ingestZelleEmail(
+          {
+            async findLandlordByToken(token) {
+              const { data: row, error } = await supabase
+                .from('landlord_profiles')
+                .select('id')
+                .eq('zelle_inbound_token', token)
+                .maybeSingle()
+              if (error) throw new Error(`findLandlordByToken failed: ${error.message}`)
+              return row?.id || null
+            },
+            async findEventByResendEmailId(emailId) {
+              const { data: row, error } = await supabase
+                .from('zelle_events')
+                .select('id')
+                .eq('resend_email_id', emailId)
+                .maybeSingle()
+              if (error) throw new Error(`findEventByResendEmailId failed: ${error.message}`)
+              return row || null
+            },
+            async findEventByDedupeKey(landlordId, dedupeKey) {
+              const { data: row, error } = await supabase
+                .from('zelle_events')
+                .select('id')
+                .eq('landlord_id', landlordId)
+                .eq('dedupe_key', dedupeKey)
+                .maybeSingle()
+              if (error) throw new Error(`findEventByDedupeKey failed: ${error.message}`)
+              return row || null
+            },
+            async fetchReceivedEmail(emailId) {
+              // If payload already carries html/text (e.g. direct test payload), reuse it.
+              if (data.html || data.text) return data
+              if (!resend?.emails?.receiving?.get) {
+                throw new Error('RESEND_API_KEY is not configured to fetch received email body.')
+              }
+              const { data: emailData, error } = await resend.emails.receiving.get(emailId)
+              if (error || !emailData) {
+                throw new Error(`Resend receiving.get failed: ${error?.message || 'empty response'}`)
+              }
+              return emailData
+            },
+            async loadLandlordContext(landlordId) {
+              const [tenRes, propRes, conRes, payRes, parkRes, aliasRes] = await Promise.all([
+                supabase.from('tenant_profiles').select('*').eq('landlord_id', landlordId),
+                supabase.from('properties').select('*').eq('landlord_id', landlordId),
+                supabase.from('contracts').select('*, contract_tenants(tenant_id)').eq('landlord_id', landlordId),
+                supabase.from('payments').select('*').eq('landlord_id', landlordId),
+                supabase.from('parking_leases').select('*').eq('landlord_id', landlordId),
+                supabase.from('zelle_payer_aliases').select('*').eq('landlord_id', landlordId),
+              ])
+              const firstErr = [tenRes, propRes, conRes, payRes, parkRes, aliasRes].find((r) => r.error)
+              if (firstErr) {
+                throw new Error(`loadLandlordContext failed: ${firstErr.error.message}`)
+              }
+              const propIds = (propRes.data || []).map((p) => p.id)
+              const unitsRes = propIds.length
+                ? await supabase.from('units').select('*').in('property_id', propIds)
+                : { data: [], error: null }
+              if (unitsRes.error) {
+                throw new Error(`loadLandlordContext units failed: ${unitsRes.error.message}`)
+              }
+              return {
+                tenants: tenRes.data || [],
+                properties: propRes.data || [],
+                contracts: conRes.data || [],
+                payments: payRes.data || [],
+                parkingLeases: parkRes.data || [],
+                units: unitsRes.data || [],
+                aliases: aliasRes.data || [],
+              }
+            },
+            async insertZelleEvent(row) {
+              const { data: inserted, error } = await supabase
+                .from('zelle_events')
+                .insert(row)
+                .select('id')
+                .single()
+              if (error) {
+                if (error.code === '23505') return { event: null, duplicate: true }
+                throw new Error(error.message)
+              }
+              return { event: inserted, duplicate: false }
+            },
+            async insertPayments(rows) {
+              const { data: inserted, error } = await supabase
+                .from('payments')
+                .insert(rows)
+                .select('id')
+              if (error) throw new Error(error.message)
+              return inserted || []
+            },
+            async updateZelleEvent(id, patch) {
+              const { error } = await supabase.from('zelle_events').update(patch).eq('id', id)
+              if (error) throw new Error(error.message)
+            },
+            fallbackParse: createClaudeHaikuFallback(),
           },
-          async findEventByResendEmailId(emailId) {
-            const { data: row } = await supabase
-              .from('zelle_events')
-              .select('id')
-              .eq('resend_email_id', emailId)
-              .maybeSingle()
-            return row || null
-          },
-          async findEventByDedupeKey(landlordId, dedupeKey) {
-            const { data: row } = await supabase
-              .from('zelle_events')
-              .select('id')
-              .eq('landlord_id', landlordId)
-              .eq('dedupe_key', dedupeKey)
-              .maybeSingle()
-            return row || null
-          },
-          async fetchReceivedEmail(emailId) {
-            // If payload already carries html/text (e.g. direct test payload), reuse it.
-            if (data.html || data.text) return data
-            if (!resend?.emails?.receiving?.get) return data
-            const { data: emailData, error } = await resend.emails.receiving.get(emailId)
-            if (error || !emailData) return data
-            return emailData
-          },
-          async loadLandlordContext(landlordId) {
-            const [tenRes, propRes, conRes, payRes, parkRes, aliasRes] = await Promise.all([
-              supabase.from('tenant_profiles').select('*').eq('landlord_id', landlordId),
-              supabase.from('properties').select('*').eq('landlord_id', landlordId),
-              supabase.from('contracts').select('*, contract_tenants(tenant_id)').eq('landlord_id', landlordId),
-              supabase.from('payments').select('*').eq('landlord_id', landlordId),
-              supabase.from('parking_leases').select('*').eq('landlord_id', landlordId),
-              supabase.from('zelle_payer_aliases').select('*').eq('landlord_id', landlordId),
-            ])
-            const propIds = (propRes.data || []).map((p) => p.id)
-            const unitsRes = propIds.length
-              ? await supabase.from('units').select('*').in('property_id', propIds)
-              : { data: [] }
-            return {
-              tenants: tenRes.data || [],
-              properties: propRes.data || [],
-              contracts: conRes.data || [],
-              payments: payRes.data || [],
-              parkingLeases: parkRes.data || [],
-              units: unitsRes.data || [],
-              aliases: aliasRes.data || [],
-            }
-          },
-          async insertZelleEvent(row) {
-            const { data: inserted, error } = await supabase
-              .from('zelle_events')
-              .insert(row)
-              .select('id')
-              .single()
-            if (error) {
-              if (error.code === '23505') return { event: null, duplicate: true }
-              throw new Error(error.message)
-            }
-            return { event: inserted, duplicate: false }
-          },
-          async insertPayments(rows) {
-            const { data: inserted, error } = await supabase
-              .from('payments')
-              .insert(rows)
-              .select('id')
-            if (error) throw new Error(error.message)
-            return inserted || []
-          },
-          async updateZelleEvent(id, patch) {
-            const { error } = await supabase.from('zelle_events').update(patch).eq('id', id)
-            if (error) throw new Error(error.message)
-          },
-          fallbackParse: createClaudeHaikuFallback(),
-        },
-        { token: zelleToken, resendEmailId, webhookData: data }
-      )
+          { token: zelleToken, resendEmailId, webhookData: data }
+        )
 
-      return Response.json({ received: true, zelle: result })
+        return Response.json({ received: true, zelle: result })
+      } catch (err) {
+        console.error('[resend-webhook/zelle] transient error:', err)
+        return Response.json({ error: err.message || 'Zelle ingestion failed' }, { status: 500 })
+      }
     }
 
     const when = event.created_at || new Date().toISOString()

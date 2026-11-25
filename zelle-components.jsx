@@ -468,7 +468,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                   </div>
                   <Btn
                     size="sm"
-                    variant="danger"
+                    variant="secondary"
                     disabled={busyId === alias.id}
                     onClick={() => handleDeleteAlias(alias.id)}
                   >
@@ -595,7 +595,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                   {ev.status === 'auto_posted' && (
                     <Btn
                       size="sm"
-                      variant="danger"
+                      variant="secondary"
                       disabled={isBusy}
                       onClick={() => handleUndo(ev)}
                     >
@@ -682,6 +682,17 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                             style={controlStyle}
                             value={draft.targetMonth}
                             onChange={(e) => updateDraft(ev.id, { ...draft, targetMonth: e.target.value })}
+                          />
+                        </label>
+                        <label style={{ ...fieldWrap, minWidth: 110 }}>
+                          <span style={fieldLabel}>{t.zelleAmountLabel}</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            style={controlStyle}
+                            value={draft.amount}
+                            onChange={(e) => updateDraft(ev.id, { ...draft, amount: e.target.value })}
                           />
                         </label>
                       </>

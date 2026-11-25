@@ -105,4 +105,10 @@ create index if not exists payments_zelle_event_id_idx
   on public.payments (zelle_event_id)
   where zelle_event_id is not null;
 
+-- Prevent duplicate payments for the same Zelle event + tenant under concurrent
+-- review clicks or webhook retries.
+create unique index if not exists payments_zelle_event_tenant_uidx
+  on public.payments (zelle_event_id, tenant_id)
+  where zelle_event_id is not null;
+
 commit;

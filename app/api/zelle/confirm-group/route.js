@@ -31,6 +31,15 @@ export async function POST(request) {
           if (error) throw new Error(error.message)
           return data || null
         },
+        async getContract(id) {
+          const { data, error } = await supabase
+            .from('contracts')
+            .select('id, landlord_id')
+            .eq('id', id)
+            .maybeSingle()
+          if (error) throw new Error(error.message)
+          return data || null
+        },
         async getEventsByIds(landlordId, ids) {
           const { data, error } = await supabase
             .from('zelle_events')
