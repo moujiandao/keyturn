@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
+import { Resend } from 'resend'
+import { extractZelleTokenFromAddresses, ingestZelleEmail } from '@/lib/zelle/ingest'
 
 export const dynamic = 'force-dynamic'
 
@@ -81,13 +83,108 @@ export async function POST(request) {
     return Response.json({ received: true })
   }
 
-  // ── Inbound reply ──
+  // ── Inbound email (Zelle alerts or tenant replies) ──
   // Gate strictly on inbound event types; only fall back to shape-sniffing when
   // the type is unrecognized AND the payload looks like a received message
   // (so outbound delivery events that carry data.from aren't misclassified).
   const INBOUND_TYPES = ['inbound.email.received', 'email.inbound', 'email.received']
   const looksInbound = !type && data?.from && (data?.text || data?.html)
   if (INBOUND_TYPES.includes(type) || looksInbound) {
+    // Route `zelle+<token>@domain` addresses into Zelle ingestion before the
+    // tenant reply matcher so bank alerts never mix with email_messages.
+    const zelleToken = extractZelleTokenFromAddresses(data.to)
+    if (zelleToken) {
+      const resendEmailId = data.email_id || data.id || null
+      const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+
+      const result = await ingestZelleEmail(
+        {
+          async findLandlordByToken(token) {
+            const { data: row } = await supabase
+              .from('landlord_profiles')
+              .select('id')
+              .eq('zelle_inbound_token', token)
+              .maybeSingle()
+            return row?.id || null
+          },
+          async findEventByResendEmailId(emailId) {
+            const { data: row } = await supabase
+              .from('zelle_events')
+              .select('id')
+              .eq('resend_email_id', emailId)
+              .maybeSingle()
+            return row || null
+          },
+          async findEventByDedupeKey(landlordId, dedupeKey) {
+            const { data: row } = await supabase
+              .from('zelle_events')
+              .select('id')
+              .eq('landlord_id', landlordId)
+              .eq('dedupe_key', dedupeKey)
+              .maybeSingle()
+            return row || null
+          },
+          async fetchReceivedEmail(emailId) {
+            // If payload already carries html/text (e.g. direct test payload), reuse it.
+            if (data.html || data.text) return data
+            if (!resend?.emails?.receiving?.get) return data
+            const { data: emailData, error } = await resend.emails.receiving.get(emailId)
+            if (error || !emailData) return data
+            return emailData
+          },
+          async loadLandlordContext(landlordId) {
+            const [tenRes, propRes, conRes, payRes, parkRes] = await Promise.all([
+              supabase.from('tenant_profiles').select('*').eq('landlord_id', landlordId),
+              supabase.from('properties').select('*').eq('landlord_id', landlordId),
+              supabase.from('contracts').select('*, contract_tenants(tenant_id)').eq('landlord_id', landlordId),
+              supabase.from('payments').select('*').eq('landlord_id', landlordId),
+              supabase.from('parking_leases').select('*').eq('landlord_id', landlordId),
+            ])
+            const propIds = (propRes.data || []).map((p) => p.id)
+            const unitsRes = propIds.length
+              ? await supabase.from('units').select('*').in('property_id', propIds)
+              : { data: [] }
+            return {
+              tenants: tenRes.data || [],
+              properties: propRes.data || [],
+              contracts: conRes.data || [],
+              payments: payRes.data || [],
+              parkingLeases: parkRes.data || [],
+              units: unitsRes.data || [],
+              aliases: [],
+            }
+          },
+          async insertZelleEvent(row) {
+            const { data: inserted, error } = await supabase
+              .from('zelle_events')
+              .insert(row)
+              .select('id')
+              .single()
+            if (error) {
+              if (error.code === '23505') return { event: null, duplicate: true }
+              throw new Error(error.message)
+            }
+            return { event: inserted, duplicate: false }
+          },
+          async insertPayments(rows) {
+            const { data: inserted, error } = await supabase
+              .from('payments')
+              .insert(rows)
+              .select('id')
+            if (error) throw new Error(error.message)
+            return inserted || []
+          },
+          async updateZelleEvent(id, patch) {
+            const { error } = await supabase.from('zelle_events').update(patch).eq('id', id)
+            if (error) throw new Error(error.message)
+          },
+        },
+        { token: zelleToken, resendEmailId, webhookData: data }
+      )
+
+      return Response.json({ received: true, zelle: result })
+    }
+
     const when = event.created_at || new Date().toISOString()
     // 1) reply+<id>@ sub-address  2) In-Reply-To/References header  3) sender email
     let originId = originIdFromAddresses(data.to)

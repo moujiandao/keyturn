@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
 import { statusForRow } from '@/lib/tenant/status'
+import { isPaidRent } from '@/lib/payments/status'
 import { requireLandlord, rejectMismatchedLandlord } from '@/lib/auth/authorize'
 
 const client = new Anthropic()
@@ -76,7 +77,7 @@ function buildFacts({ tenants: rawTenants, contracts, payments, maintenance, pro
 
   const paidPrevMonthTenantIds = new Set(
     payments
-      .filter(p => p.status === 'completed' && p.due_date && p.due_date.startsWith(prevMonthKey))
+      .filter(p => isPaidRent(p) && p.due_date && p.due_date.startsWith(prevMonthKey))
       .map(p => p.tenant_id)
   )
   const wasActiveLastMonth = (t) => {

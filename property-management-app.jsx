@@ -36,7 +36,7 @@ import * as unitOps from '@/lib/units/core';
 import { createParkingAdapter } from '@/lib/parking/adapter';
 import { createPaymentsAdapter } from '@/lib/payments/adapter';
 import { mapPayment } from '@/lib/payments/mappers';
-import { PAYMENT_STATUSES, PAYMENT_TYPES } from '@/lib/payments/status';
+import { PAYMENT_STATUSES, PAYMENT_TYPES, isPaidRent } from '@/lib/payments/status';
 import * as paymentOps from '@/lib/payments/core';
 import { mapParkingSpot, mapParkingRenter, mapParkingLease } from '@/lib/parking/mappers';
 import * as parkingOps from '@/lib/parking/core';
@@ -2593,11 +2593,12 @@ export const PaymentsPage = ({ data, t, refresh }) => {
     return result;
   }, []);
 
-  // "tenantId-YYYY-MM" → payment record id (from DB)
+  // "tenantId-YYYY-MM" → payment record id (from DB). Only rent rows check off
+  // the monthly rent grid; one-time deposits and other payments never mark rent paid.
   const [saved, setSaved] = useState(() => {
     const map = {};
     for (const p of data.payments) {
-      if (p.status === "completed" && p.dueDate) {
+      if (isPaidRent(p) && p.dueDate) {
         map[`${p.tenantId}-${p.dueDate.slice(0, 7)}`] = p.id;
       }
     }
