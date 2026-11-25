@@ -3,12 +3,10 @@
 import { APP_NAME } from '@/lib/brand'
 import { useState } from 'react'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
 import { palette } from '@/lib/theme'
 import { homeFor } from '@/lib/routes'
+import { resolveSafeNextPath } from '@/lib/auth/session-gate'
 import { AuthCard, Field, SubmitButton, Alert } from '../_form'
-
-const supabase = createClient()
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -16,60 +14,61 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleLogin = async () => {
+  const handleLogin = async (event) => {
+    event?.preventDefault()
+    if (loading) return
     setLoading(true)
     setError('')
 
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password })
-    if (authError) {
-      setError('Invalid email or password.')
+    try {
+      // Server-side sign-in issues first-party HTTP Set-Cookie headers so
+      // Safari ITP does not cap the session cookie to 7 days.
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setError(json.error || 'Invalid email or password.')
+        setLoading(false)
+        return
+      }
+
+      const home = json.home || homeFor(json.role || 'landlord')
+      const next = new URLSearchParams(window.location.search).get('next')
+      window.location.href = resolveSafeNextPath(next, home)
+    } catch {
+      setError('Unable to reach the sign-in service. Please try again.')
       setLoading(false)
-      return
     }
-
-    // Resolve the account's role before navigating, so a session with no profile
-    // gets a clear error here instead of bouncing off the app guard. The role
-    // also decides where to land: the two surfaces have separate namespaces now,
-    // so sending everyone to /dashboard would make a tenant's first action after
-    // login a redirect.
-    const { data: membership } = await supabase
-      .from('landlord_members')
-      .select('landlord_id')
-      .eq('auth_user_id', authData.user.id)
-      .maybeSingle()
-    if (membership) return go('landlord')
-
-    const { data: tenant } = await supabase
-      .from('tenant_profiles')
-      .select('id')
-      .eq('id', authData.user.id)
-      .maybeSingle()
-    if (tenant) return go('tenant')
-
-    await supabase.auth.signOut()
-    setError('No profile found for this account.')
-    setLoading(false)
-  }
-
-  // Full navigation (not router.push) so the server-side dashboard guard runs
-  // with the freshly written session cookie. Only same-origin absolute paths are
-  // honored: reject protocol-relative (`//host`) and external URLs to avoid an
-  // open redirect via the `next` param.
-  const go = (role) => {
-    const home = homeFor(role)
-    const next = new URLSearchParams(window.location.search).get('next') || home
-    const safe = next.startsWith('/') && !next.startsWith('//') ? next : home
-    window.location.href = safe
   }
 
   return (
     <AuthCard title="Welcome back" subtitle={`Log in to your ${APP_NAME} account.`}>
       <Alert>{error}</Alert>
-      <Field label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus autoComplete="email" onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
-      <Field label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
-      <SubmitButton onClick={handleLogin} loading={loading}>
-        {loading ? 'Signing in…' : 'Log in'}
-      </SubmitButton>
+      <form onSubmit={handleLogin}>
+        <Field
+          label="Email"
+          name="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoFocus
+          autoComplete="username"
+        />
+        <Field
+          label="Password"
+          name="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+        />
+        <SubmitButton type="submit" loading={loading}>
+          {loading ? 'Signing in…' : 'Log in'}
+        </SubmitButton>
+      </form>
 
       <p style={{ textAlign: 'center', fontSize: 14, color: palette.textMuted, margin: '20px 0 6px' }}>
         New to {APP_NAME}?{' '}
