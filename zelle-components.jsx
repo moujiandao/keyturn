@@ -4,7 +4,14 @@ import { Btn, Icon } from './property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
 import { isPaidRent } from '@/lib/payments/status'
 import { createZelleAdapter } from '@/lib/zelle/adapter'
-import { undoZelleEvent, resolveZelleEventClient, deleteZelleAliasClient } from '@/lib/zelle/core'
+import {
+  undoZelleEvent,
+  resolveZelleEventClient,
+  deleteZelleAliasClient,
+  confirmPartialGroupClient,
+  findPartialRentGroups,
+} from '@/lib/zelle/core'
+import { expectedMonthlyRent } from '@/lib/zelle/matcher'
 import { isZellePending, isZelleAutoPosted, isZelleResolved, ZELLE_CATEGORIES } from '@/lib/zelle/status'
 
 const card = {
@@ -13,6 +20,13 @@ const card = {
   padding: 20,
   border: '1px solid #eaeaea',
   marginBottom: 14,
+}
+const groupCard = {
+  background: '#f8fafc',
+  borderRadius: 14,
+  padding: 18,
+  border: '1px solid #cbd5e1',
+  marginBottom: 16,
 }
 const emptyBox = {
   background: '#fff',
@@ -112,6 +126,15 @@ const warnNote = {
   fontSize: 12,
   color: '#92400e',
 }
+const splitBox = {
+  background: '#fafafa',
+  border: '1px solid #eaeaea',
+  borderRadius: 10,
+  padding: 12,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 8,
+}
 
 const STATUS_STYLE = {
   auto_posted: { bg: '#ecfdf5', text: '#047857' },
@@ -136,6 +159,7 @@ export function useZelleMutations() {
     undoEvent: (eventId) => undoZelleEvent(adapter, eventId),
     resolveEvent: (payload) => resolveZelleEventClient(adapter, payload),
     deleteAlias: (aliasId) => deleteZelleAliasClient(adapter, aliasId),
+    confirmPartialGroup: (payload) => confirmPartialGroupClient(adapter, payload),
   }
 }
 
@@ -164,6 +188,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
   const contracts = data.contracts || []
   const payments = data.payments || []
   const properties = data.properties || []
+  const parkingLeases = data.parkingLeases || []
 
   const savedAliasNormalizedSet = new Set(aliases.map((a) => a.payerNameNormalized))
   const nonProdPropIds = new Set(properties.filter((p) => p.inProduction === false).map((p) => p.id))
@@ -175,9 +200,18 @@ export function ZelleInboxPanel({ data, t, refresh }) {
   const contractsById = new Map(contracts.map((c) => [c.id, c]))
   const paymentsById = new Map(payments.map((p) => [p.id, p]))
 
+  // Multi-tenant contracts eligible for 1-to-N lump-sum splitting.
+  const sharedContracts = contracts.filter((c) => (c.tenantIds || []).length >= 2)
+
   const pendingEvents = events.filter(isZellePending)
   const autoPostedEvents = events.filter(isZelleAutoPosted)
   const historyEvents = events.filter(isZelleResolved)
+
+  const partialGroups = findPartialRentGroups({
+    events: pendingEvents,
+    tenants,
+    parkingLeases,
+  })
 
   const visibleEvents =
     subTab === 'needs_review'
@@ -186,13 +220,34 @@ export function ZelleInboxPanel({ data, t, refresh }) {
         ? autoPostedEvents
         : historyEvents
 
+  const buildSplitMapForContract = (contractId) => {
+    const contract = contractsById.get(contractId)
+    if (!contract) return {}
+    const map = {}
+    for (const tid of contract.tenantIds || []) {
+      const ten = tenantsById.get(tid)
+      if (!ten) continue
+      const expected = expectedMonthlyRent(ten, parkingLeases)
+      map[tid] = expected > 0 ? String(expected) : ''
+    }
+    return map
+  }
+
   const getDraft = (ev) => {
     const existing = drafts[ev.id]
     if (existing) return existing
     const alreadySaved = Boolean(ev.payerNameNormalized && savedAliasNormalizedSet.has(ev.payerNameNormalized))
+    const defaultContractId =
+      ev.suggestedContractId && sharedContracts.some((c) => c.id === ev.suggestedContractId)
+        ? ev.suggestedContractId
+        : ''
+    const defaultSplit = Boolean(defaultContractId && (ev.suggestedTenantIds || []).length >= 2)
     return {
       category: ev.category || 'rent',
+      mode: defaultSplit ? 'split' : 'single',
       tenantId: ev.suggestedTenantIds?.[0] || '',
+      contractId: defaultContractId,
+      splitAmounts: defaultContractId ? buildSplitMapForContract(defaultContractId) : {},
       targetMonth: ev.targetMonth ? String(ev.targetMonth).slice(0, 7) : '',
       amount: ev.amount != null ? String(ev.amount) : '',
       rememberAlias: Boolean(ev.payerName && !alreadySaved && ev.matchReason === 'unknown_payer'),
@@ -239,6 +294,26 @@ export function ZelleInboxPanel({ data, t, refresh }) {
     setBusyId(null)
   }
 
+  const handleConfirmGroup = async (group) => {
+    setBusyId(group.key)
+    setError(null)
+    setNotice(null)
+    try {
+      const contract = contracts.find((c) => (c.tenantIds || []).includes(group.tenantId))
+      await mx.confirmPartialGroup({
+        eventIds: group.events.map((e) => e.id),
+        tenantId: group.tenantId,
+        contractId: contract?.id || null,
+        targetMonth: group.targetMonth,
+      })
+      await refresh()
+      setNotice(t.zelleGroupConfirmed)
+    } catch (e) {
+      setError(e.message || t.zelleGroupConfirmFailed)
+    }
+    setBusyId(null)
+  }
+
   const handleDeleteAlias = async (aliasId) => {
     setBusyId(aliasId)
     setError(null)
@@ -266,6 +341,13 @@ export function ZelleInboxPanel({ data, t, refresh }) {
       : subTab === 'auto_posted'
         ? t.zelleNoAutoPosted
         : t.zelleNoHistory
+
+  const contractLabel = (c) => {
+    const names = (c.tenantIds || [])
+      .map((tid) => tenantDisplayName(tenantsById.get(tid)))
+      .filter(Boolean)
+    return names.join(' + ') || c.id
+  }
 
   return (
     <div>
@@ -312,6 +394,43 @@ export function ZelleInboxPanel({ data, t, refresh }) {
           )
         })}
       </div>
+
+      {subTab === 'needs_review' && partialGroups.length > 0 && (
+        <div>
+          {partialGroups.map((group) => {
+            const who = tenantDisplayName(group.tenant) || group.tenantId
+            const groupBusy = busyId === group.key
+            return (
+              <div key={group.key} style={groupCard}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: '#111111' }}>
+                      {t.zellePartialGroupTitle(who, group.monthKey)}
+                    </div>
+                    <div style={{ fontSize: 13, color: group.meetsExpected ? '#047857' : '#92400e', fontWeight: 600, marginTop: 4 }}>
+                      {t.zellePartialGroupProgress(fmt(group.runningTotal), fmt(group.expectedTotal), group.events.length)}
+                    </div>
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6, fontSize: 12, color: '#4b5563' }}>
+                      {group.events.map((e) => (
+                        <span key={e.id} style={{ ...pillBase, background: '#fff', border: '1px solid #d1d5db', color: '#111827' }}>
+                          {fmt(e.amount)} ({e.sentOn ? fmtDate(e.sentOn) : '-'})
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <Btn
+                    size="sm"
+                    disabled={groupBusy}
+                    onClick={() => handleConfirmGroup(group)}
+                  >
+                    {groupBusy ? t.zelleConfirmingGroup : t.zelleConfirmGroup}
+                  </Btn>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
 
       {subTab === 'aliases' ? (
         aliases.length === 0 ? (
@@ -381,12 +500,30 @@ export function ZelleInboxPanel({ data, t, refresh }) {
             .filter(Boolean)
 
           const draft = getDraft(ev)
+          const isSplitMode = draft.category === 'rent' && draft.mode === 'split'
           const selectedContract = draft.tenantId
             ? contracts.find((c) => (c.tenantIds || []).includes(draft.tenantId))
             : null
+          const splitContract = draft.contractId ? contractsById.get(draft.contractId) : null
+          const splitTenants = splitContract
+            ? (splitContract.tenantIds || []).map((tid) => tenantsById.get(tid)).filter(Boolean)
+            : []
+          const splitEntries = splitTenants.map((ten) => ({
+            tenantId: ten.id,
+            amount: Number(draft.splitAmounts?.[ten.id] || 0),
+          }))
+          const splitSum = Math.round(splitEntries.reduce((s, r) => s + (Number.isFinite(r.amount) ? r.amount : 0), 0) * 100) / 100
+          const targetAmt = Number(draft.amount || ev.amount || 0)
+          const splitBalanced =
+            splitEntries.length >= 2 &&
+            splitEntries.every((r) => r.amount > 0) &&
+            targetAmt > 0 &&
+            Math.abs(splitSum - targetAmt) < 0.01
+
           const existingPaidRent =
             ev.status === 'needs_review' &&
             draft.category === 'rent' &&
+            !isSplitMode &&
             draft.tenantId &&
             draft.targetMonth
               ? payments.find(
@@ -470,6 +607,34 @@ export function ZelleInboxPanel({ data, t, refresh }) {
 
               {ev.status === 'needs_review' && (
                 <div style={triageBox}>
+                  {draft.category === 'rent' && sharedContracts.length > 0 && (
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {['single', 'split'].map((m) => {
+                        const active = (draft.mode || 'single') === m
+                        return (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() => updateDraft(ev.id, { ...draft, mode: m })}
+                            style={{
+                              padding: '5px 11px',
+                              borderRadius: 7,
+                              border: active ? '1px solid #111111' : '1px solid #d1d5db',
+                              background: active ? '#111111' : '#fff',
+                              color: active ? '#fff' : '#4b5563',
+                              fontSize: 12,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              fontFamily: 'inherit',
+                            }}
+                          >
+                            {m === 'single' ? t.zelleModeSingle : t.zelleModeSplit}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+
                   <div style={triageRow}>
                     <label style={fieldWrap}>
                       <span style={fieldLabel}>{t.zelleCategoryLabel}</span>
@@ -486,7 +651,41 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                       </select>
                     </label>
 
-                    {(draft.category === 'rent' || draft.category === 'deposit' || draft.category === 'other') && (
+                    {isSplitMode ? (
+                      <>
+                        <label style={{ ...fieldWrap, minWidth: 220 }}>
+                          <span style={fieldLabel}>{t.zelleContractLabel}</span>
+                          <select
+                            style={controlStyle}
+                            value={draft.contractId || ''}
+                            onChange={(e) => {
+                              const cid = e.target.value
+                              updateDraft(ev.id, {
+                                ...draft,
+                                contractId: cid,
+                                splitAmounts: buildSplitMapForContract(cid),
+                              })
+                            }}
+                          >
+                            <option value="">{t.zelleSelectContract}</option>
+                            {sharedContracts.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {contractLabel(c)}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label style={fieldWrap}>
+                          <span style={fieldLabel}>{t.zelleMonthLabel}</span>
+                          <input
+                            type="month"
+                            style={controlStyle}
+                            value={draft.targetMonth}
+                            onChange={(e) => updateDraft(ev.id, { ...draft, targetMonth: e.target.value })}
+                          />
+                        </label>
+                      </>
+                    ) : (draft.category === 'rent' || draft.category === 'deposit' || draft.category === 'other') && (
                       <>
                         <label style={{ ...fieldWrap, minWidth: 200 }}>
                           <span style={fieldLabel}>{t.zelleTenantLabel}</span>
@@ -543,6 +742,34 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                     )}
                   </div>
 
+                  {isSplitMode && splitTenants.length > 0 && (
+                    <div style={splitBox}>
+                      {splitTenants.map((ten) => (
+                        <div key={ten.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>
+                            {tenantDisplayName(ten)}
+                          </span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            style={{ ...controlStyle, width: 120, textAlign: 'right' }}
+                            value={draft.splitAmounts?.[ten.id] ?? ''}
+                            onChange={(e) =>
+                              updateDraft(ev.id, {
+                                ...draft,
+                                splitAmounts: { ...(draft.splitAmounts || {}), [ten.id]: e.target.value },
+                              })
+                            }
+                          />
+                        </div>
+                      ))}
+                      <div style={{ fontSize: 12, fontWeight: 600, color: splitBalanced ? '#047857' : '#b45309', textAlign: 'right' }}>
+                        {t.zelleSplitTotalLabel(fmt(splitSum), fmt(targetAmt))}
+                      </div>
+                    </div>
+                  )}
+
                   {existingPaidRent && (
                     <div style={warnNote}>
                       {t.zelleExistingPaidHint(fmt(existingPaidRent.amount), fmtDate(existingPaidRent.paidDate || existingPaidRent.dueDate))}
@@ -557,12 +784,35 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                         onChange={(e) => updateDraft(ev.id, { ...draft, rememberAlias: e.target.checked })}
                         style={{ width: 15, height: 15, accentColor: '#111111', cursor: 'pointer' }}
                       />
-                      <span>{t.zelleRememberPayer}</span>
+                      <span>{isSplitMode ? t.zelleRememberContractPayer : t.zelleRememberPayer}</span>
                     </label>
                   )}
 
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                    {draft.category === 'rent' && existingPaidRent && (
+                    {isSplitMode && (
+                      <Btn
+                        size="sm"
+                        disabled={isBusy || !draft.contractId || !draft.targetMonth || !splitBalanced}
+                        onClick={() =>
+                          handleResolve(
+                            ev,
+                            {
+                              action: 'confirm_split',
+                              contractId: draft.contractId,
+                              targetMonth: draft.targetMonth,
+                              amount: targetAmt,
+                              splits: splitEntries,
+                              rememberAlias: Boolean(draft.rememberAlias),
+                            },
+                            t.zelleResolvedConfirmed
+                          )
+                        }
+                      >
+                        {isBusy ? t.zelleConfirming : t.zelleConfirmSplit}
+                      </Btn>
+                    )}
+
+                    {draft.category === 'rent' && !isSplitMode && existingPaidRent && (
                       <Btn
                         size="sm"
                         disabled={isBusy}
@@ -584,7 +834,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                       </Btn>
                     )}
 
-                    {draft.category === 'rent' && !existingPaidRent && (
+                    {draft.category === 'rent' && !isSplitMode && !existingPaidRent && (
                       <Btn
                         size="sm"
                         disabled={isBusy || !draft.tenantId || !draft.targetMonth || !(Number(draft.amount) > 0)}
