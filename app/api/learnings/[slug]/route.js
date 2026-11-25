@@ -19,7 +19,8 @@ export async function GET(request, context) {
   let bytes
   try {
     bytes = await fs.readFile(filePath)
-  } catch {
+  } catch (err) {
+    console.error('[learnings] failed to read PDF:', entry.fileName, err)
     return Response.json({ error: 'Learning PDF is unavailable.' }, { status: 404 })
   }
 
@@ -32,7 +33,7 @@ export async function GET(request, context) {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `${disposition}; filename="${entry.fileName}"`,
-      'Cache-Control': 'private, max-age=300',
+      'Cache-Control': 'private, no-store',
       'X-Content-Type-Options': 'nosniff',
     },
   })

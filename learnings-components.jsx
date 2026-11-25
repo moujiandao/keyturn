@@ -50,7 +50,8 @@ const actionLink = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: 6,
-  padding: '7px 12px',
+  minHeight: 40,
+  padding: '8px 13px',
   borderRadius: 8,
   border: '1px solid #d1d5db',
   background: '#fff',
@@ -120,6 +121,7 @@ export function LearningsPage({ t, lang }) {
                 <button
                   key={item.slug}
                   type="button"
+                  aria-pressed={active}
                   onClick={() => setSelectedSlug(item.slug)}
                   style={{
                     textAlign: 'left',
@@ -179,14 +181,23 @@ export function LearningsPage({ t, lang }) {
                   href={learningPdfUrl(selected.slug, { download: true })}
                   style={primaryLink}
                 >
-                  <Icon name="book" size={14} />
+                  <Icon name="download" size={14} />
                   <span>{t.learnDownloadPdf}</span>
                 </a>
               </div>
             </div>
 
             <div style={pdfFrame}>
-              <PdfViewer key={selected.slug} url={learningPdfUrl(selected.slug)} />
+              <PdfViewer
+                key={selected.slug}
+                url={learningPdfUrl(selected.slug)}
+                labels={{
+                  loading: t.learnPdfLoading,
+                  error: t.learnPdfError,
+                  prev: t.learnPdfPrev,
+                  next: t.learnPdfNext,
+                }}
+              />
             </div>
           </div>
         </div>

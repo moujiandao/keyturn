@@ -2,7 +2,7 @@
 const nextConfig = {
   serverExternalPackages: ['@supabase/ssr'],
   outputFileTracingIncludes: {
-    '/api/learnings/[slug]': ['./docs/learnings/**'],
+    '/api/learnings/*': ['./docs/learnings/**'],
   },
 };
 
