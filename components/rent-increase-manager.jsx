@@ -161,13 +161,18 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
   const { history, retry, save } = useUnitRentHistory(property.id)
   const entries = history?.entries ?? []
   const hiddenYears = new Set(yearPreferences.hidden)
-  const visibleYears = [currentYear, currentYear - 1, ...yearPreferences.added, ...entries.map(entry => entry.year)]
-    .filter(year => !hiddenYears.has(year))
-  const page = rentHistoryYearPage(visibleYears, anchorYear)
-  const entriesByUnit = new Map()
+  const years = [currentYear, currentYear - 1, ...yearPreferences.added, ...entries.map(entry => entry.year)]
+  const noticeYear = years.reduce((latest, year) => Math.max(latest, year), currentYear)
+  const page = rentHistoryYearPage(years.filter(year => !hiddenYears.has(year)), anchorYear)
+  const entriesByUnit = new Map(units.map(unit => {
+    const unitYears = new Map()
+    if (unit.monthlyRent != null) {
+      unitYears.set(currentYear, { year: currentYear, monthlyRent: unit.monthlyRent, isUnitRent: true })
+    }
+    return [unit.id, unitYears]
+  }))
   for (const entry of entries) {
-    if (!entriesByUnit.has(entry.unitId)) entriesByUnit.set(entry.unitId, [])
-    entriesByUnit.get(entry.unitId).push(entry)
+    entriesByUnit.get(entry.unitId)?.set(entry.year, entry)
   }
 
   const sortedUnits = [...units].sort((left, right) => left.unitNumber.localeCompare(right.unitNumber, undefined, { numeric: true }))
@@ -256,10 +261,7 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
                   </thead>
                   <tbody>
                     {sortedUnits.map(unit => {
-                      const rentByYear = new Map((entriesByUnit.get(unit.id) || []).map(entry => [entry.year, entry]))
-                      if (!rentByYear.has(currentYear) && unit.monthlyRent != null) {
-                        rentByYear.set(currentYear, { year: currentYear, monthlyRent: unit.monthlyRent, isUnitRent: true })
-                      }
+                      const rentByYear = entriesByUnit.get(unit.id)
 
                       return (
                         <tr key={unit.id}>
@@ -304,11 +306,8 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
           </>
         )}
         {history?.entries && sortedUnits.length > 0 && (
-          <RentIncreaseNotice property={property} units={sortedUnits} tenants={tenants} year={years[0]} t={t}
-            getRent={unit => ({
-              monthlyRent: amountForYear(unit, years[0]),
-              increaseStartDate: rentByUnitYear.get(`${unit.id}:${years[0]}`)?.increaseStartDate,
-            })} />
+          <RentIncreaseNotice property={property} units={sortedUnits} tenants={tenants} year={noticeYear} t={t}
+            getRent={unit => entriesByUnit.get(unit.id).get(noticeYear) ?? {}} />
         )}
       </div>
 
