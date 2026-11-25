@@ -27,20 +27,25 @@ const toEmbedUrlDrive = (link) => {
 
 // ─── DocViewer — renders a document inline (PDF or Drive link) ────────────────
 export const DocViewer = ({ doc, onClose }) => {
-  const [signedUrl, setSignedUrl] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [signedDocument, setSignedDocument] = useState(null)
+  const filePath = doc.driveLink ? null : doc.filePath
 
   useEffect(() => {
-    if (!doc.driveLink && doc.filePath) {
-      setLoading(true)
-      supabase.storage.from('documents').createSignedUrl(doc.filePath, 300)
-        .then(({ data }) => { setSignedUrl(data?.signedUrl || null) })
-        .catch(() => {})
-        .finally(() => setLoading(false))
-    }
-  }, [doc.id])
+    if (!filePath) return
+    let active = true
+    supabase.storage.from('documents').createSignedUrl(filePath, 300)
+      .then(({ data }) => {
+        if (active) setSignedDocument({ filePath, url: data?.signedUrl || null })
+      })
+      .catch(() => {
+        if (active) setSignedDocument({ filePath, url: null })
+      })
+    return () => { active = false }
+  }, [filePath])
 
   const embedUrl = doc.driveLink ? toEmbedUrlDrive(doc.driveLink) : null
+  const loading = Boolean(filePath && signedDocument?.filePath !== filePath)
+  const signedUrl = signedDocument?.filePath === filePath ? signedDocument?.url : null
 
   return (
     <div
@@ -786,17 +791,10 @@ const TenantCard = ({ title, children }) => (
   </div>
 )
 
-const EMPTY_TENANT_FORM = {
-  // No `status`: it derives from the move-in/move-out dates (lib/tenant/status.js).
-  name: "", phone: "", propertyId: "", unit: "", monthlyRent: "",
-  moveInDate: "", moveOutDate: "", hasCosigner: false, studentStatus: "", studentYear: "",
-  zelleName: "", homeAddress: "", age: "", unitId: "", notes: "", securityDeposit: "", securityDepositRefunded: false,
-}
-
 export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, onBack, onNavigateToProperty }) => {
-  const [editing, setEditing] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
-  const [form, setForm] = useState(EMPTY_TENANT_FORM)
+  const [form, setForm] = useState(null)
+  const editing = form !== null
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState("")
   const [selectedDocId, setSelectedDocId] = useState("")
@@ -807,31 +805,29 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
 
   const tenant = (data.tenants || []).find(t => t.id === tenantId)
 
-  useEffect(() => {
-    if (tenant) {
-      setForm({
-        name: tenant.name || "",
-        phone: tenant.phone || "",
-        propertyId: tenant.propertyId || "",
-        unit: tenant.unit || "",
-        monthlyRent: tenant.monthlyRent ? String(tenant.monthlyRent) : "",
-        moveInDate: tenant.moveInDate || "",
-        moveOutDate: tenant.moveOutDate || "",
-        hasCosigner: tenant.hasCosigner || false,
-        studentStatus: tenant.studentStatus || "",
-        studentYear: tenant.studentYear || "",
-        zelleName: tenant.zelleName || "",
-        homeAddress: tenant.homeAddress || "",
-        age: tenant.age ? String(tenant.age) : "",
-        unitId: tenant.unitId || "",
-        notes: tenant.notes || "",
-        securityDeposit: tenant.securityDeposit ? String(tenant.securityDeposit) : "",
-        securityDepositRefunded: tenant.securityDepositRefunded || false,
-      })
-    }
-    setEditing(false)
+  const openEditor = () => {
+    // Tenant status is derived from move-in and move-out dates.
+    setForm({
+      name: tenant.name || "",
+      phone: tenant.phone || "",
+      propertyId: tenant.propertyId || "",
+      unit: tenant.unit || "",
+      monthlyRent: tenant.monthlyRent ? String(tenant.monthlyRent) : "",
+      moveInDate: tenant.moveInDate || "",
+      moveOutDate: tenant.moveOutDate || "",
+      hasCosigner: tenant.hasCosigner || false,
+      studentStatus: tenant.studentStatus || "",
+      studentYear: tenant.studentYear || "",
+      zelleName: tenant.zelleName || "",
+      homeAddress: tenant.homeAddress || "",
+      age: tenant.age ? String(tenant.age) : "",
+      unitId: tenant.unitId || "",
+      notes: tenant.notes || "",
+      securityDeposit: tenant.securityDeposit ? String(tenant.securityDeposit) : "",
+      securityDepositRefunded: tenant.securityDepositRefunded || false,
+    })
     setSaveError("")
-  }, [tenantId])
+  }
 
   if (!tenant) {
     return (
@@ -857,35 +853,43 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
   const handleSave = async () => {
     setSaving(true)
     setSaveError("")
-    const res = await fetch("/api/auth/update-tenant", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tenantId,
-        name: form.name,
-        phone: form.phone,
-        propertyId: form.propertyId || null,
-        unit: form.unit,
-        monthlyRent: form.monthlyRent || null,
-        moveInDate: form.moveInDate || null,
-        moveOutDate: form.moveOutDate || null,
-        hasCosigner: form.hasCosigner,
-        studentStatus: form.studentStatus || null,
-        studentYear: form.studentYear || null,
-        zelleName: form.zelleName || null,
-        homeAddress: form.homeAddress || null,
-        age: form.age ? Number(form.age) : null,
-        unitId: form.unitId || null,
-        notes: form.notes || null,
-        securityDeposit: form.securityDeposit === "" ? null : form.securityDeposit,
-        securityDepositRefunded: form.securityDepositRefunded,
-      }),
-    })
-    const json = await res.json()
-    setSaving(false)
-    if (!res.ok) { setSaveError(json.error || "Something went wrong."); return; }
-    await refresh()
-    setEditing(false)
+    try {
+      const res = await fetch("/api/auth/update-tenant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tenantId,
+          name: form.name,
+          phone: form.phone,
+          propertyId: form.propertyId || null,
+          unit: form.unit,
+          monthlyRent: form.monthlyRent || null,
+          moveInDate: form.moveInDate || null,
+          moveOutDate: form.moveOutDate || null,
+          hasCosigner: form.hasCosigner,
+          studentStatus: form.studentStatus || null,
+          studentYear: form.studentYear || null,
+          zelleName: form.zelleName || null,
+          homeAddress: form.homeAddress || null,
+          age: form.age ? Number(form.age) : null,
+          unitId: form.unitId || null,
+          notes: form.notes || null,
+          securityDeposit: form.securityDeposit === "" ? null : form.securityDeposit,
+          securityDepositRefunded: form.securityDepositRefunded,
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok) {
+        setSaveError(json.error || t.tenantProfileSaveFailed)
+        return
+      }
+      await refresh()
+      setForm(null)
+    } catch {
+      setSaveError(t.tenantProfileSaveFailed)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleApplyExtracted = async (extracted) => {
@@ -973,21 +977,21 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
         <div style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
           {editing ? (
             <>
-              <button onClick={() => { setEditing(false); setSaveError(""); }} style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>
-                Cancel
+              <button disabled={saving} onClick={() => { setForm(null); setSaveError(""); }} style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>
+                {t.cancel}
               </button>
               <button onClick={handleSave} disabled={saving} style={{ background: "linear-gradient(135deg,#111111,#000000)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
-                {saving ? "Saving…" : "Save Changes"}
+                {saving ? t.saving : t.saveChanges}
               </button>
             </>
           ) : (
             <>
-              <button onClick={() => setEditing(true)}
+              <button onClick={openEditor}
                 style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}
                 onMouseEnter={e => e.currentTarget.style.background = "#f5f5f5"}
                 onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
               >
-                <Icon name="edit" size={13} /> Edit Profile
+                <Icon name="edit" size={13} /> {t.tenantProfileEdit}
               </button>
               {/* Same delete as the tenants table, reachable from the page the
                   landlord is already on when they decide a record is junk. */}
