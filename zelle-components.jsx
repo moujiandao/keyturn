@@ -695,16 +695,35 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                             onChange={(e) => updateDraft(ev.id, { ...draft, tenantId: e.target.value })}
                           >
                             <option value="">{t.zelleSelectTenant}</option>
-                            {currentTenants.length > 0 && (
-                              <optgroup label={t.zelleCurrentTenantsGroup}>
-                                {currentTenants.map((ten) => (
-                                  <option key={ten.id} value={ten.id}>
-                                    {tenantDisplayName(ten)}
-                                    {ten.monthlyRent ? ` (${fmt(ten.monthlyRent)})` : ''}
-                                  </option>
-                                ))}
-                              </optgroup>
-                            )}
+                            {(() => {
+                              const sugSet = new Set(ev.suggestedTenantIds || [])
+                              const sugList = currentTenants.filter((ten) => sugSet.has(ten.id))
+                              const restCurrent = currentTenants.filter((ten) => !sugSet.has(ten.id))
+                              return (
+                                <>
+                                  {sugList.length > 0 && (
+                                    <optgroup label={t.zelleSuggestedTenantsGroup}>
+                                      {sugList.map((ten) => (
+                                        <option key={ten.id} value={ten.id}>
+                                          {tenantDisplayName(ten)}
+                                          {ten.monthlyRent ? ` (${fmt(ten.monthlyRent)})` : ''}
+                                        </option>
+                                      ))}
+                                    </optgroup>
+                                  )}
+                                  {restCurrent.length > 0 && (
+                                    <optgroup label={t.zelleCurrentTenantsGroup}>
+                                      {restCurrent.map((ten) => (
+                                        <option key={ten.id} value={ten.id}>
+                                          {tenantDisplayName(ten)}
+                                          {ten.monthlyRent ? ` (${fmt(ten.monthlyRent)})` : ''}
+                                        </option>
+                                      ))}
+                                    </optgroup>
+                                  )}
+                                </>
+                              )
+                            })()}
                             {otherTenants.length > 0 && (
                               <optgroup label={t.zelleOtherTenantsGroup}>
                                 {otherTenants.map((ten) => (
