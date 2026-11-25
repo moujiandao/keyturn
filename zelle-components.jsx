@@ -2,9 +2,10 @@
 import { useState } from 'react'
 import { Btn, Icon } from './property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
+import { isPaidRent } from '@/lib/payments/status'
 import { createZelleAdapter } from '@/lib/zelle/adapter'
-import { undoZelleEvent } from '@/lib/zelle/core'
-import { isZellePending, isZelleAutoPosted, isZelleResolved } from '@/lib/zelle/status'
+import { undoZelleEvent, resolveZelleEventClient } from '@/lib/zelle/core'
+import { isZellePending, isZelleAutoPosted, isZelleResolved, ZELLE_CATEGORIES } from '@/lib/zelle/status'
 
 const card = {
   background: '#fff',
@@ -49,6 +50,42 @@ const rawEmailBox = {
   whiteSpace: 'pre-wrap',
   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
 }
+const triageBox = {
+  marginTop: 14,
+  paddingTop: 14,
+  borderTop: '1px solid #f3f4f6',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 10,
+}
+const triageRow = {
+  display: 'flex',
+  gap: 10,
+  flexWrap: 'wrap',
+  alignItems: 'flex-end',
+}
+const fieldWrap = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 4,
+  minWidth: 130,
+}
+const fieldLabel = {
+  fontSize: 11,
+  fontWeight: 700,
+  color: '#6b7280',
+  textTransform: 'uppercase',
+  letterSpacing: '.4px',
+}
+const controlStyle = {
+  padding: '7px 10px',
+  borderRadius: 8,
+  border: '1px solid #d1d5db',
+  fontSize: 13,
+  color: '#111827',
+  background: '#fff',
+  fontFamily: 'inherit',
+}
 const errBanner = {
   background: '#fef2f2',
   border: '1px solid #fecaca',
@@ -66,6 +103,14 @@ const okBanner = {
   marginBottom: 14,
   fontSize: 13,
   color: '#047857',
+}
+const warnNote = {
+  background: '#fffbeb',
+  border: '1px solid #fde68a',
+  borderRadius: 8,
+  padding: '7px 11px',
+  fontSize: 12,
+  color: '#92400e',
 }
 
 const STATUS_STYLE = {
@@ -89,6 +134,7 @@ export function useZelleMutations() {
   const adapter = createZelleAdapter()
   return {
     undoEvent: (eventId) => undoZelleEvent(adapter, eventId),
+    resolveEvent: (payload) => resolveZelleEventClient(adapter, payload),
   }
 }
 
@@ -105,14 +151,25 @@ function formatMonth(ymDate) {
 export function ZelleInboxPanel({ data, t, refresh }) {
   const [subTab, setSubTab] = useState('needs_review')
   const [expandedIds, setExpandedIds] = useState({})
+  const [drafts, setDrafts] = useState({})
   const [busyId, setBusyId] = useState(null)
   const [error, setError] = useState(null)
   const [notice, setNotice] = useState(null)
 
   const mx = useZelleMutations()
   const events = data.zelleEvents || []
-  const tenantsById = new Map((data.tenants || []).map((ten) => [ten.id, ten]))
-  const paymentsById = new Map((data.payments || []).map((p) => [p.id, p]))
+  const tenants = data.tenants || []
+  const contracts = data.contracts || []
+  const payments = data.payments || []
+  const properties = data.properties || []
+
+  const nonProdPropIds = new Set(properties.filter((p) => p.inProduction === false).map((p) => p.id))
+  const currentTenants = tenants.filter(
+    (ten) => ten.status === 'current tenant' && (!ten.propertyId || !nonProdPropIds.has(ten.propertyId))
+  )
+  const otherTenants = tenants.filter((ten) => !currentTenants.includes(ten))
+  const tenantsById = new Map(tenants.map((ten) => [ten.id, ten]))
+  const paymentsById = new Map(payments.map((p) => [p.id, p]))
 
   const pendingEvents = events.filter(isZellePending)
   const autoPostedEvents = events.filter(isZelleAutoPosted)
@@ -124,6 +181,24 @@ export function ZelleInboxPanel({ data, t, refresh }) {
       : subTab === 'auto_posted'
         ? autoPostedEvents
         : historyEvents
+
+  const getDraft = (ev) => {
+    const existing = drafts[ev.id]
+    if (existing) return existing
+    return {
+      category: ev.category || 'rent',
+      tenantId: ev.suggestedTenantIds?.[0] || '',
+      targetMonth: ev.targetMonth ? String(ev.targetMonth).slice(0, 7) : '',
+      amount: ev.amount != null ? String(ev.amount) : '',
+    }
+  }
+
+  const updateDraft = (eventId, patch) => {
+    setDrafts((prev) => ({
+      ...prev,
+      [eventId]: { ...(prev[eventId] || {}), ...patch },
+    }))
+  }
 
   const toggleExpand = (id) => {
     setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }))
@@ -140,6 +215,20 @@ export function ZelleInboxPanel({ data, t, refresh }) {
       setSubTab('needs_review')
     } catch (e) {
       setError(e.message || t.zelleUndoFailed)
+    }
+    setBusyId(null)
+  }
+
+  const handleResolve = async (ev, payload, successMsg) => {
+    setBusyId(ev.id)
+    setError(null)
+    setNotice(null)
+    try {
+      await mx.resolveEvent({ eventId: ev.id, ...payload })
+      await refresh()
+      setNotice(successMsg)
+    } catch (e) {
+      setError(e.message || t.zelleResolveFailed)
     }
     setBusyId(null)
   }
@@ -211,6 +300,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
           const catStyle = CATEGORY_STYLE[ev.category] || CATEGORY_STYLE.other
           const reasonLabel = ev.matchReason ? t[`zelleReason_${ev.matchReason}`] || ev.matchReason : null
           const isExpanded = Boolean(expandedIds[ev.id])
+          const isBusy = busyId === ev.id
 
           const postedTenants = (ev.postedPaymentIds || [])
             .map((pid) => paymentsById.get(pid))
@@ -221,6 +311,23 @@ export function ZelleInboxPanel({ data, t, refresh }) {
           const suggestedTenants = (ev.suggestedTenantIds || [])
             .map((tid) => tenantDisplayName(tenantsById.get(tid)))
             .filter(Boolean)
+
+          const draft = getDraft(ev)
+          const selectedContract = draft.tenantId
+            ? contracts.find((c) => (c.tenantIds || []).includes(draft.tenantId))
+            : null
+          const existingPaidRent =
+            ev.status === 'needs_review' &&
+            draft.category === 'rent' &&
+            draft.tenantId &&
+            draft.targetMonth
+              ? payments.find(
+                  (p) =>
+                    p.tenantId === draft.tenantId &&
+                    isPaidRent(p) &&
+                    String(p.dueDate || '').slice(0, 7) === draft.targetMonth
+                )
+              : null
 
           return (
             <div key={ev.id} style={card}>
@@ -284,14 +391,186 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                     <Btn
                       size="sm"
                       variant="danger"
-                      disabled={busyId === ev.id}
+                      disabled={isBusy}
                       onClick={() => handleUndo(ev)}
                     >
-                      {busyId === ev.id ? t.zelleUndoing : t.zelleUndo}
+                      {isBusy ? t.zelleUndoing : t.zelleUndo}
                     </Btn>
                   )}
                 </div>
               </div>
+
+              {ev.status === 'needs_review' && (
+                <div style={triageBox}>
+                  <div style={triageRow}>
+                    <label style={fieldWrap}>
+                      <span style={fieldLabel}>{t.zelleCategoryLabel}</span>
+                      <select
+                        style={controlStyle}
+                        value={draft.category}
+                        onChange={(e) => updateDraft(ev.id, { ...draft, category: e.target.value })}
+                      >
+                        {ZELLE_CATEGORIES.map((c) => (
+                          <option key={c} value={c}>
+                            {t[`zelleCat_${c}`] || c}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    {(draft.category === 'rent' || draft.category === 'deposit' || draft.category === 'other') && (
+                      <>
+                        <label style={{ ...fieldWrap, minWidth: 200 }}>
+                          <span style={fieldLabel}>{t.zelleTenantLabel}</span>
+                          <select
+                            style={controlStyle}
+                            value={draft.tenantId}
+                            onChange={(e) => updateDraft(ev.id, { ...draft, tenantId: e.target.value })}
+                          >
+                            <option value="">{t.zelleSelectTenant}</option>
+                            {currentTenants.length > 0 && (
+                              <optgroup label={t.zelleCurrentTenantsGroup}>
+                                {currentTenants.map((ten) => (
+                                  <option key={ten.id} value={ten.id}>
+                                    {tenantDisplayName(ten)}
+                                    {ten.monthlyRent ? ` (${fmt(ten.monthlyRent)})` : ''}
+                                  </option>
+                                ))}
+                              </optgroup>
+                            )}
+                            {otherTenants.length > 0 && (
+                              <optgroup label={t.zelleOtherTenantsGroup}>
+                                {otherTenants.map((ten) => (
+                                  <option key={ten.id} value={ten.id}>
+                                    {tenantDisplayName(ten)}
+                                  </option>
+                                ))}
+                              </optgroup>
+                            )}
+                          </select>
+                        </label>
+
+                        <label style={fieldWrap}>
+                          <span style={fieldLabel}>{t.zelleMonthLabel}</span>
+                          <input
+                            type="month"
+                            style={controlStyle}
+                            value={draft.targetMonth}
+                            onChange={(e) => updateDraft(ev.id, { ...draft, targetMonth: e.target.value })}
+                          />
+                        </label>
+
+                        <label style={{ ...fieldWrap, minWidth: 110 }}>
+                          <span style={fieldLabel}>{t.zelleAmountLabel}</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            style={controlStyle}
+                            value={draft.amount}
+                            onChange={(e) => updateDraft(ev.id, { ...draft, amount: e.target.value })}
+                          />
+                        </label>
+                      </>
+                    )}
+                  </div>
+
+                  {existingPaidRent && (
+                    <div style={warnNote}>
+                      {t.zelleExistingPaidHint(fmt(existingPaidRent.amount), fmtDate(existingPaidRent.paidDate || existingPaidRent.dueDate))}
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                    {draft.category === 'rent' && existingPaidRent && (
+                      <Btn
+                        size="sm"
+                        disabled={isBusy}
+                        onClick={() =>
+                          handleResolve(
+                            ev,
+                            {
+                              action: 'link_existing',
+                              paymentId: existingPaidRent.id,
+                              targetMonth: draft.targetMonth,
+                              category: 'rent',
+                            },
+                            t.zelleResolvedLinked
+                          )
+                        }
+                      >
+                        {isBusy ? t.zelleConfirming : t.zelleLinkExisting}
+                      </Btn>
+                    )}
+
+                    {draft.category === 'rent' && !existingPaidRent && (
+                      <Btn
+                        size="sm"
+                        disabled={isBusy || !draft.tenantId || !draft.targetMonth || !(Number(draft.amount) > 0)}
+                        onClick={() =>
+                          handleResolve(
+                            ev,
+                            {
+                              action: 'confirm_rent',
+                              tenantId: draft.tenantId,
+                              contractId: selectedContract?.id || null,
+                              targetMonth: draft.targetMonth,
+                              amount: Number(draft.amount),
+                            },
+                            t.zelleResolvedConfirmed
+                          )
+                        }
+                      >
+                        {isBusy ? t.zelleConfirming : t.zelleConfirmRent}
+                      </Btn>
+                    )}
+
+                    {(draft.category === 'deposit' || draft.category === 'other') && (
+                      <Btn
+                        size="sm"
+                        disabled={isBusy || !draft.tenantId || !(Number(draft.amount) > 0)}
+                        onClick={() =>
+                          handleResolve(
+                            ev,
+                            {
+                              action: 'confirm_other',
+                              category: draft.category,
+                              tenantId: draft.tenantId,
+                              contractId: selectedContract?.id || null,
+                              targetMonth: draft.targetMonth || null,
+                              amount: Number(draft.amount),
+                            },
+                            t.zelleResolvedConfirmed
+                          )
+                        }
+                      >
+                        {isBusy ? t.zelleConfirming : t.zelleConfirmOther}
+                      </Btn>
+                    )}
+
+                    {draft.category === 'parking' && (
+                      <Btn
+                        size="sm"
+                        disabled={isBusy}
+                        onClick={() =>
+                          handleResolve(ev, { action: 'acknowledge_parking' }, t.zelleResolvedAcknowledged)
+                        }
+                      >
+                        {isBusy ? t.zelleConfirming : t.zelleAckParking}
+                      </Btn>
+                    )}
+
+                    <Btn
+                      size="sm"
+                      variant={draft.category === 'ignore' ? 'primary' : 'secondary'}
+                      disabled={isBusy}
+                      onClick={() => handleResolve(ev, { action: 'ignore' }, t.zelleResolvedIgnored)}
+                    >
+                      {t.zelleIgnore}
+                    </Btn>
+                  </div>
+                </div>
+              )}
 
               {isExpanded && (
                 <div style={rawEmailBox}>
