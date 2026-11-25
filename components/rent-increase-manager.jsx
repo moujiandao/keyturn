@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { RentIncreaseNotice } from '@/components/rent-increase-notice'
 import { Btn, Icon, Modal, PageHeader } from '@/property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
 import { routes } from '@/lib/routes'
@@ -120,7 +121,7 @@ function RentEntryEditor({ entry, save, close, t }) {
   )
 }
 
-export function RentIncreaseManager({ property, units, lang, t }) {
+export function RentIncreaseManager({ property, units, tenants, lang, t }) {
   const [currentYear] = useState(() => new Date().getFullYear())
   const [addedYears, setAddedYears] = useState([])
   const [addingYear, setAddingYear] = useState(false)
@@ -219,6 +220,13 @@ export function RentIncreaseManager({ property, units, lang, t }) {
               </table>
             </div>
           </>
+        )}
+        {history?.entries && sortedUnits.length > 0 && (
+          <RentIncreaseNotice property={property} units={sortedUnits} tenants={tenants} year={years[0]} t={t}
+            getRent={unit => ({
+              monthlyRent: amountForYear(unit, years[0]),
+              increaseStartDate: rentByUnitYear.get(`${unit.id}:${years[0]}`)?.increaseStartDate,
+            })} />
         )}
       </div>
 
