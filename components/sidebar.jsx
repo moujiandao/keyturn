@@ -42,12 +42,22 @@ function LandlordSidebar({ user, lang, setLang, t, primary, secondary, activeHre
   const initials = (user.name || user.email || '?').trim().split(/\s+/).slice(0, 2)
     .map(word => word[0]).join('').toUpperCase()
 
-  // Lock background scroll while the <=900px menu drawer is open on iPad/iPhone.
+  // Lock background scroll only while the <=900px menu drawer is open, and
+  // close the drawer automatically if an iPad rotates from portrait to landscape.
   useEffect(() => {
-    if (!open) return undefined
+    if (!open || typeof window === 'undefined') return undefined
+    const mql = window.matchMedia('(max-width: 900px)')
+    if (!mql.matches) return undefined
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = prevOverflow }
+    const onChange = (event) => {
+      if (!event.matches) setOpen(false)
+    }
+    mql.addEventListener('change', onChange)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      mql.removeEventListener('change', onChange)
+    }
   }, [open])
 
   function renderLink(item) {

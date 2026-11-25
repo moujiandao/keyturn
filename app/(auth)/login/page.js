@@ -11,7 +11,12 @@ import { AuthCard, Field, SubmitButton, Alert } from '../_form'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [error, setError] = useState(() => {
+    if (typeof window === 'undefined') return ''
+    return new URLSearchParams(window.location.search).get('reason') === 'no_profile'
+      ? 'No profile found for this account. Please sign in with an active account.'
+      : ''
+  })
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async (event) => {

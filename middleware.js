@@ -2,12 +2,20 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import {
   isPublicPath,
+  isSupabaseAuthCookieName,
   shouldCheckSessionOnPublicPath,
   publicRedirectTarget,
   resolveUser,
   gateDecision,
 } from './lib/auth/session-gate.js'
 import { withPersistentCookieOptions } from './lib/auth/session-cookies.js'
+
+function copyCookies(fromResponse, toResponse) {
+  for (const cookie of fromResponse.cookies.getAll()) {
+    toResponse.cookies.set(cookie)
+  }
+  return toResponse
+}
 
 export async function middleware(request) {
   let supabaseResponse = NextResponse.next({ request })
@@ -19,6 +27,7 @@ export async function middleware(request) {
     return supabaseResponse
   }
 
+  let authCookiesWrittenByRefresh = false
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -28,6 +37,7 @@ export async function middleware(request) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
+          authCookiesWrittenByRefresh = true
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
@@ -42,16 +52,23 @@ export async function middleware(request) {
   // Do not add any logic between createServerClient and this call.
   const session = await resolveUser(() => supabase.auth.getUser())
 
+  // Re-promote browser-refreshed Supabase cookies back to first-party HTTP
+  // Set-Cookie headers. Otherwise @supabase/ssr's browser autoRefreshToken
+  // writes via document.cookie after ~1 hour and re-triggers Safari ITP's
+  // 7-day JS cookie cap even when initial sign-in used Set-Cookie.
+  if (session.user && !authCookiesWrittenByRefresh) {
+    for (const { name, value } of request.cookies.getAll()) {
+      if (isSupabaseAuthCookieName(name)) {
+        supabaseResponse.cookies.set(name, value, withPersistentCookieOptions())
+      }
+    }
+  }
+
   if (onPublicPath) {
     const target = publicRedirectTarget(pathname, searchParams, session)
     if (target) {
       const redirectUrl = new URL(target, request.url)
-      const redirectResponse = NextResponse.redirect(redirectUrl)
-      // Preserve any freshly refreshed Set-Cookie headers across the redirect.
-      for (const cookie of supabaseResponse.cookies.getAll()) {
-        redirectResponse.cookies.set(cookie)
-      }
-      return redirectResponse
+      return copyCookies(supabaseResponse, NextResponse.redirect(redirectUrl))
     }
     return supabaseResponse
   }
@@ -70,7 +87,8 @@ export async function middleware(request) {
     url.pathname = '/login'
     url.search = ''
     url.searchParams.set('next', pathname + search)
-    return NextResponse.redirect(url)
+    // Preserve any cookie deletions emitted when getUser() rejected a stale session.
+    return copyCookies(supabaseResponse, NextResponse.redirect(url))
   }
 
   return supabaseResponse
@@ -78,6 +96,6 @@ export async function middleware(request) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|manifest\\.webmanifest|icon|apple-icon|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|manifest\\.webmanifest|(?:icon|apple-icon)(?:/|$)|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

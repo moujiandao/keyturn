@@ -19,12 +19,12 @@ export default async function AppLayout({ children }) {
     return (
       <div style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#f6f5f3', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>
         <div style={{ maxWidth: 420, width: '100%', background: '#fff', border: '1px solid #dedfdd', borderRadius: 12, padding: 28, textAlign: 'center' }}>
-          <h1 style={{ margin: '0 0 8px', fontSize: 20, color: '#20262a' }}>Sign-in service temporarily unavailable</h1>
+          <h1 style={{ margin: '0 0 8px', fontSize: 20, color: '#20262a' }}>Sign-in service temporarily unavailable / 登录服务暂时不可用</h1>
           <p style={{ margin: '0 0 18px', fontSize: 14, color: '#566168', lineHeight: 1.5 }}>
-            Your session is safe. Please reload in a moment.
+            Your session is safe. Please reload in a moment. / 您的登录状态未丢失，请稍后刷新重试。
           </p>
           <a href="" style={{ display: 'inline-block', padding: '10px 18px', borderRadius: 8, background: '#20262a', color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>
-            Reload
+            Reload / 刷新
           </a>
         </div>
       </div>
@@ -33,10 +33,10 @@ export default async function AppLayout({ children }) {
 
   if (!user) redirect('/login?next=/dashboard')
 
-  // Valid session but no landlord_members and no tenant_profiles row: there is
-  // no surface to render. Previously the monolith detected this after mounting
-  // and bounced with window.location.
-  if (!user.role) redirect('/login?next=/dashboard')
+  // Valid session but no landlord_members and no tenant_profiles row: include
+  // `reason=no_profile` so middleware does not bounce the signed-in cookie
+  // right back to /dashboard in an infinite redirect loop.
+  if (!user.role) redirect('/login?reason=no_profile')
 
   return <AppProvider initialUser={user}>{children}</AppProvider>
 }
