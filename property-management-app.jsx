@@ -171,13 +171,13 @@ const Toggle = ({ value, onChange }) => (
 );
 
 export const Modal = ({ title, onClose, closeLabel, children, wide }) => (
-  <div style={{ position: "fixed", inset: 0, background: "rgba(17,17,17,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, backdropFilter: "blur(4px)" }}>
-    <div style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: wide ? 680 : 480, maxHeight: "90vh", overflow: "auto", border: `1px solid ${theme.border}`, boxShadow: "0 12px 40px rgba(0,0,0,.10)" }}>
-      <div style={{ padding: "24px 28px", borderBottom: `1px solid ${theme.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+  <div style={{ position: "fixed", inset: 0, background: "rgba(17,17,17,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left))", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}>
+    <div style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: wide ? 680 : 480, maxHeight: "calc(100dvh - 32px)", overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch", border: `1px solid ${theme.border}`, boxShadow: "0 12px 40px rgba(0,0,0,.10)" }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 2, background: "#fff", padding: "18px 22px", borderBottom: `1px solid ${theme.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: theme.text, letterSpacing: "-0.02em", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{title}</h3>
-        <button aria-label={closeLabel} onClick={onClose} style={{ background: theme.bgSubtle, border: "none", borderRadius: 8, width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: theme.textMuted }}><Icon name="x" size={16} /></button>
+        <button type="button" aria-label={closeLabel} onClick={onClose} style={{ background: theme.bgSubtle, border: "none", borderRadius: 8, width: 44, height: 44, flexShrink: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: theme.textMuted }}><Icon name="x" size={18} /></button>
       </div>
-      <div style={{ padding: 28 }}>{children}</div>
+      <div style={{ padding: "22px 24px" }}>{children}</div>
     </div>
   </div>
 );

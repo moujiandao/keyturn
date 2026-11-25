@@ -27,7 +27,7 @@ export const useAppData = () => useContext(DataContext)
 const supabase = createClient()
 
 const loadingScreen = (
-  <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fafafa", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", color: "#6b7280", fontSize: 16 }}>
+  <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fafafa", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", color: "#6b7280", fontSize: 16 }}>
     <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'); -webkit-font-smoothing: antialiased;`}</style>
     Loading your portfolio…
   </div>
@@ -35,7 +35,7 @@ const loadingScreen = (
 
 function loadErrorScreen({ t, onRetry, loading }) {
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "#fafafa", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
+    <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "#fafafa", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
       <div style={{ width: "min(100%, 440px)", background: "#fff", border: "1px solid #eaeaea", borderRadius: 14, padding: 28, textAlign: "center", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
         <h1 style={{ margin: "0 0 10px", color: "#111111", fontSize: 20 }}>{t.dataLoadErrorTitle}</h1>
         <p style={{ margin: "0 0 20px", color: "#6b7280", fontSize: 14, lineHeight: 1.5 }}>{t.dataLoadErrorDetail}</p>

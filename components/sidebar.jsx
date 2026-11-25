@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { T } from '@/lib/i18n/strings'
@@ -42,6 +42,14 @@ function LandlordSidebar({ user, lang, setLang, t, primary, secondary, activeHre
   const initials = (user.name || user.email || '?').trim().split(/\s+/).slice(0, 2)
     .map(word => word[0]).join('').toUpperCase()
 
+  // Lock background scroll while the <=900px menu drawer is open on iPad/iPhone.
+  useEffect(() => {
+    if (!open) return undefined
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prevOverflow }
+  }, [open])
+
   function renderLink(item) {
     return (
       <Link key={item.href} href={item.href} prefetch={false} className="landlord-nav-link" style={navStyles.link}
@@ -54,48 +62,57 @@ function LandlordSidebar({ user, lang, setLang, t, primary, secondary, activeHre
   }
 
   return (
-    <aside style={navStyles.rail} onKeyDown={event => {
-      if (event.key !== 'Escape' || !open) return
-      setOpen(false)
-      menu.current?.focus()
-    }}>
-      <div style={navStyles.brandBar}>
-        <Link href={routes.dashboard()} style={navStyles.brand} onNavigate={() => setOpen(false)}>
-          <span style={navStyles.mark}><Icon name="building" size={19} /></span>
-          <span>{t.appName}</span>
-        </Link>
-        <button type="button" className="landlord-menu-button" style={navStyles.button} ref={menu}
-          aria-expanded={open} aria-controls="landlord-navigation" onClick={() => setOpen(value => !value)}>
-          <Icon name={open ? 'x' : 'menu'} size={19} />
-          {open ? t.navCloseMenu : t.navOpenMenu}
-        </button>
-      </div>
-      <div id="landlord-navigation" className="landlord-navigation" style={navStyles.body} data-open={open}>
-        <nav aria-label={t.navOpenMenu} style={navStyles.nav}>
-          <div style={navStyles.group}>{primary.map(renderLink)}</div>
-          <div style={navStyles.secondary}>{secondary.map(renderLink)}</div>
-        </nav>
-        <div style={navStyles.account}>
-          <div className="landlord-language" style={navStyles.language} role="group" aria-label={t.langLabel}>
-            <span style={navStyles.languageLabel}><Icon name="globe" size={15} />{t.langLabel}</span>
-            {[['en', 'EN'], ['zh', '中文']].map(([value, label]) => (
-              <button type="button" key={value} style={navStyles.languageButton} aria-pressed={lang === value} onClick={() => setLang(value)}>{label}</button>
-            ))}
-          </div>
-          <div style={navStyles.details}>
-            <span style={navStyles.avatar} aria-hidden="true">{initials}</span>
-            <div style={navStyles.name}>
-              <strong style={{ ...navStyles.singleLine, fontSize: 12, fontWeight: 650 }}>{user.name || user.email}</strong>
-              <small style={{ ...navStyles.singleLine, fontSize: 11, color: "var(--ld-muted)" }}>{user.email}</small>
+    <>
+      {open && (
+        <div
+          className="landlord-nav-backdrop"
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+        />
+      )}
+      <aside className="landlord-rail" style={navStyles.rail} onKeyDown={event => {
+        if (event.key !== 'Escape' || !open) return
+        setOpen(false)
+        menu.current?.focus()
+      }}>
+        <div style={navStyles.brandBar}>
+          <Link href={routes.dashboard()} style={navStyles.brand} onNavigate={() => setOpen(false)}>
+            <span style={navStyles.mark}><Icon name="building" size={19} /></span>
+            <span>{t.appName}</span>
+          </Link>
+          <button type="button" className="landlord-menu-button" style={navStyles.button} ref={menu}
+            aria-expanded={open} aria-controls="landlord-navigation" onClick={() => setOpen(value => !value)}>
+            <Icon name={open ? 'x' : 'menu'} size={19} />
+            {open ? t.navCloseMenu : t.navOpenMenu}
+          </button>
+        </div>
+        <div id="landlord-navigation" className="landlord-navigation" style={navStyles.body} data-open={open}>
+          <nav aria-label={t.navOpenMenu} style={navStyles.nav}>
+            <div style={navStyles.group}>{primary.map(renderLink)}</div>
+            <div style={navStyles.secondary}>{secondary.map(renderLink)}</div>
+          </nav>
+          <div style={navStyles.account}>
+            <div className="landlord-language" style={navStyles.language} role="group" aria-label={t.langLabel}>
+              <span style={navStyles.languageLabel}><Icon name="globe" size={15} />{t.langLabel}</span>
+              {[['en', 'EN'], ['zh', '中文']].map(([value, label]) => (
+                <button type="button" key={value} style={navStyles.languageButton} aria-pressed={lang === value} onClick={() => setLang(value)}>{label}</button>
+              ))}
             </div>
-            <button type="button" className="landlord-menu-button landlord-logout" style={{ ...navStyles.button, display: "inline-flex", padding: 7 }}
-              aria-label={t.logout} title={t.logout} onClick={logout}>
-              <Icon name="logout" size={17} />
-            </button>
+            <div style={navStyles.details}>
+              <span style={navStyles.avatar} aria-hidden="true">{initials}</span>
+              <div style={navStyles.name}>
+                <strong style={{ ...navStyles.singleLine, fontSize: 12, fontWeight: 650 }}>{user.name || user.email}</strong>
+                <small style={{ ...navStyles.singleLine, fontSize: 11, color: "var(--ld-muted)" }}>{user.email}</small>
+              </div>
+              <button type="button" className="landlord-menu-button landlord-logout" style={{ ...navStyles.button, display: "inline-flex", padding: 7 }}
+                aria-label={t.logout} title={t.logout} onClick={logout}>
+                <Icon name="logout" size={17} />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }
 
