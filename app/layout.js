@@ -9,10 +9,25 @@ const inter = Inter({
   display: 'swap',
 })
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#f6f5f3',
+}
+
 export const metadata = {
   title: `${APP_NAME} — Property management, simplified`,
   description:
     'Lease renewals, e-signature sending, automated tenant reminders, and maintenance — all in one clean, modern property management platform.',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: APP_NAME,
+  },
+  formatDetection: {
+    telephone: false,
+  },
 }
 
 export default function RootLayout({ children }) {
