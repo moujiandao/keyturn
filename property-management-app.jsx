@@ -2575,7 +2575,10 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
 // year of monthly rent across a dozen tenants is a long page uncapped.
 const PAYMENT_PAGE_SIZE = 25;
 
-export const PaymentsPage = ({ data, t, refresh }) => {
+export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
+  const [activeTab, setActiveTab] = useState("tracker");
+  const pendingZelleCount = (data.zelleEvents || []).filter(ev => ev.status === "needs_review").length;
+
   // 3-month window: previous, current, next month
   const months = useMemo(() => {
     const result = [];
@@ -2593,9 +2596,11 @@ export const PaymentsPage = ({ data, t, refresh }) => {
     return result;
   }, []);
 
-  // "tenantId-YYYY-MM" → payment record id (from DB). Only rent rows check off
-  // the monthly rent grid; one-time deposits and other payments never mark rent paid.
-  const [saved, setSaved] = useState(() => {
+  // "tenantId-YYYY-MM" → payment record id (from DB). Derived directly from
+  // data.payments so Zelle confirm/undo refreshes update the grid immediately.
+  // Only rent rows check off the monthly rent grid; one-time deposits and other
+  // payments never mark rent paid.
+  const saved = (() => {
     const map = {};
     for (const p of data.payments) {
       if (isPaidRent(p) && p.dueDate) {
@@ -2603,10 +2608,18 @@ export const PaymentsPage = ({ data, t, refresh }) => {
       }
     }
     return map;
-  });
+  })();
 
-  // Local checkbox state - starts matching saved, diverges as user clicks
-  const [checked, setChecked] = useState(() => ({ ...saved }));
+  // Local checkbox edits layered over `saved` — stores only keys toggled since last save.
+  const [edits, setEdits] = useState({});
+  const checked = (() => {
+    const map = { ...saved };
+    for (const [k, v] of Object.entries(edits)) {
+      if (v) map[k] = true;
+      else delete map[k];
+    }
+    return map;
+  })();
   const [saving, setSaving] = useState(false);
   const [payError, setPayError] = useState(null);
 
@@ -2675,13 +2688,7 @@ export const PaymentsPage = ({ data, t, refresh }) => {
   };
 
   // Detect unsaved changes
-  const hasChanges = useMemo(() => {
-    const allKeys = new Set([...Object.keys(saved), ...Object.keys(checked)]);
-    for (const k of allKeys) {
-      if (!!saved[k] !== !!checked[k]) return true;
-    }
-    return false;
-  }, [saved, checked]);
+  const hasChanges = Object.keys(edits).some(k => Boolean(edits[k]) !== Boolean(saved[k]));
 
   // Persisted property filter — same pattern as the Tenants page: store HIDDEN ids so a newly
   // added property shows by default. Its own storage key, so narrowing the payment view doesn't
@@ -2762,20 +2769,24 @@ export const PaymentsPage = ({ data, t, refresh }) => {
 
   const toggle = (tenantId, monthKey) => {
     const mapKey = `${tenantId}-${monthKey}`;
-    setChecked(prev => {
+    const nextVal = !checked[mapKey];
+    setEdits(prev => {
       const next = { ...prev };
-      if (next[mapKey]) { delete next[mapKey]; } else { next[mapKey] = true; }
+      if (nextVal === Boolean(saved[mapKey])) delete next[mapKey];
+      else next[mapKey] = nextVal;
       return next;
     });
   };
 
   const toggleColumn = (monthKey) => {
-    const allChecked = allTenants.every(t => !!checked[`${t.id}-${monthKey}`]);
-    setChecked(prev => {
+    const allChecked = allTenants.length > 0 && allTenants.every(t => !!checked[`${t.id}-${monthKey}`]);
+    const nextVal = !allChecked;
+    setEdits(prev => {
       const next = { ...prev };
       for (const tenant of allTenants) {
         const mapKey = `${tenant.id}-${monthKey}`;
-        if (allChecked) { delete next[mapKey]; } else { next[mapKey] = true; }
+        if (nextVal === Boolean(saved[mapKey])) delete next[mapKey];
+        else next[mapKey] = nextVal;
       }
       return next;
     });
@@ -2815,8 +2826,6 @@ export const PaymentsPage = ({ data, t, refresh }) => {
       }
     }
 
-    const newSaved = { ...saved };
-
     // Batch delete (server-side route to bypass RLS DELETE restriction)
     if (toDelete.length > 0) {
       const ids = toDelete.map(d => d.id);
@@ -2836,29 +2845,22 @@ export const PaymentsPage = ({ data, t, refresh }) => {
         setSaving(false);
         return;
       }
-      for (const d of toDelete) delete newSaved[d.mapKey];
     }
 
     // Batch insert
     if (toInsert.length > 0) {
-      const { data: inserted, error } = await supabase
+      const { error } = await supabase
         .from("payments")
-        .insert(toInsert.map(i => i.row))
-        .select();
+        .insert(toInsert.map(i => i.row));
       if (error) {
         setPayError(`Failed to save: ${error.message}`);
         setSaving(false);
         return;
       }
-      // Map returned rows back to mapKeys by matching tenant_id + due_date
-      for (const rec of inserted) {
-        const mk = `${rec.tenant_id}-${rec.due_date.slice(0, 7)}`;
-        newSaved[mk] = rec.id;
-      }
     }
 
-    setSaved(newSaved);
-    setChecked({ ...newSaved });
+    await refresh();
+    setEdits({});
     setSaving(false);
   };
 
@@ -2867,6 +2869,42 @@ export const PaymentsPage = ({ data, t, refresh }) => {
   return (
     <div>
       <PageHeader title={t.payTitle} subtitle={t.paySubtitleTracker} />
+      {zelleInbox && (
+        <div style={{ display: "flex", gap: 8, marginBottom: 18, borderBottom: `1px solid ${theme.border}`, paddingBottom: 12 }}>
+          <button
+            type="button"
+            onClick={() => setActiveTab("tracker")}
+            style={{
+              padding: "8px 16px", borderRadius: 9, border: "none",
+              background: activeTab === "tracker" ? "#111111" : "transparent",
+              color: activeTab === "tracker" ? "#fff" : "#6b7280",
+              fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+            }}
+          >
+            {t.zelleTabTracker}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("zelle")}
+            style={{
+              padding: "8px 16px", borderRadius: 9, border: "none",
+              background: activeTab === "zelle" ? "#111111" : "transparent",
+              color: activeTab === "zelle" ? "#fff" : "#6b7280",
+              fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+              display: "inline-flex", alignItems: "center", gap: 8,
+            }}
+          >
+            <span>{t.zelleTabInbox}</span>
+            {pendingZelleCount > 0 && (
+              <span style={{ fontSize: 11, fontWeight: 700, padding: "1px 7px", borderRadius: 12, background: "#f59e0b", color: "#fff" }}>
+                {pendingZelleCount}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
+      {activeTab === "zelle" && zelleInbox ? zelleInbox : (
+      <>
       {payError && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#dc2626" }}>{payError}</div>}
       {/* Property filter (persisted across sessions) */}
       <PropertyFilterBar chips={filterChips} hidden={hiddenProps} setHidden={setHiddenProps} t={t} />
@@ -2876,7 +2914,7 @@ export const PaymentsPage = ({ data, t, refresh }) => {
           {saving ? t.saving : t.saveChanges}
         </button>
         {hasChanges && (
-          <button onClick={() => setChecked({ ...saved })}
+          <button onClick={() => setEdits({})}
             style={{ padding: "9px 16px", borderRadius: 8, border: `1px solid ${theme.border}`, background: "#fff", color: "#6b7280", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
             {t.discard}
           </button>
@@ -3079,6 +3117,8 @@ export const PaymentsPage = ({ data, t, refresh }) => {
             <Btn onClick={confirmDeletePay} disabled={deletingPay}>{deletingPay ? t.deleting : t.payDelete}</Btn>
           </div>
         </Modal>
+      )}
+      </>
       )}
     </div>
   );
