@@ -147,6 +147,7 @@ export function Sidebar() {
     { href: routes.reminders(),        label: t.navPaymentReminders, icon: "dollar" },
     { href: routes.documents(),        label: t.navDocuments,        icon: "key" },
     { href: routes.team(),             label: t.navAdminUsers,       icon: "users" },
+    { href: routes.learnings(),        label: t.navLearnings,        icon: "book" },
   ]
   const tenantNav = [
     { href: routes.portal(),            label: t.navDashboard,      icon: "home" },
