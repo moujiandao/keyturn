@@ -170,12 +170,12 @@ const Toggle = ({ value, onChange }) => (
   </button>
 );
 
-export const Modal = ({ title, onClose, children, wide }) => (
+export const Modal = ({ title, onClose, closeLabel, children, wide }) => (
   <div style={{ position: "fixed", inset: 0, background: "rgba(17,17,17,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, backdropFilter: "blur(4px)" }}>
     <div style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: wide ? 680 : 480, maxHeight: "90vh", overflow: "auto", border: "1px solid #eaeaea", boxShadow: "0 12px 40px rgba(0,0,0,.10)" }}>
       <div style={{ padding: "24px 28px", borderBottom: "1px solid #eaeaea", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#111111", letterSpacing: "-0.02em", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{title}</h3>
-        <button onClick={onClose} style={{ background: "#fafafa", border: "none", borderRadius: 8, width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280" }}><Icon name="x" size={16} /></button>
+        <button aria-label={closeLabel} onClick={onClose} style={{ background: "#fafafa", border: "none", borderRadius: 8, width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280" }}><Icon name="x" size={16} /></button>
       </div>
       <div style={{ padding: 28 }}>{children}</div>
     </div>
@@ -863,6 +863,12 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
 };
 
 // ─── PROPERTIES PAGE ──────────────────────────────────────────────────────────
+const rentManagerLinkStyle = {
+  position: "relative", zIndex: 2, display: "inline-flex", alignItems: "center", gap: 7,
+  padding: "8px 13px", border: `1px solid ${theme.border}`, borderRadius: theme.radius.sm,
+  color: theme.text, background: theme.bg, fontSize: 13, fontWeight: 600, textDecoration: "none",
+};
+
 export const PropertiesPage = ({ data, t, refresh, user }) => {
   const propertyMx = usePropertyMutations();
   const [show, setShow] = useState(false);
@@ -911,8 +917,7 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
     } catch { return; }
     await refresh(); setShow(false);
   };
-  const openEdit = (p, e) => {
-    e.stopPropagation();
+  const openEdit = (p) => {
     setEditing(p);
     setEditForm({ address: p.address, city: p.city, state: p.state, zip: p.zip, units: String(p.units || ""), type: p.type || "Single Family", status: p.status || "vacant", driveLink: p.driveLink || "", inProduction: p.inProduction !== false });
   };
@@ -946,12 +951,11 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
           const propertyUnits = (data.units || []).filter(u => u.propertyId === p.id);
           const occupiedUnits = propertyUnits.filter(u => u.status === 'occupied').length;
           const totalUnits = propertyUnits.length;
-          // The whole card is the link, so the property is openable in a new
-          // tab — the inner onClick this replaced could not be.
           return (
-            <Link key={p.id} href={routes.property(p)} style={{ display: "block", background: "#fff", borderRadius: 14, overflow: "hidden", border: "1px solid #f5f5f5", boxShadow: "0 1px 3px rgba(0,0,0,.04)", cursor: "pointer", transition: "box-shadow .15s", textDecoration: "none", color: "inherit" }}
+            <article key={p.id} style={{ position: "relative", display: "flex", flexDirection: "column", background: "#fff", borderRadius: 14, overflow: "hidden", border: "1px solid #f5f5f5", boxShadow: "0 1px 3px rgba(0,0,0,.04)", transition: "box-shadow .15s" }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,.10)"; }}
               onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,.04)"; }}>
+              <Link href={routes.property(p)} aria-label={p.address} style={{ position: "absolute", inset: 0, zIndex: 1, borderRadius: "inherit" }} />
               <div style={{ position: "relative", height: 160, background: "#f5f5f5", overflow: "hidden" }}>
                 {p.imageUrl
                   ? <img src={p.imageUrl} alt={p.address} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -960,13 +964,12 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
                 <input
                   ref={el => { fileInputRefs.current[p.id] = el; }}
                   type="file" accept="image/*" style={{ display: "none" }}
-                  onClick={e => e.stopPropagation()}
-                  onChange={e => { e.stopPropagation(); handleImageUpload(p.id, e.target.files[0]); }}
+                  onChange={e => handleImageUpload(p.id, e.target.files[0])}
                 />
                 <button
-                  onClick={e => { e.stopPropagation(); setUploadError(null); fileInputRefs.current[p.id]?.click(); }}
+                  onClick={() => { setUploadError(null); fileInputRefs.current[p.id]?.click(); }}
                   disabled={uploadingId === p.id}
-                  style={{ position: "absolute", bottom: 8, right: 8, background: "rgba(15,23,42,0.7)", color: "#fff", border: "none", borderRadius: 7, padding: "5px 10px", fontSize: 11, fontWeight: 600, cursor: uploadingId === p.id ? "default" : "pointer", backdropFilter: "blur(4px)" }}>
+                  style={{ position: "absolute", bottom: 8, right: 8, zIndex: 2, background: "rgba(15,23,42,0.7)", color: "#fff", border: "none", borderRadius: 7, padding: "5px 10px", fontSize: 11, fontWeight: 600, cursor: uploadingId === p.id ? "default" : "pointer", backdropFilter: "blur(4px)" }}>
                   {uploadingId === p.id ? t.uploadingPhoto : p.imageUrl ? t.changePhoto : t.uploadPhoto}
                 </button>
                 {uploadError && uploadingId !== p.id && (
@@ -982,11 +985,11 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
                     )}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <button onClick={e => openEdit(p, e)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#9ca3af", borderRadius: 6, display: "flex", alignItems: "center" }}
+                    <button onClick={() => openEdit(p)} style={{ position: "relative", zIndex: 2, background: "none", border: "none", cursor: "pointer", padding: 4, color: "#9ca3af", borderRadius: 6, display: "flex", alignItems: "center" }}
                       onMouseEnter={e => e.currentTarget.style.color = "#111111"} onMouseLeave={e => e.currentTarget.style.color = "#9ca3af"}>
                       <Icon name="edit" size={15} />
                     </button>
-                    <button onClick={e => { e.stopPropagation(); setConfirmDelete(p); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#9ca3af", borderRadius: 6, display: "flex", alignItems: "center" }}
+                    <button onClick={() => setConfirmDelete(p)} style={{ position: "relative", zIndex: 2, background: "none", border: "none", cursor: "pointer", padding: 4, color: "#9ca3af", borderRadius: 6, display: "flex", alignItems: "center" }}
                       onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#9ca3af"}>
                       <Icon name="trash" size={15} />
                     </button>
@@ -995,11 +998,16 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
                 </div>
                 <p style={{ margin: "0 0 16px", fontSize: 13, color: "#6b7280" }}>{p.city}, {p.state} {p.zip} · {p.type}</p>
                 <div style={{ background: "#fafafa", borderRadius: 9, padding: "10px 12px" }}>
-                  <div style={{ fontSize: 11, color: "#9ca3af", marginBottom: 2, textTransform: "uppercase", letterSpacing: ".5px" }}>Occupied Units</div>
+                  <div style={{ fontSize: 11, color: "#9ca3af", marginBottom: 2, textTransform: "uppercase", letterSpacing: ".5px" }}>{t.propOccupiedUnits}</div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: "#111111" }}>{occupiedUnits}<span style={{ color: "#9ca3af", fontSize: 13, fontWeight: 400 }}>/{totalUnits}</span></div>
                 </div>
               </div>
-            </Link>
+              <div style={{ padding: "0 22px 22px", marginTop: "auto" }}>
+                <Link href={routes.rentIncreaseManager(p)} style={rentManagerLinkStyle}>
+                  <Icon name="trending" size={15} />{t.rentIncreaseManager}
+                </Link>
+              </div>
+            </article>
           );
         })}
       </div>
@@ -1056,11 +1064,11 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
         </Modal>
       )}
       {confirmDelete && (
-        <Modal title="Delete Property" onClose={() => setConfirmDelete(null)}>
-          <p style={{ margin: "0 0 20px", fontSize: 14, color: "#374151" }}>Are you sure you want to delete <strong>{confirmDelete.address}</strong>? This cannot be undone.</p>
+        <Modal title={t.propDeleteTitle} closeLabel={t.cancel} onClose={() => setConfirmDelete(null)}>
+          <p style={{ margin: "0 0 20px", fontSize: 14, color: "#374151" }}>{t.propDeleteWarning(confirmDelete.address)}</p>
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setConfirmDelete(null)}>{t.cancel}</Btn>
-            <Btn onClick={deleteProperty} style={{ background: "#ef4444" }}>Delete</Btn>
+            <Btn onClick={deleteProperty}>{t.propDeleteConfirm}</Btn>
           </div>
         </Modal>
       )}
