@@ -50,6 +50,7 @@ they don't get lost between sessions.
 
 ### Added
 
+- Generate an editable rent increase notice from a unit’s current tenants and newest rent-history year, and open the draft in a print-friendly tab.
 - Add a property-level Rent Increase Manager for recording yearly unit rents and effective dates and viewing the change from the prior year. Run `scripts/add-unit-rent-history.sql` before releasing the page.
 
 ## [2026-10-06]

@@ -13,5 +13,6 @@ export default function Page({ params }) {
   if (!property) notFound()
 
   const units = data.units.filter(unit => unit.propertyId === property.id)
-  return <RentIncreaseManager key={property.id} property={property} units={units} lang={lang} t={t} />
+  const tenants = data.tenants.filter(tenant => tenant.propertyId === property.id)
+  return <RentIncreaseManager key={property.id} property={property} units={units} tenants={tenants} lang={lang} t={t} />
 }
