@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { homeFor } from '@/lib/routes'
 import { AppShell } from '@/components/app-shell'
+import './landlord.css'
 
 // Role boundary for the landlord surface. `(landlord)` is a route group, so it
 // adds nothing to the URL — /properties, not /landlord/properties.
@@ -16,5 +17,5 @@ export default async function LandlordLayout({ children }) {
   const user = await getCurrentUser()
   if (user?.role !== 'landlord') redirect(homeFor(user?.role))
 
-  return <AppShell>{children}</AppShell>
+  return <AppShell landlord>{children}</AppShell>
 }

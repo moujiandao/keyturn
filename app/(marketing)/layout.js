@@ -1,3 +1,4 @@
+import { APP_NAME } from '@/lib/brand'
 import Link from 'next/link'
 import { Logo } from '../_brand'
 import { palette, container, btnStyle } from '@/lib/theme'
@@ -51,7 +52,7 @@ function Footer() {
           <Link href="/pricing" className="pm-navlink" style={{ ...navLink, color: palette.textMuted, fontSize: 14 }}>Pricing</Link>
           <Link href="/login" className="pm-navlink" style={{ ...navLink, color: palette.textMuted, fontSize: 14 }}>Log in</Link>
         </div>
-        <span style={{ color: palette.textFaint, fontSize: 13 }}>© {new Date().getFullYear()} PropManager</span>
+        <span style={{ color: palette.textFaint, fontSize: 13 }}>© {new Date().getFullYear()} {APP_NAME}</span>
       </div>
     </footer>
   )

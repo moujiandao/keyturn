@@ -1,3 +1,4 @@
+import { APP_NAME } from '@/lib/brand'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { statusFor, isCurrentRow, CURRENT } from '@/lib/tenant/status'
@@ -159,7 +160,7 @@ export async function POST(request) {
       emailHtml = `
         <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
           <h2 style="color: #0f172a;">Welcome, ${name}!</h2>
-          <p>Your landlord has created a tenant account for you on PropManager.</p>
+          <p>Your landlord has created a tenant account for you on ${APP_NAME}.</p>
           <p>Use the details below to log in:</p>
           <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin: 16px 0;">
             <p style="margin: 0 0 6px;"><strong>Email:</strong> ${email}</p>
@@ -177,7 +178,7 @@ export async function POST(request) {
       emailHtml = `
         <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
           <h2 style="color: #0f172a;">Welcome, ${name}!</h2>
-          <p>Your landlord has created a tenant account for you on PropManager.</p>
+          <p>Your landlord has created a tenant account for you on ${APP_NAME}.</p>
           <p>Click the button below to set your password and access your portal:</p>
           <a href="${linkData.properties.action_link}" style="display: inline-block; background: #d97706; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 16px 0;">
             Set My Password
@@ -188,7 +189,7 @@ export async function POST(request) {
     }
 
     await resend.emails.send({
-      from: `PropManager <${fromEmail}>`,
+      from: `${APP_NAME} <${fromEmail}>`,
       to: email,
       subject: 'Welcome — Your tenant account is ready',
       html: emailHtml,

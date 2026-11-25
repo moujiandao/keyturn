@@ -43,6 +43,11 @@ they don't get lost between sessions.
 
 ## [2026-11-24]
 
+### Changed
+
+- Use Keyturn in the app, public pages, and default email sender.
+- Refresh the landlord workspace with warm neutrals, brick-red actions, photo-led property cards, and a mobile navigation menu.
+
 ### Added
 
 - Add a property-level Rent Increase Manager for recording yearly unit rents and effective dates and viewing the change from the prior year. Run `scripts/add-unit-rent-history.sql` before releasing the page.

@@ -54,18 +54,17 @@ import { fmt, fmtDate } from '@/lib/format';
 const supabase = createClient();
 
 // ─── THEME ────────────────────────────────────────────────────────────────────
-// Figma-inspired: all-light content, neutral near-black accent, hairline borders.
-// Single source of truth for new code; existing inline literals were swapped to
-// these values directly. See docs/superpowers/specs/2026-06-12-figma-theme-design.md
+// Shared primitives inherit landlord tokens inside the landlord layout.
+// Their fallbacks retain the colors used by the tenant portal.
 const theme = {
-  text: "#111111",        // headings / primary text
-  textMuted: "#6b7280",   // body / descriptions
-  textFaint: "#9ca3af",   // labels / meta
-  border: "#eaeaea",      // hairline borders
-  accent: "#111111",      // buttons / links / focus
+  text: "var(--ld-ink, #111111)",        // headings / primary text
+  textMuted: "var(--ld-muted, #6b7280)",   // body / descriptions
+  textFaint: "var(--ld-muted, #9ca3af)",   // labels / meta
+  border: "var(--ld-border, #eaeaea)",      // hairline borders
+  accent: "var(--ld-accent, #111111)",      // buttons / links / focus
   accentHover: "#000000",
   bg: "#ffffff",
-  bgSubtle: "#fafafa",
+  bgSubtle: "var(--ld-subtle, #fafafa)",
   sidebar: "#111111",     // neutral near-black
   radius: { sm: 8, md: 12, pill: 99 },
 };
@@ -83,6 +82,7 @@ export const Icon = ({ name, size = 18 }) => {
     logout: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
     plus: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
     check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+    menu: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>,
     x: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
     clock: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
     bank: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>,
@@ -165,17 +165,17 @@ export const Badge = ({ status, t }) => {
 };
 
 const Toggle = ({ value, onChange }) => (
-  <button onClick={() => onChange(!value)} style={{ width: 48, height: 26, borderRadius: 13, background: value ? "#111111" : "#d1d5db", border: "none", cursor: "pointer", position: "relative", transition: "background 0.2s", padding: 0, flexShrink: 0 }}>
+  <button onClick={() => onChange(!value)} style={{ width: 48, height: 26, borderRadius: 13, background: value ? theme.accent : "#d1d5db", border: "none", cursor: "pointer", position: "relative", transition: "background 0.2s", padding: 0, flexShrink: 0 }}>
     <span style={{ position: "absolute", top: 3, left: value ? 25 : 3, width: 20, height: 20, borderRadius: "50%", background: "#fff", transition: "left 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,.2)" }} />
   </button>
 );
 
 export const Modal = ({ title, onClose, closeLabel, children, wide }) => (
   <div style={{ position: "fixed", inset: 0, background: "rgba(17,17,17,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, backdropFilter: "blur(4px)" }}>
-    <div style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: wide ? 680 : 480, maxHeight: "90vh", overflow: "auto", border: "1px solid #eaeaea", boxShadow: "0 12px 40px rgba(0,0,0,.10)" }}>
-      <div style={{ padding: "24px 28px", borderBottom: "1px solid #eaeaea", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#111111", letterSpacing: "-0.02em", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{title}</h3>
-        <button aria-label={closeLabel} onClick={onClose} style={{ background: "#fafafa", border: "none", borderRadius: 8, width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280" }}><Icon name="x" size={16} /></button>
+    <div style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: wide ? 680 : 480, maxHeight: "90vh", overflow: "auto", border: `1px solid ${theme.border}`, boxShadow: "0 12px 40px rgba(0,0,0,.10)" }}>
+      <div style={{ padding: "24px 28px", borderBottom: `1px solid ${theme.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: theme.text, letterSpacing: "-0.02em", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{title}</h3>
+        <button aria-label={closeLabel} onClick={onClose} style={{ background: theme.bgSubtle, border: "none", borderRadius: 8, width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: theme.textMuted }}><Icon name="x" size={16} /></button>
       </div>
       <div style={{ padding: 28 }}>{children}</div>
     </div>
@@ -186,7 +186,7 @@ export const Inp = ({ label, value, onChange, type = "text", placeholder, readOn
   <div style={{ marginBottom: 16 }}>
     {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{label}</label>}
     <input type={type} value={value} onChange={e => onChange && onChange(e.target.value)} placeholder={placeholder} readOnly={readOnly}
-      style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 8, fontSize: 14, color: "#111111", background: readOnly ? "#fafafa" : "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+      style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 14, color: theme.text, background: readOnly ? theme.bgSubtle : theme.bg, boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
   </div>
 );
 
@@ -194,7 +194,7 @@ export const Sel = ({ label, value, onChange, options }) => (
   <div style={{ marginBottom: 16 }}>
     {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{label}</label>}
     <select value={value} onChange={e => onChange(e.target.value)}
-      style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 8, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
+      style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 14, color: theme.text, background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
       {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   </div>
@@ -206,7 +206,7 @@ export const Sel = ({ label, value, onChange, options }) => (
 export const DerivedStatusField = ({ moveInDate, moveOutDate, t }) => (
   <div style={{ marginBottom: 16 }}>
     <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.colStatus}</label>
-    <div style={{ display: "flex", alignItems: "center", width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 8, background: "#fafafa", boxSizing: "border-box", minHeight: 42 }}>
+    <div style={{ display: "flex", alignItems: "center", width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, background: theme.bgSubtle, boxSizing: "border-box", minHeight: 42 }}>
       <Badge status={statusFor({ moveInDate: moveInDate || null, moveOutDate: moveOutDate || null })} t={t} />
     </div>
     <p style={{ margin: "5px 0 0", fontSize: 11, color: "#9ca3af", lineHeight: 1.4 }}>{t.tenStatusDerived}</p>
@@ -214,10 +214,10 @@ export const DerivedStatusField = ({ moveInDate, moveOutDate, t }) => (
 );
 
 export const Btn = ({ children, onClick, variant = "primary", size = "md", icon, disabled = false }) => {
-  const s = { primary: { background: "#111111", color: "#fff", border: "1px solid #111111" }, secondary: { background: "#fff", color: "#111111", border: "1px solid #eaeaea" }, ghost: { background: "transparent", color: "#6b7280", border: "none" } };
+  const s = { primary: { background: theme.accent, color: "#fff", border: `1px solid ${theme.accent}` }, secondary: { background: "#fff", color: theme.text, border: `1px solid ${theme.border}` }, ghost: { background: "transparent", color: theme.textMuted, border: "none" } };
   const sz = { sm: { padding: "6px 14px", fontSize: 13 }, md: { padding: "10px 20px", fontSize: 14 } };
   return (
-    <button onClick={onClick} disabled={disabled} style={{ ...s[variant], ...sz[size], borderRadius: 8, cursor: disabled ? "not-allowed" : "pointer", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit", transition: "opacity .15s", opacity: disabled ? 0.6 : 1 }}
+    <button onClick={onClick} disabled={disabled} style={{ ...s[variant], ...sz[size], borderRadius: "var(--ld-radius, 8px)", cursor: disabled ? "not-allowed" : "pointer", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit", transition: "opacity .15s", opacity: disabled ? 0.6 : 1 }}
       onMouseEnter={e => { if (!disabled) e.currentTarget.style.opacity = ".85"; }} onMouseLeave={e => { e.currentTarget.style.opacity = disabled ? "0.6" : "1"; }}>
       {icon && <Icon name={icon} size={15} />}{children}
     </button>
@@ -228,10 +228,10 @@ export const Btn = ({ children, onClick, variant = "primary", size = "md", icon,
 
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
 export const PageHeader = ({ title, subtitle, action }) => (
-  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 28 }}>
+  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "var(--ld-page-header-wrap, nowrap)", gap: "var(--ld-page-header-gap, 0px)", marginBottom: 28 }}>
     <div>
-      <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", letterSpacing: "-0.5px" }}>{title}</h1>
-      {subtitle && <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: 14 }}>{subtitle}</p>}
+      <h1 style={{ margin: 0, fontSize: "var(--ld-heading-size, 26px)", fontWeight: "var(--ld-heading-weight, 700)", color: theme.text, fontFamily: "'Inter',system-ui,-apple-system,sans-serif", letterSpacing: "var(--ld-heading-tracking, -0.5px)", lineHeight: 1.13, overflowWrap: "anywhere" }}>{title}</h1>
+      {subtitle && <p style={{ margin: "4px 0 0", color: theme.textMuted, fontSize: 14 }}>{subtitle}</p>}
     </div>
     {action}
   </div>
@@ -242,7 +242,7 @@ export const PageHeader = ({ title, subtitle, action }) => (
 // needing to touch stored state. Callers own persistence; this is presentation only.
 const filterChipBase = { display: "flex", alignItems: "center", gap: 7, padding: "5px 12px", borderRadius: 7, border: "1px solid", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" };
 const filterLinkBase = { marginLeft: 4, fontSize: 12, fontWeight: 600, background: "transparent", border: "none", cursor: "pointer", padding: 0 };
-const filterBarLabel = { fontSize: 12, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px" };
+const filterBarLabel = { fontSize: 12, fontWeight: 600, color: theme.textMuted, textTransform: "uppercase", letterSpacing: ".5px" };
 
 export const PropertyFilterBar = ({ chips, hidden, setHidden, t }) => {
   if (chips.length <= 1) return null;
@@ -254,8 +254,8 @@ export const PropertyFilterBar = ({ chips, hidden, setHidden, t }) => {
         return (
           <button key={id}
             onClick={() => setHidden(prev => { const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id); return next; })}
-            style={{ ...filterChipBase, borderColor: shown ? "#111111" : "#eaeaea", background: shown ? "#f5f5f5" : "#fff", color: shown ? "#111111" : "#9ca3af" }}>
-            <span style={{ width: 15, height: 15, borderRadius: 4, border: "1px solid", borderColor: shown ? "#111111" : "#cbd5e1", background: shown ? "#111111" : "#fff", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            style={{ ...filterChipBase, borderColor: shown ? theme.accent : theme.border, background: shown ? "var(--ld-accent-tint, #f5f5f5)" : theme.bg, color: shown ? theme.accent : theme.textFaint }}>
+            <span style={{ width: 15, height: 15, borderRadius: 4, border: "1px solid", borderColor: shown ? theme.accent : "#cbd5e1", background: shown ? theme.accent : theme.bg, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               {shown && <Icon name="check" size={10} />}
             </span>
             {label}
@@ -263,7 +263,7 @@ export const PropertyFilterBar = ({ chips, hidden, setHidden, t }) => {
         );
       })}
       {hidden.size > 0
-        ? <button onClick={() => setHidden(new Set())} style={{ ...filterLinkBase, color: "#111111" }}>{t.tenShowAll}</button>
+        ? <button onClick={() => setHidden(new Set())} style={{ ...filterLinkBase, color: theme.text }}>{t.tenShowAll}</button>
         : <button onClick={() => setHidden(new Set(chips.map(c => c.id)))} style={{ ...filterLinkBase, color: "#9ca3af" }}>{t.tenHideAll}</button>}
     </div>
   );
@@ -277,22 +277,22 @@ export const PropertyFilterBar = ({ chips, hidden, setHidden, t }) => {
 const nonProductionPropertyIds = (properties) =>
   new Set((properties || []).filter(p => p.inProduction === false).map(p => p.id));
 
-const StatCard = ({ label, value, sub, icon, color = "#111111" }) => (
-  <div style={{ background: "#fff", borderRadius: 14, padding: "20px 22px", border: "1px solid #f5f5f5", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+const StatCard = ({ label, value, sub, icon, color }) => (
+  <div style={{ background: "#fff", borderRadius: 14, padding: "20px 22px", border: "1px solid var(--ld-border, #f5f5f5)", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
       <div>
         <p style={{ margin: "0 0 6px", color: "#6b7280", fontSize: 13, fontWeight: 500 }}>{label}</p>
-        <p style={{ margin: 0, fontSize: 28, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{value}</p>
+        <p style={{ margin: 0, fontSize: 28, fontWeight: 700, color: theme.text, fontVariantNumeric: "tabular-nums", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{value}</p>
         {sub && <p style={{ margin: "4px 0 0", fontSize: 12, color: "#9ca3af" }}>{sub}</p>}
       </div>
-      <div style={{ width: 42, height: 42, borderRadius: 11, background: `${color}18`, display: "flex", alignItems: "center", justifyContent: "center", color }}><Icon name={icon} size={20} /></div>
+      <div style={{ width: 42, height: 42, borderRadius: 11, background: color ? `${color}18` : "var(--ld-accent-tint, #11111118)", display: "flex", alignItems: "center", justifyContent: "center", color: color || theme.accent }}><Icon name={icon} size={20} /></div>
     </div>
   </div>
 );
 
 // Shared by both dashboard transition-acknowledgment buttons ("…have moved in" /
 // "…have moved out"); only cursor + opacity differ while a confirm is in flight.
-const ackBtnStyle = { alignSelf: "flex-start", marginTop: 4, background: "#111111", color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, fontFamily: "inherit" };
+const ackBtnStyle = { alignSelf: "flex-start", marginTop: 4, background: theme.accent, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, fontFamily: "inherit" };
 
 // ─── LANDLORD DASHBOARD ───────────────────────────────────────────────────────
 export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
@@ -628,12 +628,12 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
           <div style={{ fontSize: 13, color: "#6b7280" }}>{t.dashSummaryEmpty}</div>
         )}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 28 }}>
+      <div className="landlord-stack" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16, marginBottom: 28 }}>
         <StatCard label={t.statProperties} value={properties.length} sub={`${occupied} ${t.statOccupied}`} icon="building" />
         <StatCard label={t.statPending} value={pendingPayments.length} sub={t.statRequireAttention} icon="clock" color="#ef4444" />
         <StatCard label={t.statOpenMaint} value={openMaint.length} sub={t.statRequests} icon="wrench" color="#f59e0b" />
       </div>
-      <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5", marginBottom: 20 }}>
+      <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)", marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashTransitions}</h3>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -808,8 +808,8 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
           );
         })}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5" }}>
+      <div className="landlord-stack" style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 20 }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
             <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashUnpaidRent} — {currentMonthLabel}</h3>
             <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.dashTenantCount(unpaidTenants.length)}</span>
@@ -835,7 +835,7 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
             );
           })}
         </div>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.recentPayments}</h3>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
@@ -863,10 +863,24 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
 };
 
 // ─── PROPERTIES PAGE ──────────────────────────────────────────────────────────
+const propertyCard = {
+  position: "relative", display: "flex", flexDirection: "column", background: theme.bg,
+  borderRadius: 15, overflow: "hidden", border: `1px solid ${theme.border}`,
+  boxShadow: "0 2px 5px rgba(32,38,42,.04)",
+};
+const propertyPhoto = {
+  position: "relative", aspectRatio: "16 / 10", background: theme.bgSubtle, overflow: "hidden",
+  display: "grid", placeItems: "center",
+};
+const propertyIconButton = {
+  position: "relative", zIndex: 2, display: "grid", placeItems: "center",
+  width: 34, height: 34, border: `1px solid ${theme.border}`, borderRadius: 8,
+  color: theme.textMuted, background: theme.bg, cursor: "pointer",
+};
 const rentManagerLinkStyle = {
-  position: "relative", zIndex: 2, display: "inline-flex", alignItems: "center", gap: 7,
-  padding: "8px 13px", border: `1px solid ${theme.border}`, borderRadius: theme.radius.sm,
-  color: theme.text, background: theme.bg, fontSize: 13, fontWeight: 600, textDecoration: "none",
+  position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: 8,
+  width: "fit-content", padding: "9px 12px", borderRadius: 8, color: theme.accent,
+  background: "var(--ld-accent-tint, #f5f5f5)", fontSize: 13, fontWeight: 700, textDecoration: "none",
 };
 
 export const PropertiesPage = ({ data, t, refresh, user }) => {
@@ -946,21 +960,21 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
   return (
     <div>
       <PageHeader title={t.propTitle} subtitle={t.propSubtitle(data.properties.length)} action={<Btn icon="plus" onClick={() => setShow(true)}>{t.addProperty}</Btn>} />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 18 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 290px), 1fr))", gap: 20 }}>
         {data.properties.map(p => {
           const propertyUnits = (data.units || []).filter(u => u.propertyId === p.id);
-          const occupiedUnits = propertyUnits.filter(u => u.status === 'occupied').length;
-          const totalUnits = propertyUnits.length;
+          const occupiedUnits = propertyUnits.filter(u => u.status === "occupied").length;
+          const locality = [p.city, [p.state, p.zip].filter(Boolean).join(" ")].filter(Boolean).join(", ");
           return (
-            <article key={p.id} style={{ position: "relative", display: "flex", flexDirection: "column", background: "#fff", borderRadius: 14, overflow: "hidden", border: "1px solid #f5f5f5", boxShadow: "0 1px 3px rgba(0,0,0,.04)", transition: "box-shadow .15s" }}
-              onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,.10)"; }}
-              onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,.04)"; }}>
-              <Link href={routes.property(p)} aria-label={p.address} style={{ position: "absolute", inset: 0, zIndex: 1, borderRadius: "inherit" }} />
-              <div style={{ position: "relative", height: 160, background: "#f5f5f5", overflow: "hidden" }}>
+            <article key={p.id} className="ld-property-card" style={propertyCard}>
+              <Link href={routes.property(p)} aria-label={p.address} className="ld-property-link"
+                style={{ position: "absolute", inset: 0, zIndex: 1, borderRadius: "inherit" }} />
+              <div style={propertyPhoto}>
                 {p.imageUrl
-                  ? <img src={p.imageUrl} alt={p.address} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="home" size={40} color="#cbd5e1" /></div>
+                  ? <img src={p.imageUrl} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  : <span style={{ color: theme.textMuted }}><Icon name="building" size={38} /></span>
                 }
+                <div style={{ position: "absolute", top: 12, left: 12 }}><Badge status={p.status} t={t} /></div>
                 <input
                   ref={el => { fileInputRefs.current[p.id] = el; }}
                   type="file" accept="image/*" style={{ display: "none" }}
@@ -969,41 +983,38 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
                 <button
                   onClick={() => { setUploadError(null); fileInputRefs.current[p.id]?.click(); }}
                   disabled={uploadingId === p.id}
-                  style={{ position: "absolute", bottom: 8, right: 8, zIndex: 2, background: "rgba(15,23,42,0.7)", color: "#fff", border: "none", borderRadius: 7, padding: "5px 10px", fontSize: 11, fontWeight: 600, cursor: uploadingId === p.id ? "default" : "pointer", backdropFilter: "blur(4px)" }}>
+                  style={{ position: "absolute", bottom: 12, right: 12, zIndex: 2, background: "rgba(27,32,36,.86)", color: "#fff", border: "none", borderRadius: 7, padding: "8px 11px", fontSize: 12, fontWeight: 600, fontFamily: "inherit", cursor: uploadingId === p.id ? "default" : "pointer" }}>
                   {uploadingId === p.id ? t.uploadingPhoto : p.imageUrl ? t.changePhoto : t.uploadPhoto}
                 </button>
                 {uploadError && uploadingId !== p.id && (
-                  <div style={{ position: "absolute", top: 8, left: 8, right: 8, background: "rgba(220,38,38,0.85)", color: "#fff", borderRadius: 7, padding: "5px 10px", fontSize: 11, fontWeight: 600 }}>{uploadError}</div>
+                  <div style={{ position: "absolute", top: 42, left: 12, right: 12, background: "#991b1b", color: "#fff", borderRadius: 7, padding: "6px 10px", fontSize: 12 }}>{uploadError}</div>
                 )}
               </div>
-              <div style={{ padding: 22 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{p.address}</h3>
-                    {p.inProduction === false && (
-                      <span style={{ display: "inline-block", marginTop: 5, fontSize: 11, fontWeight: 700, color: "#991b1b", background: "#fee2e2", padding: "2px 8px", borderRadius: 6, letterSpacing: ".3px" }}>{t.propNotInProduction}</span>
-                    )}
+              <div style={{ padding: "17px 17px 13px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <h3 style={{ margin: 0, fontSize: 21, fontWeight: 750, letterSpacing: "-.035em", color: theme.text, overflowWrap: "anywhere" }}>{p.address}</h3>
+                    <p style={{ margin: "5px 0 0", color: theme.textMuted, fontSize: 13 }}>{[locality, p.type].filter(Boolean).join(" · ")}</p>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <button onClick={() => openEdit(p)} style={{ position: "relative", zIndex: 2, background: "none", border: "none", cursor: "pointer", padding: 4, color: "#9ca3af", borderRadius: 6, display: "flex", alignItems: "center" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "#111111"} onMouseLeave={e => e.currentTarget.style.color = "#9ca3af"}>
+                  <div style={{ display: "flex", gap: 5, flexShrink: 0 }}>
+                    <button type="button" onClick={() => openEdit(p)} aria-label={t.propEditAction} className="ld-property-action" style={propertyIconButton}>
                       <Icon name="edit" size={15} />
                     </button>
-                    <button onClick={() => setConfirmDelete(p)} style={{ position: "relative", zIndex: 2, background: "none", border: "none", cursor: "pointer", padding: 4, color: "#9ca3af", borderRadius: 6, display: "flex", alignItems: "center" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#9ca3af"}>
+                    <button type="button" onClick={() => setConfirmDelete(p)} aria-label={t.propDeleteAction} className="ld-property-action" style={propertyIconButton}>
                       <Icon name="trash" size={15} />
                     </button>
-                    <Badge status={p.status} t={t} />
                   </div>
                 </div>
-                <p style={{ margin: "0 0 16px", fontSize: 13, color: "#6b7280" }}>{p.city}, {p.state} {p.zip} · {p.type}</p>
-                <div style={{ background: "#fafafa", borderRadius: 9, padding: "10px 12px" }}>
-                  <div style={{ fontSize: 11, color: "#9ca3af", marginBottom: 2, textTransform: "uppercase", letterSpacing: ".5px" }}>{t.propOccupiedUnits}</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#111111" }}>{occupiedUnits}<span style={{ color: "#9ca3af", fontSize: 13, fontWeight: 400 }}>/{totalUnits}</span></div>
+                {p.inProduction === false && (
+                  <span style={{ display: "inline-block", marginTop: 9, padding: "3px 7px", borderRadius: 5, color: "#991b1b", background: "#fee2e2", fontSize: 11, fontWeight: 700 }}>{t.propNotInProduction}</span>
+                )}
+                <div style={{ display: "flex", alignItems: "baseline", gap: 7, marginTop: 13, color: theme.textMuted, fontSize: 13 }}>
+                  <strong style={{ color: theme.text, fontSize: 21, letterSpacing: "-.025em", fontVariantNumeric: "tabular-nums" }}>{occupiedUnits}/{propertyUnits.length}</strong>
+                  {t.propOccupiedUnits}
                 </div>
               </div>
-              <div style={{ padding: "0 22px 22px", marginTop: "auto" }}>
-                <Link href={routes.rentIncreaseManager(p)} style={rentManagerLinkStyle}>
+              <div style={{ borderTop: `1px solid ${theme.border}`, padding: "11px 17px 13px", marginTop: "auto" }}>
+                <Link href={routes.rentIncreaseManager(p)} className="ld-property-action" style={rentManagerLinkStyle}>
                   <Icon name="trending" size={15} />{t.rentIncreaseManager}
                 </Link>
               </div>
@@ -1125,7 +1136,7 @@ export const TenantDeleteModal = ({ tenant, data, t, onClose, onDeleted }) => {
           <p style={{ margin: "0 0 12px", fontSize: 14, color: "#111111" }}>
             {t.deleteTenantBlockedBefore}<strong><TenantName tenant={tenant} t={t} /></strong>{t.deleteTenantBlockedAfter}
           </p>
-          <div style={{ margin: "0 0 16px", border: "1px solid #eaeaea", borderRadius: 8, overflow: "hidden" }}>
+          <div style={{ margin: "0 0 16px", border: `1px solid ${theme.border}`, borderRadius: 8, overflow: "hidden" }}>
             {blockers.map((b, i) => (
               <div key={b.key} style={{ padding: "10px 12px", fontSize: 14, color: "#374151", borderTop: i === 0 ? "none" : "1px solid #f5f5f5" }}>
                 {t[`blocker_${b.key}`] ? t[`blocker_${b.key}`](b.count) : `${b.count} × ${b.key}`}
@@ -1378,7 +1389,7 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
         </td>
         <td style={{ padding: "14px 20px" }}>
           <div style={{ display: "flex", gap: 6 }}>
-            <button onClick={() => openEdit(ten)} style={{ background: "#fafafa", border: "1px solid #eaeaea", borderRadius: 7, padding: "6px 12px", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "#374151", display: "flex", alignItems: "center", gap: 5, fontFamily: "inherit" }}>
+            <button onClick={() => openEdit(ten)} style={{ background: "#fafafa", border: `1px solid ${theme.border}`, borderRadius: 7, padding: "6px 12px", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "#374151", display: "flex", alignItems: "center", gap: 5, fontFamily: "inherit" }}>
               <Icon name="edit" size={13} /> {t.editBtn}
             </button>
             <button onClick={() => setDeleteTarget(ten)} style={{ ...dangerIconBtnStyle, fontSize: 12 }}>
@@ -1425,9 +1436,9 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
         ))}
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f5f5f5", overflow: "hidden" }}>
+      <div className="landlord-scroll" style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead style={{ background: "#fafafa" }}>
+          <thead style={{ background: theme.bgSubtle }}>
             <tr style={{ color: "#6b7280", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
               {[t.colTenant, t.colContact, t.colProperty, t.colMonthlyRent, t.colStatus, statusFilter === "past" ? t.colDepositRefunded : t.colSecurityDeposit, ""].map((h,i) => <th key={i} style={{ padding: "14px 20px", textAlign: "left", whiteSpace: "nowrap" }}>{h}</th>)}
             </tr>
@@ -1514,10 +1525,10 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
             <div style={{ gridColumn: "1 / -1", marginBottom: 16 }}>
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.notesLabel}</label>
               <textarea value={form.notes} onChange={e => setF("notes", e.target.value)} placeholder={t.notesPlaceholder} rows={3}
-                style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16, padding: "12px 14px", background: "#fafafa", borderRadius: 9, border: "1px solid #eaeaea" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16, padding: "12px 14px", background: "#fafafa", borderRadius: 9, border: `1px solid ${theme.border}` }}>
             <Toggle value={form.createLogin} onChange={v => setF("createLogin", v)} />
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: "#111111" }}>{t.createLoginLabel}</div>
@@ -1560,7 +1571,7 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
                       setEF("unitId", uid || "");
                       setEF("unit", matched ? matched.unitNumber : "");
                     }}
-                    style={{ width: "100%", background: "#fff", color: "#111111", border: "1px solid #eaeaea", borderRadius: 8, padding: "10px 14px", fontSize: 14, fontFamily: "inherit" }}
+                    style={{ width: "100%", background: "#fff", color: "#111111", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "10px 14px", fontSize: 14, fontFamily: "inherit" }}
                     disabled={!editForm.propertyId}
                   >
                     {!editForm.propertyId ? (
@@ -1601,7 +1612,7 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
             <div style={{ gridColumn: "1 / -1", marginBottom: 16 }}>
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.notesLabel}</label>
               <textarea value={editForm.notes || ""} onChange={e => setEF("notes", e.target.value)} placeholder={t.notesPlaceholder} rows={3}
-                style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
             </div>
           </div>
           <div style={{ marginTop: 4, marginBottom: 4 }}>
@@ -1760,7 +1771,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
             <div
               key={c.id}
               onClick={firstDoc ? () => setViewingDoc(firstDoc) : undefined}
-              style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5", display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr auto", gap: 16, alignItems: "center", cursor: firstDoc ? "pointer" : "default" }}>
+              style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 116px), 1fr))", gap: 16, alignItems: "center", cursor: firstDoc ? "pointer" : "default" }}>
               <div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", marginBottom: 6 }}>
                   {prop?.address}{c.unit ? ` · ${c.unit}` : ""}
@@ -1801,7 +1812,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
                   <button
                     onClick={(e) => { e.stopPropagation(); setDeleteTarget(c); }}
                     style={{ ...dangerIconBtnStyle, fontSize: 13 }}
-                    aria-label="Delete lease"
+                    aria-label={t.leaseDeleteAction}
                   >
                     <Icon name="trash" size={14} />
                   </button>
@@ -1876,7 +1887,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
                   placeholder={t.docDriveLinkPlaceholder}
                   value={driveLinkInput}
                   onChange={e => setDriveLinkInput(e.target.value)}
-                  style={{ flex: 1, border: "1px solid #eaeaea", borderRadius: 8, padding: "8px 12px", fontSize: 13, fontFamily: "inherit", outline: "none" }}
+                  style={{ flex: 1, border: `1px solid ${theme.border}`, borderRadius: 8, padding: "8px 12px", fontSize: 13, fontFamily: "inherit", outline: "none" }}
                 />
                 <Btn size="sm" onClick={async () => {
                   if (!driveLinkInput.trim() || !editContract) return;
@@ -1908,7 +1919,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
                   </span>
                   <button
                     onClick={() => setViewingDoc(doc)}
-                    style={{ background: "#111111", color: "#fff", border: "none", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}
+                    style={{ background: theme.accent, color: "#fff", border: "none", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}
                   >{t.docView}</button>
                   <button
                     onClick={async () => {
@@ -2026,7 +2037,7 @@ const ParkingLotDiagram = ({ spots, occBySpotId, onSelect, t }) => {
   if (!stalls.length) return null;
 
   return (
-    <div style={{ background: "#fff", border: "1px solid #eaeaea", borderRadius: 12, padding: 16, marginBottom: 14 }}>
+    <div style={{ background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 10 }}>
         {t.parkLotDiagram}
       </div>
@@ -2337,7 +2348,7 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
                 {[...propSpots].sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true })).map(spot => {
                   const occ = occBySpotId.get(spot.id);
                   return (
-                    <div key={spot.id} style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #eaeaea" }}>
+                    <div key={spot.id} style={{ background: "#fff", borderRadius: 12, padding: 16, border: `1px solid ${theme.border}` }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                         <div>
                           <div style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>{spot.label}</div>
@@ -2865,14 +2876,14 @@ export const PaymentsPage = ({ data, t, refresh }) => {
         </button>
         {hasChanges && (
           <button onClick={() => setChecked({ ...saved })}
-            style={{ padding: "9px 16px", borderRadius: 8, border: "1px solid #eaeaea", background: "#fff", color: "#6b7280", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+            style={{ padding: "9px 16px", borderRadius: 8, border: `1px solid ${theme.border}`, background: "#fff", color: "#6b7280", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
             {t.discard}
           </button>
         )}
       </div>
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f5f5f5", overflowX: "auto" }}>
+      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)", overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 800 }}>
-          <thead style={{ background: "#fafafa" }}>
+          <thead style={{ background: theme.bgSubtle }}>
             <tr style={{ color: "#6b7280", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
               <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.colTenant}</th>
               <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.payZelleName}</th>
@@ -2996,9 +3007,9 @@ export const PaymentsPage = ({ data, t, refresh }) => {
           )}
         </div>
         {sortedPayments.length === 0 ? (
-          <div style={{ textAlign: "center", color: "#9ca3af", fontSize: 14, padding: "30px 0", background: "#fff", border: "1px solid #eaeaea", borderRadius: 12 }}>{t.payNoRecords}</div>
+          <div style={{ textAlign: "center", color: "#9ca3af", fontSize: 14, padding: "30px 0", background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12 }}>{t.payNoRecords}</div>
         ) : (
-          <div style={{ background: "#fff", border: "1px solid #eaeaea", borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12, overflow: "hidden" }}>
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr style={{ background: "#fafafa", borderBottom: "1px solid #eaeaea" }}>
@@ -3082,7 +3093,7 @@ const AttachmentChip = ({ att }) => {
   const isImage = att.fileType?.startsWith("image/");
   return (
     <a href={url || "#"} target="_blank" rel="noopener noreferrer"
-      style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#fafafa", border: "1px solid #eaeaea", borderRadius: 8, padding: isImage ? 0 : "5px 10px", overflow: "hidden", textDecoration: "none", cursor: url ? "pointer" : "default", opacity: url ? 1 : 0.6 }}>
+      style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#fafafa", border: `1px solid ${theme.border}`, borderRadius: 8, padding: isImage ? 0 : "5px 10px", overflow: "hidden", textDecoration: "none", cursor: url ? "pointer" : "default", opacity: url ? 1 : 0.6 }}>
       {isImage && url ? (
         <img src={url} alt={att.fileName} style={{ width: 56, height: 56, objectFit: "cover", display: "block" }} />
       ) : (
@@ -3440,13 +3451,13 @@ const CommentThread = ({ request, comments, viewer, setData, L }) => {
 };
 
 const commentLinkStyle = { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 600, color: "#111111" };
-const commentInputStyle = { flex: 1, padding: "8px 12px", border: "1px solid #eaeaea", borderRadius: 8, fontSize: 13, color: "#111111", outline: "none", fontFamily: "inherit", boxSizing: "border-box" };
+const commentInputStyle = { flex: 1, padding: "8px 12px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 13, color: "#111111", outline: "none", fontFamily: "inherit", boxSizing: "border-box" };
 const commentSendStyle = (disabled) => ({ padding: "8px 16px", borderRadius: 8, border: "none", background: disabled ? "#eaeaea" : "#111111", color: disabled ? "#9ca3af" : "#fff", fontSize: 13, fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer", fontFamily: "inherit", whiteSpace: "nowrap", flexShrink: 0 });
 
 // Outlined red icon-button for row-level delete actions. Call sites override fontSize.
 const dangerIconBtnStyle = { background: "#fff", border: "1px solid #fca5a5", borderRadius: 7, padding: "6px 10px", cursor: "pointer", fontWeight: 600, color: "#ef4444", display: "flex", alignItems: "center", fontFamily: "inherit" };
 // Neutral sibling of the above, for non-destructive row-level actions (edit).
-const iconBtn = { background: "#fff", border: "1px solid #eaeaea", borderRadius: 7, padding: "6px 10px", cursor: "pointer", fontWeight: 600, color: "#6b7280", display: "flex", alignItems: "center", fontFamily: "inherit" };
+const iconBtn = { background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 7, padding: "6px 10px", cursor: "pointer", fontWeight: 600, color: "#6b7280", display: "flex", alignItems: "center", fontFamily: "inherit" };
 
 // ─── TO DO LIST (kanban) ────────────────────────────────────────────────────
 // Board over the existing maintenance_requests. Stored status values are unchanged
@@ -3773,7 +3784,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
             <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: attachments.length ? 14 : 4 }}>
               <Badge status={m.status} t={t} />
               <select value={m.status} onChange={e => updateStatus(m.id, e.target.value, m.closedAt)}
-                style={{ padding: "6px 10px", border: "1px solid #eaeaea", borderRadius: 8, fontSize: 12, color: "#374151", cursor: "pointer", fontFamily: "inherit", outline: "none" }}>
+                style={{ padding: "6px 10px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 12, color: "#374151", cursor: "pointer", fontFamily: "inherit", outline: "none" }}>
                 <option value="new">{t.statusNew}</option>
                 <option value="in-progress">{t.statusInProgress}</option>
                 <option value="closed">{t.statusClosed}</option>
@@ -3803,7 +3814,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
           <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintDescription}</label>
           <textarea value={editReqForm.description} onChange={e => setERF("description", e.target.value)} rows={4}
             placeholder={t.maintDescriptionPlaceholder}
-            style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", marginBottom: 12 }} />
+            style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", marginBottom: 12 }} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Sel label={t.maintType} value={editReqForm.type} onChange={v => setERF("type", v)}
               options={[{ value: "", label: t.maintTypeSelect }, ...(data.maintenanceTypes || []).map(mt => ({ value: mt.name, label: mt.name }))]} />
@@ -3838,7 +3849,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
             <div>
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintTenant} *</label>
               <select value={form.tenantId} onChange={e => setF("tenantId", e.target.value)}
-                style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
                 <option value="">{t.maintSelectTenant}</option>
                 {visibleTenants.filter(ten => ten.status === "current tenant" || ten.status === "future tenant").map(ten => (
                   <option key={ten.id} value={ten.id}>{tenantFullName(ten) + genderSuffix(ten)}</option>
@@ -3847,7 +3858,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
             </div>
             <div>
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintUnit}</label>
-              <div style={{ padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: selectedUnit !== "—" ? "#111111" : "#9ca3af", background: "#fafafa" }}>
+              <div style={{ padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: selectedUnit !== "—" ? "#111111" : "#9ca3af", background: "#fafafa" }}>
                 {selectedUnit}
               </div>
             </div>
@@ -3863,7 +3874,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
             <div>
               <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintType}</label>
               <select value={form.type} onChange={e => { if (e.target.value === "__add__") { setShowAddType(true); } else { setF("type", e.target.value); } }}
-                style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
                 <option value="">{t.maintTypeSelect}</option>
                 {(data.maintenanceTypes || []).map(mt => (
                   <option key={mt.id} value={mt.name}>{mt.name}</option>
@@ -3881,7 +3892,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
                     style={{ flex: 1, padding: "8px 12px", border: "1px solid #111111", borderRadius: 8, fontSize: 14, color: "#111111", outline: "none", fontFamily: "inherit" }}
                   />
                   <button onClick={addType} disabled={addingType || !newTypeName.trim()}
-                    style={{ padding: "8px 14px", background: "#111111", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: addingType || !newTypeName.trim() ? "not-allowed" : "pointer", opacity: addingType || !newTypeName.trim() ? 0.6 : 1, fontFamily: "inherit" }}>
+                    style={{ padding: "8px 14px", background: theme.accent, color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: addingType || !newTypeName.trim() ? "not-allowed" : "pointer", opacity: addingType || !newTypeName.trim() ? 0.6 : 1, fontFamily: "inherit" }}>
                     {t.maintAddTypeSave}
                   </button>
                 </div>
@@ -3900,7 +3911,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
             </div>
             <textarea value={form.description} onChange={e => { setF("description", e.target.value); if (translateState === "done") setTranslateState("idle"); }}
               placeholder={t.maintDescriptionPlaceholder} rows={4}
-              style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5 }} />
+              style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5 }} />
           </div>
 
           {/* Chinese translation */}
@@ -3925,7 +3936,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
             {files.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {files.map((f, idx) => (
-                  <div key={idx} style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: 6, background: "#fafafa", border: "1px solid #eaeaea", borderRadius: 8, padding: f.previewUrl ? 0 : "6px 10px", overflow: "hidden" }}>
+                  <div key={idx} style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: 6, background: "#fafafa", border: `1px solid ${theme.border}`, borderRadius: 8, padding: f.previewUrl ? 0 : "6px 10px", overflow: "hidden" }}>
                     {f.previewUrl ? (
                       <img src={f.previewUrl} alt={f.file.name} style={{ width: 64, height: 64, objectFit: "cover", display: "block" }} />
                     ) : (
@@ -3971,19 +3982,19 @@ export const EmailPage = ({ data, setData, t, refresh, user }) => {
 
   return (
     <div>
-      <PageHeader title={t.emailTitle} subtitle={t.emailSubtitle} />
+      <PageHeader title={t.navPaymentReminders} subtitle={t.emailSubtitle} />
       <div style={{ display: "grid", gap: 14 }}>
         {reminders.map(r => (
-          <div key={r.key} style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+          <div key={r.key} className="landlord-reminder" style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 42, height: 42, borderRadius: 11, background: s[r.key]?"rgba(17,17,17,.1)":"#fafafa", display: "flex", alignItems: "center", justifyContent: "center", color: s[r.key]?"#111111":"#9ca3af" }}><Icon name="mail" size={19} /></div>
+              <div style={{ width: 42, height: 42, borderRadius: 11, background: s[r.key] ? "var(--ld-accent-tint, rgba(17,17,17,.1))" : theme.bgSubtle, display: "flex", alignItems: "center", justifyContent: "center", color: s[r.key] ? theme.accent : theme.textFaint }}><Icon name="mail" size={19} /></div>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#111111" }}>{r.label}</div>
                 <div style={{ fontSize: 13, color: "#6b7280" }}>{r.desc}</div>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <button onClick={() => setEditing(editing===r.key?null:r.key)} style={{ padding: "7px 14px", border: "1px solid #eaeaea", borderRadius: 8, background: "#fff", fontSize: 13, color: "#374151", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}>
+              <button onClick={() => setEditing(editing===r.key?null:r.key)} style={{ padding: "7px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, background: "#fff", fontSize: 13, color: "#374151", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}>
                 <Icon name="edit" size={14} />{t.editTemplate}
               </button>
               <Toggle value={s[r.key]} onChange={v => updS(r.key, v)} />
@@ -3997,7 +4008,7 @@ export const EmailPage = ({ data, setData, t, refresh, user }) => {
               <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.variablesNote}</span>
             </div>
             <textarea value={s.templates[reminders.find(r => r.key===editing)?.tKey]} onChange={e => updT(reminders.find(r => r.key===editing)?.tKey, e.target.value)}
-              style={{ width: "100%", minHeight: 160, padding: "12px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 13, color: "#374151", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box", outline: "none", lineHeight: 1.6 }} />
+              style={{ width: "100%", minHeight: 160, padding: "12px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 13, color: "#374151", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box", outline: "none", lineHeight: 1.6 }} />
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
               <Btn size="sm" onClick={saveTemplate}>{t.saveTemplate}</Btn>
             </div>
@@ -4024,7 +4035,7 @@ export const TenantDashboard = ({ data, user }) => {
         <StatCard label="Next Payment" value={contract ? `Mar ${contract.dueDay}` : "—"} sub={payments[0] ? <Badge status={payments[0].status} t={T.en} /> : ""} icon="calendar" color="#3b82f6" />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Your Unit</h3>
           <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
             <div style={{ width: 50, height: 50, background: "linear-gradient(135deg,#111111,#1a1a1a)", borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff", flexShrink: 0 }}><Icon name="home" size={24} /></div>
@@ -4045,7 +4056,7 @@ export const TenantDashboard = ({ data, user }) => {
             </div>
           )}
         </div>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Recent Payments</h3>
           {payments.slice(0,4).map(p => (
             <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #fafafa" }}>
@@ -4098,7 +4109,7 @@ export const PaymentPortal = ({ data, setData, user, refresh }) => {
       <PageHeader title="Payment Portal" subtitle="ACH payments & bank account management" />
       {success && <div style={{ background:"#dcfce7",border:"1px solid #86efac",borderRadius:12,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:10,color:"#166534",fontSize:14,fontWeight:600 }}><Icon name="check" size={18} />Payment initiated! ACH transfer processing (1-3 business days).</div>}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid #f5f5f5" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
             <div style={{ width: 44, height: 44, borderRadius: 11, background: tenant.bankConnected?"rgba(34,197,94,.1)":"#fafafa", display: "flex", alignItems: "center", justifyContent: "center", color: tenant.bankConnected?"#22c55e":"#9ca3af" }}><Icon name="bank" size={21} /></div>
             <div>
@@ -4135,7 +4146,7 @@ export const PaymentPortal = ({ data, setData, user, refresh }) => {
           )}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5" }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
               <div style={{ display: "flex", gap: 12 }}>
                 <div style={{ width: 42, height: 42, borderRadius: 11, background: tenant.recurringPayment?"rgba(17,17,17,.1)":"#fafafa", display: "flex", alignItems: "center", justifyContent: "center", color: tenant.recurringPayment?"#111111":"#9ca3af" }}><Icon name="refresh" size={19} /></div>
@@ -4148,7 +4159,7 @@ export const PaymentPortal = ({ data, setData, user, refresh }) => {
               <Toggle value={tenant.recurringPayment} onChange={toggleRecurring} />
             </div>
           </div>
-          <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5" }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
             <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
               <div style={{ width: 42, height: 42, borderRadius: 11, background: "rgba(59,130,246,.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3b82f6" }}><Icon name="dollar" size={19} /></div>
               <div>
@@ -4207,12 +4218,12 @@ export const TenantMaintenancePage = ({ data, setData, user, refresh }) => {
       <PageHeader title="Maintenance Requests" subtitle="Submit and track repair requests" />
       {success && <div style={{ background:"#dcfce7",border:"1px solid #86efac",borderRadius:12,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:10,color:"#166534",fontSize:14,fontWeight:600 }}><Icon name="check" size={18} />Request submitted! Your landlord will be notified.</div>}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 20 }}>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid #f5f5f5" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <h3 style={{ margin: "0 0 18px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>New Request</h3>
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>Description</label>
             <textarea value={form.description} onChange={e => setForm(f => ({...f,description:e.target.value}))} placeholder="Describe the issue in detail..." rows={5}
-              style={{ width: "100%", padding: "11px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", resize: "vertical", boxSizing: "border-box", outline: "none", fontFamily: "inherit", lineHeight: 1.5 }} />
+              style={{ width: "100%", padding: "11px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", resize: "vertical", boxSizing: "border-box", outline: "none", fontFamily: "inherit", lineHeight: 1.5 }} />
           </div>
           <Sel label="Priority" value={form.priority} onChange={v => setForm(f => ({...f,priority:v}))} options={[{value:"low",label:"Low"},{value:"medium",label:"Medium"},{value:"high",label:"High"}]} />
           <Btn icon="plus" onClick={submit}>Submit Request</Btn>
@@ -4222,7 +4233,7 @@ export const TenantMaintenancePage = ({ data, setData, user, refresh }) => {
           <div style={{ display: "grid", gap: 12 }}>
             {myReqs.map(m => {
               return (
-                <div key={m.id} style={{ background: "#fff", borderRadius: 12, padding: "16px 18px", border: "1px solid #f5f5f5", display: "flex", gap: 12 }}>
+                <div key={m.id} style={{ background: "#fff", borderRadius: 12, padding: "16px 18px", border: "1px solid var(--ld-border, #f5f5f5)", display: "flex", gap: 12 }}>
                   <div style={{ width: 3, borderRadius: 3, background: PRIORITY_COLORS[m.priority], flexShrink: 0 }} />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, color: "#111111", marginBottom: 6 }}>{m.description}</div>
@@ -4258,7 +4269,7 @@ const TenantLeasePage = ({ data, user }) => {
     <div>
       <PageHeader title="My Lease" subtitle="Current lease agreement details" />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 28, border: "1px solid #f5f5f5" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 28, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <div style={{ display: "flex", gap: 14, marginBottom: 22 }}>
             <div style={{ width: 52, height: 52, background: "linear-gradient(135deg,#111111,#1a1a1a)", borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}><Icon name="file" size={24} /></div>
             <div>
@@ -4288,7 +4299,7 @@ const TenantLeasePage = ({ data, user }) => {
               </>
             )}
           </div>
-          <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #f5f5f5" }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
             <h4 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 700, color: "#111111" }}>Landlord Contact</h4>
             <p style={{ margin: 0, fontSize: 14, color: "#374151" }}>Brian Zhang</p>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#6b7280" }}>brian@property.com</p>
@@ -4305,9 +4316,9 @@ export const PaymentHistoryPage = ({ data, user }) => {
   return (
     <div>
       <PageHeader title="Payment History" subtitle={`${payments.length} payments · ${fmt(total)} total paid`} />
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f5f5f5", overflow: "hidden" }}>
+      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)", overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead style={{ background: "#fafafa" }}>
+          <thead style={{ background: theme.bgSubtle }}>
             <tr style={{ color: "#6b7280", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
               {["Amount","Due Date","Paid Date","Type","ACH Status","Status"].map(h => <th key={h} style={{ padding: "14px 20px", textAlign: "left" }}>{h}</th>)}
             </tr>
@@ -4409,7 +4420,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
       <PageHeader title={t.adminUsersTitle} subtitle={t.adminUsersSubtitle} />
 
       {/* User list */}
-      <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f5f5f5", overflow: "hidden", marginBottom: 28 }}>
+      <div className="landlord-scroll" style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)", marginBottom: 28 }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ background: "#fafafa" }}>
@@ -4442,7 +4453,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
       {/* Create admin form */}
       <div style={{ maxWidth: 520 }}>
         <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Create Admin User</h3>
-        <div style={{ background: "#fff", borderRadius: 14, padding: 28, border: "1px solid #f5f5f5" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: 28, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <Inp label={t.adminName} value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
           <Inp label={t.adminEmail} value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} type="email" />
           <Inp label={t.adminPassword} value={form.password} onChange={v => setForm(f => ({ ...f, password: v }))} type="password" placeholder={t.minCharsPlaceholder} />
@@ -4472,7 +4483,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
 
 // ─── TENANT PROFILE PAGE ──────────────────────────────────────────────────────
 export const TenantProfilePage = ({ user, setUser }) => {
-  const cardStyle = { background: "#fff", borderRadius: 14, padding: 28, border: "1px solid #f5f5f5", marginBottom: 20 };
+  const cardStyle = { background: "#fff", borderRadius: 14, padding: 28, border: "1px solid var(--ld-border, #f5f5f5)", marginBottom: 20 };
   const headStyle = { margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", paddingBottom: 14, borderBottom: "1px solid #f5f5f5" };
   const msgStyle = (err) => ({ fontSize: 13, marginTop: 8, color: err ? "#ef4444" : "#22c55e" });
   const tenantMx = useTenantMutations();
@@ -4535,7 +4546,7 @@ export const TenantProfilePage = ({ user, setUser }) => {
     setPwSaving(false);
   };
 
-  const inputStyle = { width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" };
+  const inputStyle = { width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" };
   const labelStyle = { display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 };
 
   return (

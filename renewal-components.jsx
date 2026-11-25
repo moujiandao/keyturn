@@ -4,7 +4,7 @@ import { Modal, Btn, Icon, PageHeader } from './property-management-app'
 import { deriveRenewalTerm, pickOriginalLeaseDate } from './lib/docuseal/renewal.js'
 import { fmtDate } from '@/lib/format'
 
-const card = { background: '#fff', borderRadius: 14, padding: 22, border: '1px solid #f5f5f5' }
+const card = { background: '#fff', borderRadius: 14, padding: 22, border: '1px solid var(--ld-border, #f5f5f5)' }
 const emptyState = { ...card, textAlign: 'center', color: '#9ca3af', fontSize: 14, padding: 40 }
 const sectionHeading = { fontSize: 17, fontWeight: 700, color: '#111111', margin: '0 0 14px', fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }
 const redChip = { fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#fee2e2', color: '#991b1b' }
@@ -30,7 +30,7 @@ const deriveTerm = (contract) => deriveRenewalTerm(contract.endDate)
 
 // ─── Local stat card (StatCard isn't exported by the monolith) ────────────────
 const Stat = ({ label, value, sub, icon, color = '#111111' }) => (
-  <div style={{ background: '#fff', borderRadius: 14, padding: '20px 22px', border: '1px solid #f5f5f5', boxShadow: '0 1px 3px rgba(0,0,0,.04)' }}>
+  <div style={{ background: '#fff', borderRadius: 14, padding: '20px 22px', border: '1px solid var(--ld-border, #f5f5f5)', boxShadow: '0 1px 3px rgba(0,0,0,.04)' }}>
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
       <div>
         <p style={{ margin: '0 0 6px', color: '#6b7280', fontSize: 13, fontWeight: 500 }}>{label}</p>
@@ -166,9 +166,9 @@ const PrepareRenewalModal = ({ due, user, t, onClose, onDone }) => {
 
 // ─── Due-renewal card ─────────────────────────────────────────────────────────
 const DueCard = ({ due, t, onPrepare }) => (
-  <div style={{ ...card, borderColor: due.urgent ? '#fecaca' : '#f5f5f5' }}>
-    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
-      <div style={{ minWidth: 0, flex: 1 }}>
+  <div style={{ ...card, borderColor: due.urgent ? '#fecaca' : 'var(--ld-border)', minWidth: 0 }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+      <div style={{ minWidth: 0, flex: '1 1 248px', overflowWrap: 'anywhere' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#111111' }}>{due.propertyAddress || t.renewalUnknownProperty}</div>
           {due.urgent && (
@@ -291,7 +291,7 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
     <div>
       <PageHeader title={t.renewalsTitle} subtitle={t.renewalsSubtitle} />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 28 }}>
+      <div className="landlord-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16, marginBottom: 28 }}>
         <Stat label={t.renewalStatDue} value={due.length} icon="calendar" />
         <Stat label={t.renewalStatUrgent} value={urgentCount} icon="clock" color="#ef4444" />
         <Stat label={t.renewalStatBlocked} value={blockedCount} icon="x" color="#f59e0b" />

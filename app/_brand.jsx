@@ -1,3 +1,4 @@
+import { APP_NAME } from '@/lib/brand'
 import { palette } from '@/lib/theme'
 
 // Shared brand mark for marketing + auth surfaces. Server component (pure markup).
@@ -30,7 +31,7 @@ export function Logo({ size = 30, withWordmark = true, color = palette.text }) {
           the media query could not override it. */}
       {withWordmark && (
         <span className="pm-wordmark" style={{ fontSize: size * 0.62, fontWeight: 800, letterSpacing: '-0.02em', color }}>
-          PropManager
+          {APP_NAME}
         </span>
       )}
     </span>

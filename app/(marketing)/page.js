@@ -1,8 +1,9 @@
+import { APP_NAME } from '@/lib/brand'
 import Link from 'next/link'
 import { palette, container, btnStyle, radius } from '@/lib/theme'
 
 export const metadata = {
-  title: 'PropManager — Move-in and move-out tracking for high-turnover rentals',
+  title: `${APP_NAME} — Move-in and move-out tracking for high-turnover rentals`,
   description:
     'For student, seasonal, and short-term rentals. See every move-in and move-out for the next six months, catch vacancy gaps early, and confirm each turnover yourself.',
 }
@@ -121,7 +122,7 @@ function ProductMock() {
         {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
           <span key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />
         ))}
-        <span style={{ marginLeft: 12, fontSize: 12, color: palette.textFaint }}>app.propmanager.com/dashboard</span>
+        <span style={{ marginLeft: 12, fontSize: 12, color: palette.textFaint }}>{APP_NAME} / Dashboard</span>
       </div>
       <div style={{ display: 'flex', minHeight: 300 }}>
         {/* sidebar — hidden below 640px, where 168 fixed pixels of chrome would

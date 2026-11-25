@@ -85,7 +85,7 @@ export const DocViewer = ({ doc, onClose }) => {
 // next load. See the note on createUnit in lib/units/core.js.
 const EMPTY_UNIT_FORM = { unitNumber: "", bedrooms: "1", bathrooms: "1", monthlyRent: "" }
 
-const unitIconBtn = { background: "#fafafa", border: "1px solid #eaeaea", borderRadius: 6, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#9ca3af" }
+const unitIconBtn = { background: "#fafafa", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 6, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#9ca3af" }
 const unitDangerIconBtn = { ...unitIconBtn, border: "1px solid #fca5a5", color: "#ef4444" }
 
 export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId, onBack, onNavigateToTenant }) => {
@@ -178,12 +178,12 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
   const occupiedCount = units.filter(u => u.status === 'occupied').length
 
   return (
-    <div style={{ background: "#fafafa", minHeight: "100vh", padding: "32px 40px", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
+    <div>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 28 }}>
         <button
           onClick={onBack}
-          style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
+          style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
           onMouseEnter={e => e.currentTarget.style.background = "#f5f5f5"}
           onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
         >
@@ -193,7 +193,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
           {t.unitBack}
         </button>
         <div>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", letterSpacing: "-0.5px" }}>
+          <h1 style={{ margin: 0, fontSize: "var(--ld-heading-size)", fontWeight: 780, color: "var(--ld-ink)", letterSpacing: "-.045em", overflowWrap: "anywhere" }}>
             {property.address}
           </h1>
           <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: 13 }}>
@@ -203,7 +203,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
         <div style={{ marginLeft: "auto" }}>
           <button
             onClick={openAdd}
-            style={{ background: "linear-gradient(135deg,#111111,#000000)", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: 14, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit" }}
+            style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: 14, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit" }}
             onMouseEnter={e => e.currentTarget.style.opacity = ".85"}
             onMouseLeave={e => e.currentTarget.style.opacity = "1"}
           >
@@ -219,13 +219,13 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
           {t.unitsEmpty}
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 210px), 1fr))", gap: 14 }}>
           {[...units].sort((a, b) => Number(a.unitNumber) - Number(b.unitNumber)).map(unit => {
             // `ten`, not `t` — `t` is the translation bag in this scope now.
             const tenants = (data.tenants || []).filter(ten => ten.unitId === unit.id && ten.status === "current tenant")
             const isOccupied = unit.status === 'occupied'
             return (
-              <div key={unit.id} style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #eaeaea", position: "relative" }}>
+              <div key={unit.id} style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid var(--ld-border, #eaeaea)", position: "relative" }}>
                 {/* Edit stays available on an occupied unit — renaming or fixing a
                     bed count doesn't invalidate anyone's tenancy. Delete is guarded
                     in lib/units/core, which blocks while any tenant is assigned. */}
@@ -352,7 +352,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
               {/* Naming them is the point: a previous tenant can block a delete
                   on a unit the card shows as vacant, and without this the
                   landlord has no way to find out who. */}
-              <div style={{ margin: "0 0 20px", border: "1px solid #eaeaea", borderRadius: 8, overflow: "hidden" }}>
+              <div style={{ margin: "0 0 20px", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 8, overflow: "hidden" }}>
                 {blockingTenants(deleteTarget).map((ten, i) => (
                   <button
                     key={ten.id}
@@ -396,7 +396,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
   )
 }
 
-export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
+export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
   const [uploading, setUploading] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [parsing, setParsing] = useState(null) // documentId being parsed
@@ -516,18 +516,14 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
   if (filterTenant) docs = docs.filter(d => d.tenantId === filterTenant)
   if (filterType) docs = docs.filter(d => d.documentType === filterType)
 
-  const filterSelectStyle = { background: '#fff', color: '#111111', border: '1px solid #eaeaea', borderRadius: 8, padding: '8px 12px', fontSize: 14 }
+  const filterSelectStyle = { background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: 14 }
   const uploadLabelStyle = { display: 'block', fontSize: 12, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 6 }
-  const uploadSelectStyle = { width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #eaeaea', background: '#fff', color: '#111111', fontSize: 15 }
+  const uploadSelectStyle = { width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--ld-border, #eaeaea)', background: '#fff', color: '#111111', fontSize: 15 }
 
   return (
-    <div style={{ padding: '24px 32px' }}>
+    <div>
       {viewingDoc && <DocViewer doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <h1 style={{ color: '#111111', fontSize: 24, fontWeight: 700, margin: 0 }}>Documents</h1>
-        <Btn onClick={() => setShowUploadModal(true)}>+ Upload Document</Btn>
-      </div>
+      <PageHeader title={t.navDocuments} action={<Btn icon="plus" onClick={() => setShowUploadModal(true)}>{t.docUploadAction}</Btn>} />
 
       {/* Filters */}
       <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -566,7 +562,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
                 if (json.linked > 0) refresh()
               }}
               disabled={syncing}
-              style={{ background: '#111111', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.7 : 1, fontFamily: 'inherit' }}
+              style={{ background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.7 : 1, fontFamily: 'inherit' }}
             >
               {syncing ? 'Syncing…' : '⟳ Sync from Drive'}
             </button>
@@ -634,7 +630,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
                         const existingTenant = (data.tenants || []).find(t => t.name?.toLowerCase() === name.toLowerCase())
                         return (
                           <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, cursor: 'pointer' }}>
-                            <input type="checkbox" checked={approvedTenants[name] || false} onChange={() => setApprovedTenants(prev => ({ ...prev, [name]: !prev[name] }))} style={{ accentColor: '#111111' }} />
+                            <input type="checkbox" checked={approvedTenants[name] || false} onChange={() => setApprovedTenants(prev => ({ ...prev, [name]: !prev[name] }))} style={{ accentColor: 'var(--ld-accent, #111111)' }} />
                             <span style={{ color: '#111111' }}>{name}</span>
                             <span style={{ color: existingTenant ? '#22c55e' : '#f59e0b', fontSize: 11, fontWeight: 600 }}>
                               {existingTenant ? 'matches existing tenant' : 'will create new profile'}
@@ -653,7 +649,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
                         { key: 'rent_amount', label: 'Monthly Rent', fmt: v => `$${v}` },
                       ].map(({ key, label, fmt }) => (
                         <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, cursor: 'pointer', opacity: parsedResult.extracted[key] == null ? 0.4 : 1 }}>
-                          <input type="checkbox" checked={approvedFields[key] || false} onChange={() => setApprovedFields(prev => ({ ...prev, [key]: !prev[key] }))} disabled={parsedResult.extracted[key] == null} style={{ accentColor: '#111111' }} />
+                          <input type="checkbox" checked={approvedFields[key] || false} onChange={() => setApprovedFields(prev => ({ ...prev, [key]: !prev[key] }))} disabled={parsedResult.extracted[key] == null} style={{ accentColor: 'var(--ld-accent, #111111)' }} />
                           <span style={{ color: '#9ca3af', width: 120, flexShrink: 0 }}>{label}</span>
                           <span style={{ color: '#111111' }}>{parsedResult.extracted[key] != null ? (fmt ? fmt(parsedResult.extracted[key]) : String(parsedResult.extracted[key])) : '—'}</span>
                         </label>
@@ -671,7 +667,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
                         { key: 'has_cosigner', label: 'Has Cosigner', fmt: v => v ? 'Yes' : 'No' },
                       ].map(({ key, label, fmt }) => (
                         <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, cursor: 'pointer', opacity: parsedResult.extracted[key] == null ? 0.4 : 1 }}>
-                          <input type="checkbox" checked={approvedFields[key] || false} onChange={() => setApprovedFields(prev => ({ ...prev, [key]: !prev[key] }))} disabled={parsedResult.extracted[key] == null} style={{ accentColor: '#111111' }} />
+                          <input type="checkbox" checked={approvedFields[key] || false} onChange={() => setApprovedFields(prev => ({ ...prev, [key]: !prev[key] }))} disabled={parsedResult.extracted[key] == null} style={{ accentColor: 'var(--ld-accent, #111111)' }} />
                           <span style={{ color: '#9ca3af', width: 120, flexShrink: 0 }}>{label}</span>
                           <span style={{ color: '#111111' }}>{parsedResult.extracted[key] != null ? (fmt ? fmt(parsedResult.extracted[key]) : String(parsedResult.extracted[key])) : '—'}</span>
                         </label>
@@ -682,11 +678,11 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
                     <div style={{ marginBottom: 16 }}>
                       <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8 }}>Assignment</div>
                       <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
-                        <select value={leasePropertyId} onChange={e => { setLeasePropertyId(e.target.value); setLeaseUnitId('') }} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid #eaeaea', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}>
+                        <select value={leasePropertyId} onChange={e => { setLeasePropertyId(e.target.value); setLeaseUnitId('') }} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}>
                           <option value="">Select Property</option>
                           {(data.properties || []).map(p => <option key={p.id} value={p.id}>{p.address}</option>)}
                         </select>
-                        <select value={leaseUnitId} onChange={e => setLeaseUnitId(e.target.value)} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid #eaeaea', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}>
+                        <select value={leaseUnitId} onChange={e => setLeaseUnitId(e.target.value)} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}>
                           <option value="">Select Unit</option>
                           {(data.units || []).filter(u => u.propertyId === leasePropertyId).map(u => <option key={u.id} value={u.id}>Unit {u.unitNumber}</option>)}
                         </select>
@@ -702,7 +698,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
                           handleProcessLease()
                         }}
                         disabled={leaseProcessing || !leasePropertyId}
-                        style={{ background: '#111111', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: leaseProcessing || !leasePropertyId ? 'not-allowed' : 'pointer', opacity: leaseProcessing || !leasePropertyId ? 0.7 : 1 }}>
+                        style={{ background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: leaseProcessing || !leasePropertyId ? 'not-allowed' : 'pointer', opacity: leaseProcessing || !leasePropertyId ? 0.7 : 1 }}>
                         {leaseProcessing ? 'Applying...' : 'Apply Selected'}
                       </button>
                       <button
@@ -766,7 +762,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user }) => {
               <option value="other">Other</option>
             </select>
           </div>
-          <button onClick={handleUpload} disabled={uploading || !uploadFile} style={{ width: '100%', padding: 12, background: '#111111', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 15, cursor: uploading || !uploadFile ? 'not-allowed' : 'pointer', opacity: uploading || !uploadFile ? 0.7 : 1 }}>
+          <button onClick={handleUpload} disabled={uploading || !uploadFile} style={{ width: '100%', padding: 12, background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 15, cursor: uploading || !uploadFile ? 'not-allowed' : 'pointer', opacity: uploading || !uploadFile ? 0.7 : 1 }}>
             {uploading ? 'Uploading...' : 'Upload'}
           </button>
         </Modal>
@@ -785,7 +781,7 @@ const InfoRow = ({ label, value, children }) => (
 )
 
 const TenantCard = ({ title, children }) => (
-  <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid #eaeaea" }}>
+  <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid var(--ld-border, #eaeaea)" }}>
     <h3 style={{ margin: "0 0 18px", fontSize: 14, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px" }}>{title}</h3>
     {children}
   </div>
@@ -831,9 +827,9 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
 
   if (!tenant) {
     return (
-      <div style={{ background: "#fafafa", minHeight: "100vh", padding: "32px 40px", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
+      <div>
         {viewingDoc && <DocViewer doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
-        <button onClick={onBack} style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", marginBottom: 24 }}>
+        <button onClick={onBack} style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", marginBottom: 24 }}>
           ← {t.unitBack}
         </button>
         <p style={{ color: "#9ca3af", fontSize: 15 }}>{t.tenantNotFound}</p>
@@ -934,7 +930,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
   const displayRent = linkedUnit?.monthlyRent || tenant.monthlyRent
 
   return (
-    <div style={{ background: "#fafafa", minHeight: "100vh", padding: "32px 40px", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
+    <div>
       {viewingDoc && <DocViewer doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
       {/* Leaves before refreshing: this page renders off the tenant that just
           stopped existing, and `onBack` unmounts it. */}
@@ -948,46 +944,46 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
         />
       )}
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 28 }}>
         <button
           onClick={onBack}
-          style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
+          style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
           onMouseEnter={e => e.currentTarget.style.background = "#f5f5f5"}
           onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
         >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
-          Back
+          {t.unitBack}
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 18, fontWeight: 700, flexShrink: 0 }}>
+          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "var(--ld-accent, #111111)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 18, fontWeight: 700, flexShrink: 0 }}>
             {tenant.name.charAt(0)}
           </div>
           <div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", letterSpacing: "-0.5px" }}>
+            <h1 style={{ margin: 0, fontSize: "var(--ld-heading-size)", fontWeight: 780, color: "var(--ld-ink)", letterSpacing: "-.045em", overflowWrap: "anywhere" }}>
               {tenant.name}{tenant.lastName ? ` ${tenant.lastName}` : ""}<GenderMark gender={tenant.gender} t={t} />
             </h1>
             <p style={{ margin: "3px 0 0", color: "#6b7280", fontSize: 13 }}>
               {tenant.email}
-              {tenant.status && <span style={{ marginLeft: 10 }}><Badge status={tenant.status} /></span>}
+              {tenant.status && <span style={{ marginLeft: 10 }}><Badge status={tenant.status} t={t} /></span>}
             </p>
           </div>
         </div>
         <div style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
           {editing ? (
             <>
-              <button disabled={saving} onClick={() => { setForm(null); setSaveError(""); }} style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>
+              <button disabled={saving} onClick={() => { setForm(null); setSaveError(""); }} style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>
                 {t.cancel}
               </button>
-              <button onClick={handleSave} disabled={saving} style={{ background: "linear-gradient(135deg,#111111,#000000)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
+              <button onClick={handleSave} disabled={saving} style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
                 {saving ? t.saving : t.saveChanges}
               </button>
             </>
           ) : (
             <>
               <button onClick={openEditor}
-                style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}
+                style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}
                 onMouseEnter={e => e.currentTarget.style.background = "#f5f5f5"}
                 onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
               >
@@ -1014,7 +1010,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
       )}
 
       {/* 2-column grid of info cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 18 }}>
 
         {/* Contact */}
         <TenantCard title="Contact">
@@ -1054,7 +1050,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
                         setF("unitId", uid || "");
                         setF("unit", matched ? matched.unitNumber : "");
                       }}
-                      style={{ width: "100%", background: "#fff", color: "#111111", border: "1px solid #eaeaea", borderRadius: 8, padding: "10px 14px", fontSize: 14, fontFamily: "inherit" }}
+                      style={{ width: "100%", background: "#fff", color: "#111111", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 8, padding: "10px 14px", fontSize: 14, fontFamily: "inherit" }}
                       disabled={!form.propertyId}
                     >
                       {!form.propertyId ? (
@@ -1167,7 +1163,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
               onChange={e => setF("notes", e.target.value)}
               placeholder="Internal notes about this tenant"
               rows={5}
-              style={{ width: "100%", padding: "10px 14px", border: "1px solid #eaeaea", borderRadius: 8, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }}
+              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 8, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }}
             />
           ) : (
             tenant.notes ? (
@@ -1231,7 +1227,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
               <select
                 value={selectedDocId}
                 onChange={e => { setSelectedDocId(e.target.value); setShowImportPreview(false); }}
-                style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid #eaeaea", background: "#fff", color: "#111111", fontSize: 14, fontFamily: "inherit" }}
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid var(--ld-border, #eaeaea)", background: "#fff", color: "#111111", fontSize: 14, fontFamily: "inherit" }}
               >
                 <option value="">— Choose a parsed document —</option>
                 {parsableDocs.map(d => (
@@ -1242,14 +1238,14 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
             {selectedDocId && !showImportPreview && (
               <button
                 onClick={() => setShowImportPreview(true)}
-                style={{ background: "linear-gradient(135deg,#111111,#000000)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}
+                style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}
               >
                 Preview &amp; Apply
               </button>
             )}
             {showImportPreview && selectedParsedDoc && (
               <div style={{ marginTop: 12 }}>
-                <div style={{ background: "#fff", borderRadius: 10, padding: 14, marginBottom: 14, border: "1px solid #eaeaea" }}>
+                <div style={{ background: "#fff", borderRadius: 10, padding: 14, marginBottom: 14, border: "1px solid var(--ld-border, #eaeaea)" }}>
                   <div style={{ color: "#111111", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>Extracted Fields</div>
                   <pre style={{ margin: 0, fontSize: 12, color: "#9ca3af", whiteSpace: "pre-wrap", wordBreak: "break-all", maxHeight: 200, overflow: "auto" }}>
                     {JSON.stringify(selectedParsedDoc.aiExtracted, null, 2)}
@@ -1259,13 +1255,13 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
                   <button
                     onClick={() => handleApplyExtracted(selectedParsedDoc.aiExtracted)}
                     disabled={saving}
-                    style={{ background: "linear-gradient(135deg,#111111,#000000)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}
+                    style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}
                   >
                     {saving ? "Applying…" : "Apply to Profile"}
                   </button>
                   <button
                     onClick={() => setShowImportPreview(false)}
-                    style={{ background: "#ffffff", border: "1px solid #eaeaea", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
+                    style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
                   >
                     Cancel
                   </button>
