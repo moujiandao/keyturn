@@ -1,6 +1,6 @@
-# PropManager
+# Keyturn
 
-PropManager is a multi-tenant property operations application for landlords and tenants. It brings property records, leases, payments, maintenance, parking, documents, renewals, and scheduled communication into one authenticated system.
+Keyturn is a multi-tenant property operations application for landlords and tenants. It brings property records, leases, payments, maintenance, parking, documents, renewals, and scheduled communication into one authenticated system.
 
 [Open the deployed application](https://propmanager-rho.vercel.app)
 

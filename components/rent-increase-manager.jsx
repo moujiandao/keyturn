@@ -6,7 +6,7 @@ import { Btn, Icon, Modal, PageHeader } from '@/property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
 import { routes } from '@/lib/routes'
 import { createClient } from '@/lib/supabase/client'
-import { palette, radius } from '@/lib/theme'
+import { radius } from '@/lib/theme'
 import { createRentHistoryAdapter } from '@/lib/units/rent-history-adapter'
 import {
   RENT_HISTORY_MAX_RENT,
@@ -16,23 +16,23 @@ import {
   saveUnitRentHistory,
 } from '@/lib/units/rent-history'
 
-const panel = { background: palette.bg, border: `1px solid ${palette.border}`, borderRadius: radius.md }
-const backLink = { display: 'inline-flex', gap: 6, alignItems: 'center', marginBottom: 16, color: palette.textMuted, fontSize: 14, textDecoration: 'none' }
+const panel = { background: 'var(--ld-surface)', border: '1px solid var(--ld-border)', borderRadius: radius.md }
+const backLink = { display: 'inline-flex', gap: 6, alignItems: 'center', marginBottom: 16, color: 'var(--ld-muted)', fontSize: 14, textDecoration: 'none' }
 const tableStyle = { width: '100%', borderCollapse: 'separate', borderSpacing: 0, textAlign: 'left' }
-const heading = { background: palette.bgSubtle, color: palette.text, padding: '12px 16px', fontSize: 13 }
-const firstColumn = { position: 'sticky', left: 0, zIndex: 1, minWidth: 72, borderRight: `1px solid ${palette.border}` }
-const bodyCell = { borderTop: `1px solid ${palette.border}`, verticalAlign: 'top' }
+const heading = { background: 'var(--ld-subtle)', color: 'var(--ld-ink)', padding: '12px 16px', fontSize: 13 }
+const firstColumn = { position: 'sticky', left: 0, zIndex: 1, minWidth: 72, borderRight: '1px solid var(--ld-border)' }
+const bodyCell = { borderTop: '1px solid var(--ld-border)', verticalAlign: 'top' }
 const cellButton = {
   width: '100%', minWidth: 202, padding: '12px 16px', border: 0, background: 'transparent',
-  color: palette.text, font: 'inherit', textAlign: 'left', cursor: 'pointer',
+  color: 'var(--ld-ink)', font: 'inherit', textAlign: 'left', cursor: 'pointer',
 }
-const cellAmount = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, fontWeight: 700 }
-const cellDetail = { display: 'block', marginTop: 4, color: palette.textMuted, fontSize: 12 }
+const cellAmount = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, fontWeight: 760, fontSize: 21, letterSpacing: '-.03em' }
+const cellDetail = { display: 'block', marginTop: 4, color: 'var(--ld-muted)', fontSize: 12 }
 const field = {
   display: 'block', width: '100%', boxSizing: 'border-box', margin: '6px 0 16px',
-  padding: '10px 12px', border: `1px solid ${palette.border}`, borderRadius: radius.sm, font: 'inherit',
+  padding: '10px 12px', border: '1px solid var(--ld-border)', borderRadius: radius.sm, font: 'inherit',
 }
-const formLabel = { color: palette.text, fontSize: 14, fontWeight: 600 }
+const formLabel = { color: 'var(--ld-ink)', fontSize: 14, fontWeight: 600 }
 const errorText = { color: '#b42318', fontSize: 14 }
 
 function useUnitRentHistory(propertyId) {
@@ -166,7 +166,7 @@ export function RentIncreaseManager({ property, units, lang, t }) {
             <Btn variant="secondary" onClick={retry}>{t.rentHistoryRetry}</Btn>
           </div>
         ) : !history ? (
-          <p role="status" style={{ color: palette.textMuted }}>{t.rentHistoryLoading}</p>
+          <p role="status" style={{ color: 'var(--ld-muted)' }}>{t.rentHistoryLoading}</p>
         ) : (
           <>
             <div style={{ marginBottom: 12 }}>
@@ -194,7 +194,7 @@ export function RentIncreaseManager({ property, units, lang, t }) {
 
                         return (
                           <td key={year} style={bodyCell}>
-                            <button type="button" aria-label={t.rentHistoryEdit(unit.unitNumber, year)}
+                            <button type="button" className="ld-rent-cell" aria-label={t.rentHistoryEdit(unit.unitNumber, year)}
                               aria-describedby={detailsId} style={cellButton}
                               onClick={event => {
                                 opener.current = event.currentTarget

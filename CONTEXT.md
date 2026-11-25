@@ -1,4 +1,4 @@
-# PropManager — Domain Glossary
+# Keyturn — Domain Glossary
 
 A shared vocabulary for the domain. Glossary only — no implementation details.
 

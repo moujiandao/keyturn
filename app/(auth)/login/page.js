@@ -1,5 +1,6 @@
 'use client'
 
+import { APP_NAME } from '@/lib/brand'
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -62,7 +63,7 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthCard title="Welcome back" subtitle="Log in to your PropManager account.">
+    <AuthCard title="Welcome back" subtitle={`Log in to your ${APP_NAME} account.`}>
       <Alert>{error}</Alert>
       <Field label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus autoComplete="email" onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
       <Field label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
@@ -71,7 +72,7 @@ export default function LoginPage() {
       </SubmitButton>
 
       <p style={{ textAlign: 'center', fontSize: 14, color: palette.textMuted, margin: '20px 0 6px' }}>
-        New to PropManager?{' '}
+        New to {APP_NAME}?{' '}
         <Link href="/signup" style={{ color: palette.text, fontWeight: 600, textDecoration: 'none' }}>Start for free</Link>
       </p>
       <p style={{ textAlign: 'center', fontSize: 13, color: palette.textFaint, margin: 0 }}>

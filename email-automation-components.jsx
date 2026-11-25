@@ -9,7 +9,7 @@ import { fmtDate } from '@/lib/email/format'
 
 const supabase = createClient()
 
-const card = { background: '#fff', borderRadius: 14, padding: 22, border: '1px solid #f5f5f5' }
+const card = { background: '#fff', borderRadius: 14, padding: 22, border: '1px solid var(--ld-border, #f5f5f5)' }
 const emptyCard = { ...card, textAlign: 'center', color: '#9ca3af', fontSize: 14, padding: 40 }
 const dangerBtn = { padding: '10px 20px', borderRadius: 9, border: 'none', background: '#ef4444', color: '#fff', fontWeight: 600, fontSize: 14, fontFamily: 'inherit', cursor: 'pointer' }
 const iconBtn = { background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 6, display: 'inline-flex' }
@@ -29,7 +29,7 @@ const stripTags = (s) => !s ? '' : String(s).replace(/<br\s*\/?>(?=\s*)/gi, '\n'
 // Local toggle (the monolith's Toggle isn't exported).
 const Toggle = ({ value, onChange }) => (
   <button type="button" onClick={() => onChange(!value)}
-    style={{ width: 42, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer', padding: 0, background: value ? '#111111' : '#cbd5e1', position: 'relative', transition: 'background .15s' }}>
+    style={{ width: 42, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer', padding: 0, background: value ? 'var(--ld-accent)' : '#cbd5e1', position: 'relative', transition: 'background .15s' }}>
     <span style={{ position: 'absolute', top: 3, left: value ? 21 : 3, width: 18, height: 18, borderRadius: '50%', background: '#fff', transition: 'left .15s' }} />
   </button>
 )
@@ -90,7 +90,7 @@ const TemplateEditor = ({ initial, user, t, onClose, onSaved }) => {
 
   return (
     <Modal title={initial?.id ? t.editTemplateTitle : t.newTemplate} onClose={onClose} wide>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+      <div className="landlord-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 20 }}>
         <div>
           <Inp label={t.templateName} value={name} onChange={setName} placeholder={t.templateNamePlaceholder} />
           <Inp label={t.templateSubject} value={subject} onChange={setSubject} />
@@ -374,7 +374,7 @@ const EmailGeneratorTab = ({ data, t }) => {
             const bodyKey = `body-${resultKey}`
             const emailsKey = `emails-${resultKey}`
             return (
-              <div key={resultKey} style={{ ...card, display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 280px', gap: 20 }}>
+              <div key={resultKey} className="landlord-stack" style={{ ...card, display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 280px', gap: 20 }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#111111', marginBottom: 8 }}>{rendered.subject || t.previewNoSubject}</div>
                   <div style={{ whiteSpace: 'pre-wrap', fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{rendered.text}</div>
@@ -802,7 +802,7 @@ const InboxTab = ({ data, t }) => {
       {outbound.length === 0 ? (
         <div style={emptyCard}>{t.inboxEmpty}</div>
       ) : (
-        <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #f5f5f5', overflow: 'hidden' }}>
+        <div style={{ background: '#fff', borderRadius: 14, border: '1px solid var(--ld-border, #f5f5f5)', overflow: 'hidden' }}>
           {outbound.map(m => {
             const replies = repliesFor(m.id)
             const open = expanded === m.id
@@ -858,10 +858,10 @@ export const EmailAutomationPage = ({ data, user, t, refresh }) => {
   return (
     <div>
       <PageHeader title={t.emailAutoTitle} subtitle={t.emailAutoSubtitle} />
-      <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #eaeaea', marginBottom: 22 }}>
+      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', borderBottom: '1px solid var(--ld-border)', marginBottom: 22 }}>
         {tabs.map(x => (
           <button key={x.id} onClick={() => setTab(x.id)}
-            style={{ padding: '10px 16px', border: 'none', borderBottom: tab === x.id ? '2px solid #111111' : '2px solid transparent', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: tab === x.id ? 600 : 400, color: tab === x.id ? '#111111' : '#6b7280' }}>
+            style={{ padding: '10px 16px', border: 'none', borderBottom: tab === x.id ? '2px solid var(--ld-accent)' : '2px solid transparent', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: tab === x.id ? 600 : 400, color: tab === x.id ? 'var(--ld-accent-hover)' : 'var(--ld-muted)' }}>
             {x.label}
           </button>
         ))}

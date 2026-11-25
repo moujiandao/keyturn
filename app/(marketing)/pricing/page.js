@@ -1,8 +1,9 @@
+import { APP_NAME } from '@/lib/brand'
 import Link from 'next/link'
 import { palette, container, btnStyle, radius } from '@/lib/theme'
 
 export const metadata = {
-  title: 'Pricing — PropManager',
+  title: `Pricing — ${APP_NAME}`,
   description: 'Simple, flat pricing for landlords. Start free, upgrade as your portfolio grows.',
 }
 
