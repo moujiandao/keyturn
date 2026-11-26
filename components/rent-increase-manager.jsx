@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { RentIncreaseNotice } from '@/components/rent-increase-notice'
-import { Btn, Icon, Modal, PageHeader } from '@/property-management-app'
+import { Btn, Icon, Modal, PageHeader, usePropertyMutations } from '@/property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
+import { parseMaxAgaPercent } from '@/lib/property/core'
 import { routes } from '@/lib/routes'
 import { STORAGE_KEYS, readMigratedStorage, writeStorage } from '@/lib/storage'
 import { createClient } from '@/lib/supabase/client'
@@ -50,6 +51,46 @@ const field = {
 }
 const formLabel = { color: 'var(--ld-ink)', fontSize: 14, fontWeight: 600 }
 const errorText = { color: '#b42318', fontSize: 14 }
+const agaCard = {
+  ...panel,
+  padding: '14px 16px',
+  marginBottom: 16,
+  display: 'flex',
+  alignItems: 'flex-end',
+  flexWrap: 'wrap',
+  gap: 12,
+}
+const agaFieldGroup = { display: 'flex', flexDirection: 'column', gap: 6, minWidth: 180 }
+const agaInputWrap = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  border: '1px solid var(--ld-border)',
+  borderRadius: radius.sm,
+  background: 'var(--ld-surface)',
+  overflow: 'hidden',
+}
+const agaInput = {
+  width: 112,
+  border: 0,
+  padding: '9px 10px',
+  background: 'transparent',
+  color: 'var(--ld-ink)',
+  font: 'inherit',
+  outline: 'none',
+}
+const agaSuffix = {
+  padding: '0 10px',
+  color: 'var(--ld-muted)',
+  fontSize: 14,
+  fontWeight: 600,
+  borderLeft: '1px solid var(--ld-border)',
+  alignSelf: 'stretch',
+  display: 'grid',
+  placeItems: 'center',
+  background: 'var(--ld-subtle)',
+}
+const agaSavedText = { color: '#15803d', fontSize: 13, fontWeight: 600, alignSelf: 'center' }
+const agaErrorText = { ...errorText, margin: 0, alignSelf: 'center' }
 
 const emptyYearPreferences = { added: [], hidden: [] }
 
@@ -151,11 +192,19 @@ function RentEntryEditor({ entry, save, close, t }) {
   )
 }
 
-export function RentIncreaseManager({ property, units, tenants, lang, t }) {
+export function RentIncreaseManager({ property, units, tenants, setData, refresh, lang, t }) {
   const [currentYear] = useState(() => new Date().getFullYear())
+  const upcomingYear = currentYear + 1
+  const propertyMx = usePropertyMutations()
+  const [agaDraft, setAgaDraft] = useState(() =>
+    property.maxAgaPercent == null ? '' : String(property.maxAgaPercent)
+  )
+  const [agaSaving, setAgaSaving] = useState(false)
+  const [agaError, setAgaError] = useState(null)
+  const [agaSaved, setAgaSaved] = useState(false)
   const preferenceStorage = STORAGE_KEYS.rentHistoryYears(property.id)
   const [yearPreferences, setYearPreferences] = useState(() => readYearPreferences(preferenceStorage))
-  const [anchorYear, setAnchorYear] = useState(currentYear + 1)
+  const [anchorYear, setAnchorYear] = useState(upcomingYear)
   const [addingYear, setAddingYear] = useState(false)
   const [editor, setEditor] = useState(null)
   const opener = useRef(null)
@@ -210,11 +259,86 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
     requestAnimationFrame(() => opener.current?.focus())
   }
 
+  async function saveMaxAga(event) {
+    event.preventDefault()
+    if (agaSaving) return
+    setAgaError(null)
+    setAgaSaved(false)
+
+    let parsed
+    try {
+      parsed = parseMaxAgaPercent(agaDraft)
+    } catch {
+      setAgaError(t.rentMaxAgaInvalid)
+      return
+    }
+
+    const previousValue = property.maxAgaPercent ?? null
+    setAgaSaving(true)
+    if (setData) {
+      setData(prev => ({
+        ...prev,
+        properties: prev.properties.map(p =>
+          p.id === property.id ? { ...p, maxAgaPercent: parsed } : p
+        ),
+      }))
+    }
+    try {
+      const saved = await propertyMx.setMaxAgaPercent(property.id, agaDraft)
+      setAgaDraft(saved == null ? '' : String(saved))
+      setAgaSaved(true)
+      if (refresh) refresh()
+    } catch {
+      if (setData) {
+        setData(prev => ({
+          ...prev,
+          properties: prev.properties.map(p =>
+            p.id === property.id ? { ...p, maxAgaPercent: previousValue } : p
+          ),
+        }))
+      }
+      setAgaError(t.rentMaxAgaSaveError)
+    } finally {
+      setAgaSaving(false)
+    }
+  }
+
   return (
     <div>
       <div inert={addingYear || Boolean(editor)}>
         <Link href={routes.properties()} style={backLink}><span aria-hidden="true">←</span>{t.propTitle}</Link>
         <PageHeader title={t.rentIncreaseManager} subtitle={property.address} />
+
+        <form onSubmit={saveMaxAga} style={agaCard}>
+          <div style={agaFieldGroup}>
+            <label htmlFor="property-max-aga" style={formLabel}>
+              {t.rentMaxAgaLabel(upcomingYear)}
+            </label>
+            <div style={agaInputWrap}>
+              <input
+                id="property-max-aga"
+                name="maxAgaPercent"
+                type="text"
+                inputMode="decimal"
+                placeholder={t.rentMaxAgaPlaceholder}
+                value={agaDraft}
+                disabled={agaSaving}
+                onChange={event => {
+                  setAgaDraft(event.target.value)
+                  if (agaSaved) setAgaSaved(false)
+                  if (agaError) setAgaError(null)
+                }}
+                style={agaInput}
+              />
+              <span style={agaSuffix} aria-hidden="true">%</span>
+            </div>
+          </div>
+          <Btn type="submit" disabled={agaSaving}>
+            {agaSaving ? t.saving : t.save}
+          </Btn>
+          {agaSaved && <span role="status" style={agaSavedText}>{t.rentMaxAgaSaved}</span>}
+          {agaError && <p role="alert" style={agaErrorText}>{agaError}</p>}
+        </form>
 
         {units.length === 0 ? (
           <div style={{ ...panel, padding: 16 }}><Link href={routes.property(property)}>{t.unitsEmpty}</Link></div>

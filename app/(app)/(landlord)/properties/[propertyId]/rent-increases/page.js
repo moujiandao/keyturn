@@ -8,11 +8,22 @@ import { findProperty } from '@/lib/routes'
 
 export default function Page({ params }) {
   const { propertyId } = use(params)
-  const { data, lang, t } = useLandlordPageProps()
+  const { data, setData, refresh, lang, t } = useLandlordPageProps()
   const property = findProperty(data, propertyId)
   if (!property) notFound()
 
   const units = data.units.filter(unit => unit.propertyId === property.id)
   const tenants = data.tenants.filter(tenant => tenant.propertyId === property.id)
-  return <RentIncreaseManager key={property.id} property={property} units={units} tenants={tenants} lang={lang} t={t} />
+  return (
+    <RentIncreaseManager
+      key={property.id}
+      property={property}
+      units={units}
+      tenants={tenants}
+      setData={setData}
+      refresh={refresh}
+      lang={lang}
+      t={t}
+    />
+  )
 }

@@ -3294,15 +3294,16 @@ function useEmailSettingsMutations(setData, landlordId) {
   };
 }
 
-// Property writes behind the lib/property seam (create / delete / drive-link).
+// Property writes behind the lib/property seam (create / delete / drive-link / max-aga).
 // Call sites refresh() after, so no optimistic state coupling here. Edit +
 // image-upload remain in their server routes.
-function usePropertyMutations() {
+export function usePropertyMutations() {
   const adapter = createPropertyAdapter(supabase);
   return {
     create: (fields) => propertyOps.createProperty(adapter, fields),
     remove: (id) => propertyOps.deleteProperty(adapter, id),
     setDriveLink: (id, link) => propertyOps.setDriveLink(adapter, id, link),
+    setMaxAgaPercent: (id, value) => propertyOps.setMaxAgaPercent(adapter, id, value),
   };
 }
 
