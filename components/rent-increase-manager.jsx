@@ -27,6 +27,7 @@ const firstColumn = { position: 'sticky', left: 0, zIndex: 1, minWidth: 72, bord
 const currentHeading = { background: 'var(--ld-accent-tint)', color: 'var(--ld-accent-hover)' }
 const currentCell = { background: 'color-mix(in srgb, var(--ld-accent-tint) 45%, var(--ld-surface))' }
 const toolbar = { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 12 }
+const trailingAction = { marginLeft: 'auto' }
 const yearHeading = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }
 const yearLabel = { display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 7 }
 const currentLabel = { fontSize: 11, fontWeight: 650 }
@@ -153,7 +154,7 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
   const [currentYear] = useState(() => new Date().getFullYear())
   const preferenceKey = `propmanager_rent_history_years_${property.id}`
   const [yearPreferences, setYearPreferences] = useState(() => readYearPreferences(preferenceKey))
-  const [anchorYear, setAnchorYear] = useState(currentYear)
+  const [anchorYear, setAnchorYear] = useState(currentYear + 1)
   const [addingYear, setAddingYear] = useState(false)
   const [editor, setEditor] = useState(null)
   const opener = useRef(null)
@@ -161,7 +162,7 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
   const { history, retry, save } = useUnitRentHistory(property.id)
   const entries = history?.entries ?? []
   const hiddenYears = new Set(yearPreferences.hidden)
-  const years = [currentYear, currentYear - 1, ...yearPreferences.added, ...entries.map(entry => entry.year)]
+  const years = [currentYear + 1, currentYear, ...yearPreferences.added, ...entries.map(entry => entry.year)]
   const noticeYear = years.reduce((latest, year) => Math.max(latest, year), currentYear)
   const page = rentHistoryYearPage(years.filter(year => !hiddenYears.has(year)), anchorYear)
   const entriesByUnit = new Map(units.map(unit => {
@@ -226,13 +227,15 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
         ) : (
           <>
             <div style={toolbar}>
+              <div ref={addYearAction}>
+                <Btn variant="secondary" icon="plus" onClick={event => { opener.current = event.currentTarget; setAddingYear(true) }}>{t.rentHistoryAddYear}</Btn>
+              </div>
               {page.newerYear != null && (
                 <Btn variant="secondary" onClick={() => setAnchorYear(page.newerYear)}>{t.rentHistoryNewerYears}</Btn>
               )}
-              <Btn variant="secondary" disabled={page.earlierYear == null}
-                onClick={() => setAnchorYear(page.earlierYear)}>{t.rentHistoryPreviousYears}</Btn>
-              <div ref={addYearAction} style={{ marginLeft: 'auto' }}>
-                <Btn variant="secondary" icon="plus" onClick={event => { opener.current = event.currentTarget; setAddingYear(true) }}>{t.rentHistoryAddYear}</Btn>
+              <div style={trailingAction}>
+                <Btn variant="secondary" disabled={page.earlierYear == null}
+                  onClick={() => setAnchorYear(page.earlierYear)}>{t.rentHistoryPreviousYears}</Btn>
               </div>
             </div>
             {page.years.length === 0 ? (
@@ -317,7 +320,7 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
             <label style={formLabel}>
               {t.rentHistoryYear}
               <input name="year" type="number" min={RENT_HISTORY_MIN_YEAR} max={RENT_HISTORY_MAX_YEAR}
-                step="1" defaultValue={yearPreferences.hidden.at(-1) ?? currentYear + 1} required autoFocus style={field} />
+                step="1" defaultValue={yearPreferences.hidden.at(-1) ?? Math.min(RENT_HISTORY_MAX_YEAR, noticeYear + 1)} required autoFocus style={field} />
             </label>
             <Btn>{t.rentHistoryAddYear}</Btn>
           </form>
