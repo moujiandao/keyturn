@@ -4419,18 +4419,23 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
     if (!form.name || !form.email || !form.password) { setMsg({ text: t.adminErrFields, error: true }); return; }
     if (form.password.length < 8) { setMsg({ text: t.adminErrPassword, error: true }); return; }
     setLoading(true);
-    const res = await fetch("/api/auth/add-admin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const json = await res.json();
-    setLoading(false);
-    if (json.error) { setMsg({ text: json.error, error: true }); return; }
-    setMsg({ text: t.adminSuccess, error: false });
-    setForm({ name: "", email: "", password: "" });
-    setUserListVersion(version => version + 1);
-    if (refresh) refresh();
+    try {
+      const res = await fetch("/api/auth/add-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.error) { setMsg({ text: json.error || t.adminErrFailed, error: true }); return; }
+      setMsg({ text: t.adminSuccess, error: false });
+      setForm({ name: "", email: "", password: "" });
+      setUserListVersion(version => version + 1);
+      if (refresh) refresh();
+    } catch {
+      setMsg({ text: t.adminErrFailed, error: true });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async () => {
