@@ -13,7 +13,7 @@ const PdfViewer = dynamic(() => import('./components/pdf-viewer'), {
 
 const supabase = createClient()
 
-const docTypeBadgeColor = { application: '#0ea5e9', lease: '#111111', other: '#6b7280' }
+const docTypeBadgeColor = { application: '#0ea5e9', lease: '#111111', lease_renewal: '#166534', other: '#6b7280' }
 
 // ─── toEmbedUrl — converts Google Drive share URL to an embeddable URL ────────
 const toEmbedUrlDrive = (link) => {
@@ -539,6 +539,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
           <option value="">All Types</option>
           <option value="application">Application</option>
           <option value="lease">Lease</option>
+          <option value="lease_renewal">Lease Renewal</option>
           <option value="other">Other</option>
         </select>
         {filterProperty && (() => {
@@ -604,7 +605,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
                   <span style={{ color: '#111111', fontWeight: 600, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.fileName}</span>
-                  <span style={{ background: docTypeBadgeColor[doc.documentType] || '#6b7280', color: '#fff', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, textTransform: 'uppercase', flexShrink: 0 }}>{doc.documentType}</span>
+                  <span style={{ background: docTypeBadgeColor[doc.documentType] || '#6b7280', color: '#fff', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, textTransform: 'uppercase', flexShrink: 0 }}>{(doc.documentType || '').replace(/_/g, ' ')}</span>
                 </div>
                 <div style={{ color: '#9ca3af', fontSize: 13 }}>
                   {tenant && <span>{tenant.name}</span>}

@@ -197,29 +197,116 @@ const DueCard = ({ due, t, onPrepare }) => (
 )
 
 // ─── In-flight renewal row ────────────────────────────────────────────────────
-const InFlightRow = ({ renewal, propertyAddress, signerNames, t }) => (
-  <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-    <div style={{ minWidth: 0 }}>
-      <div style={{ fontSize: 15, fontWeight: 600, color: '#111111' }}>{propertyAddress || t.renewalUnknownProperty}</div>
-      <div style={{ fontSize: 13, color: '#6b7280' }}>
-        {signerNames || '—'} · {fmtDate(renewal.newTermStart)} – {fmtDate(renewal.newTermEnd)} · {fmtMoney(renewal.rentAmount)}
+const InFlightRow = ({
+  renewal,
+  propertyAddress,
+  signerNames,
+  signedDocUrl,
+  filingBusy,
+  fileError,
+  onFileToDrive,
+  t,
+}) => {
+  const effectiveFilingError = fileError || renewal.filingError || null
+  const showFileAction = renewal.status === 'countersigned' && !signedDocUrl
+
+  return (
+    <div style={{ ...card, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ minWidth: 0, flex: '1 1 240px' }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#111111' }}>{propertyAddress || t.renewalUnknownProperty}</div>
+          <div style={{ fontSize: 13, color: '#6b7280' }}>
+            {signerNames || '—'} · {fmtDate(renewal.newTermStart)} – {fmtDate(renewal.newTermEnd)} · {fmtMoney(renewal.rentAmount)}
+          </div>
+          {signedDocUrl && (
+            <div style={{ marginTop: 6 }}>
+              <a
+                href={signedDocUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: 13, fontWeight: 600, color: '#1e40af', textDecoration: 'none' }}
+              >
+                {t.renewalViewSignedPdf}
+              </a>
+            </div>
+          )}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <RenewalStatusPill status={renewal.status} t={t} />
+          {showFileAction && (
+            <Btn
+              variant="secondary"
+              size="sm"
+              onClick={() => onFileToDrive(renewal)}
+              disabled={filingBusy}
+            >
+              {filingBusy
+                ? t.renewalFiling
+                : (effectiveFilingError ? t.renewalRetryFile : t.renewalFileToDrive)}
+            </Btn>
+          )}
+        </div>
       </div>
+      {showFileAction && effectiveFilingError && (
+        <div style={{ fontSize: 12, color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 12px' }}>
+          <strong>{t.renewalFilingErrorLabel}:</strong> {effectiveFilingError}
+        </div>
+      )}
     </div>
-    <RenewalStatusPill status={renewal.status} t={t} />
-  </div>
-)
+  )
+}
 
 // ─── Page shell ───────────────────────────────────────────────────────────────
 export const RenewalsPage = ({ data, t, user, refresh }) => {
   const [preparing, setPreparing] = useState(null) // a "due" object
+  const [filingId, setFilingId] = useState(null)
+  const [fileErrors, setFileErrors] = useState({})
 
   const contracts = data.contracts || []
   const tenants = data.tenants || []
   const properties = data.properties || []
   const contractTenants = data.contractTenants || []
   const leaseRenewals = data.leaseRenewals || []
+  const documents = data.documents || []
 
   const tenantById = Object.fromEntries(tenants.map(tenant => [tenant.id, tenant]))
+  const docById = Object.fromEntries(documents.map(doc => [doc.id, doc]))
+
+  const signedDocUrlFor = (renewal) => {
+    if (renewal.signedDocumentUrl) return renewal.signedDocumentUrl
+    if (renewal.documentId && docById[renewal.documentId]?.driveLink) {
+      return docById[renewal.documentId].driveLink
+    }
+    const matching = documents.find(d =>
+      d.contractId === renewal.contractId &&
+      d.documentType === 'lease_renewal' &&
+      d.driveLink &&
+      (!renewal.newTermEnd || (d.fileName || '').includes(renewal.newTermEnd))
+    )
+    return matching?.driveLink || null
+  }
+
+  const handleFileToDrive = async (renewal) => {
+    setFilingId(renewal.id)
+    setFileErrors(prev => ({ ...prev, [renewal.id]: null }))
+    try {
+      const res = await fetch('/api/renewals/file', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ landlordId: user.id, renewalId: renewal.id }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setFileErrors(prev => ({ ...prev, [renewal.id]: json?.error || t.renewalFileFailed }))
+        setFilingId(null)
+        return
+      }
+      refresh()
+    } catch (e) {
+      setFileErrors(prev => ({ ...prev, [renewal.id]: e.message || t.renewalFileFailed }))
+    }
+    setFilingId(null)
+  }
 
   const propAddress = (id) => properties.find(p => p.id === id)?.address || ''
   const signerName = (ten) => ten ? [ten.name, ten.lastName].filter(Boolean).join(' ') : t.renewalUnknownTenant
@@ -281,7 +368,12 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
     .map(r => {
       const ids = (r.signers || []).map(s => s.tenantId).filter(Boolean)
       const names = ids.map(id => signerName(tenantById[id])).join(', ')
-      return { renewal: r, propertyAddress: propAddress(r.propertyId), signerNames: names }
+      return {
+        renewal: r,
+        propertyAddress: propAddress(r.propertyId),
+        signerNames: names,
+        signedDocUrl: signedDocUrlFor(r),
+      }
     })
 
   const urgentCount = due.filter(d => d.urgent).length
@@ -315,7 +407,17 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
         ) : (
           <div style={{ display: 'grid', gap: 12 }}>
             {inFlight.map(x => (
-              <InFlightRow key={x.renewal.id} renewal={x.renewal} propertyAddress={x.propertyAddress} signerNames={x.signerNames} t={t} />
+              <InFlightRow
+                key={x.renewal.id}
+                renewal={x.renewal}
+                propertyAddress={x.propertyAddress}
+                signerNames={x.signerNames}
+                signedDocUrl={x.signedDocUrl}
+                filingBusy={filingId === x.renewal.id}
+                fileError={fileErrors[x.renewal.id] || null}
+                onFileToDrive={handleFileToDrive}
+                t={t}
+              />
             ))}
           </div>
         )}
