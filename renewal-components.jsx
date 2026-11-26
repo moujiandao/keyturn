@@ -1,13 +1,24 @@
 'use client'
 import { useState } from 'react'
 import { Modal, Btn, Icon, PageHeader } from './property-management-app'
-import { deriveRenewalTerm, pickOriginalLeaseDate } from './lib/docuseal/renewal.js'
+import {
+  deriveRenewalTerm,
+  pickOriginalLeaseDate,
+  pickEffectiveEndDate,
+  isReadyToAdvance,
+} from './lib/docuseal/renewal.js'
 import { fmtDate } from '@/lib/format'
 
 const card = { background: '#fff', borderRadius: 14, padding: 22, border: '1px solid var(--ld-border, #f5f5f5)' }
 const emptyState = { ...card, textAlign: 'center', color: '#9ca3af', fontSize: 14, padding: 40 }
 const sectionHeading = { fontSize: 17, fontWeight: 700, color: '#111111', margin: '0 0 14px', fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }
 const redChip = { fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#fee2e2', color: '#991b1b' }
+const readyChip = { fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#fef3c7', color: '#92400e', letterSpacing: '.3px' }
+const appliedChip = { fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#ecfdf5', color: '#065f46', letterSpacing: '.3px' }
+const detailRow = { display: 'flex', justifyContent: 'space-between', gap: 16, padding: '7px 0', borderBottom: '1px solid #fafafa', fontSize: 14 }
+const errorBox = { fontSize: 12, color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 12px' }
+const confirmNoteBox = { fontSize: 13, color: '#1e3a8a', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }
+const warnNoteBox = { fontSize: 12, color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', marginBottom: 14 }
 
 const PLACEHOLDER_DOMAIN = '@placeholder.local'
 
@@ -23,10 +34,6 @@ const daysBetween = (a, b) => Math.round((b - a) / 86400000)
 
 const isPlaceholderEmail = (email) =>
   !email || !email.trim() || email.trim().toLowerCase().endsWith(PLACEHOLDER_DOMAIN)
-
-// Derived next term — delegates to the shared helper (lib/docuseal/renewal.js)
-// that the create route also uses, so client preview and server submission agree.
-const deriveTerm = (contract) => deriveRenewalTerm(contract.endDate)
 
 // ─── Local stat card (StatCard isn't exported by the monolith) ────────────────
 const Stat = ({ label, value, sub, icon, color = '#111111' }) => (
@@ -116,7 +123,7 @@ const PrepareRenewalModal = ({ due, user, t, onClose, onDone }) => {
   }
 
   const row = (label, value) => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, padding: '7px 0', borderBottom: '1px solid #fafafa', fontSize: 14 }}>
+    <div style={detailRow}>
       <span style={{ color: '#6b7280' }}>{label}</span>
       <span style={{ color: '#111111', fontWeight: 600, textAlign: 'right' }}>{value}</span>
     </div>
@@ -164,6 +171,83 @@ const PrepareRenewalModal = ({ due, user, t, onClose, onDone }) => {
   )
 }
 
+// ─── Phase 4B: Manual confirm to advance lease term modal ────────────────────
+const AdvanceLeaseModal = ({ item, user, t, onClose, onDone }) => {
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState(null)
+  const { renewal, contract, propertyAddress, signerNames, signedDocUrl } = item
+
+  const confirmAdvance = async () => {
+    setBusy(true); setErr(null)
+    try {
+      const res = await fetch('/api/renewals/advance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ landlordId: user.id, renewalId: renewal.id }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setErr(json?.error || t.renewalAdvanceFailed)
+        setBusy(false)
+        return
+      }
+      onDone()
+    } catch (e) {
+      setErr(e.message || t.renewalAdvanceFailed)
+      setBusy(false)
+    }
+  }
+
+  const row = (label, value) => (
+    <div style={detailRow}>
+      <span style={{ color: '#6b7280' }}>{label}</span>
+      <span style={{ color: '#111111', fontWeight: 600, textAlign: 'right' }}>{value}</span>
+    </div>
+  )
+
+  return (
+    <Modal title={t.renewalAdvanceTitle} onClose={onClose} wide>
+      <div style={{ marginBottom: 16 }}>
+        {row(t.renewalProperty, propertyAddress || t.renewalUnknownProperty)}
+        {row(t.renewalSigners, signerNames || '—')}
+        {row(t.renewalOriginalLeaseDate, fmtDate(renewal.originalLeaseDate))}
+        {row(t.renewalCurrentEndDate, fmtDate(contract?.endDate))}
+        {row(t.renewalNewTermStart, fmtDate(renewal.newTermStart))}
+        {row(t.renewalNewEndDate, fmtDate(renewal.newTermEnd))}
+        {row(t.renewalMonthlyRent, fmtMoney(renewal.rentAmount))}
+      </div>
+
+      {signedDocUrl ? (
+        <div style={{ marginBottom: 14 }}>
+          <a
+            href={signedDocUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: 13, fontWeight: 600, color: '#1e40af', textDecoration: 'none' }}
+          >
+            {t.renewalViewSignedPdf}
+          </a>
+        </div>
+      ) : (
+        <div style={warnNoteBox}>{t.renewalAdvanceNotFiledNote}</div>
+      )}
+
+      <div style={confirmNoteBox}>
+        {t.renewalAdvanceConfirmNote.replace('{date}', fmtDate(renewal.newTermEnd))}
+      </div>
+
+      {err && <p style={{ color: '#ef4444', fontSize: 13, margin: '8px 0 0' }}>{err}</p>}
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}>
+        <Btn variant="secondary" onClick={onClose} disabled={busy}>{t.cancel}</Btn>
+        <Btn onClick={confirmAdvance} disabled={busy}>
+          {busy ? t.renewalAdvancing : t.renewalConfirmAdvance}
+        </Btn>
+      </div>
+    </Modal>
+  )
+}
+
 // ─── Due-renewal card ─────────────────────────────────────────────────────────
 const DueCard = ({ due, t, onPrepare }) => (
   <div style={{ ...card, borderColor: due.urgent ? '#fecaca' : 'var(--ld-border)', minWidth: 0 }}>
@@ -198,23 +282,33 @@ const DueCard = ({ due, t, onPrepare }) => (
 
 // ─── In-flight renewal row ────────────────────────────────────────────────────
 const InFlightRow = ({
-  renewal,
-  propertyAddress,
-  signerNames,
-  signedDocUrl,
+  item,
   filingBusy,
   fileError,
   onFileToDrive,
+  onAdvance,
   t,
 }) => {
+  const { renewal, propertyAddress, signerNames, signedDocUrl } = item
   const effectiveFilingError = fileError || renewal.filingError || null
   const showFileAction = renewal.status === 'countersigned' && !signedDocUrl
+  const readyToAdvance = isReadyToAdvance(renewal)
 
   return (
-    <div style={{ ...card, display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div style={{ ...card, borderColor: readyToAdvance ? '#fde68a' : 'var(--ld-border, #f5f5f5)', display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
         <div style={{ minWidth: 0, flex: '1 1 240px' }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#111111' }}>{propertyAddress || t.renewalUnknownProperty}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#111111' }}>{propertyAddress || t.renewalUnknownProperty}</div>
+            {readyToAdvance && <span style={readyChip}>{t.renewalReadyToAdvanceBadge}</span>}
+            {renewal.appliedToContract && (
+              <span style={appliedChip}>
+                {renewal.appliedAt
+                  ? t.renewalAppliedOn.replace('{date}', fmtDate(renewal.appliedAt.slice(0, 10)))
+                  : t.renewalAppliedBadge}
+              </span>
+            )}
+          </div>
           <div style={{ fontSize: 13, color: '#6b7280' }}>
             {signerNames || '—'} · {fmtDate(renewal.newTermStart)} – {fmtDate(renewal.newTermEnd)} · {fmtMoney(renewal.rentAmount)}
           </div>
@@ -245,10 +339,15 @@ const InFlightRow = ({
                 : (effectiveFilingError ? t.renewalRetryFile : t.renewalFileToDrive)}
             </Btn>
           )}
+          {readyToAdvance && (
+            <Btn size="sm" onClick={() => onAdvance(item)}>
+              {t.renewalAdvanceAction}
+            </Btn>
+          )}
         </div>
       </div>
       {showFileAction && effectiveFilingError && (
-        <div style={{ fontSize: 12, color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 12px' }}>
+        <div style={errorBox}>
           <strong>{t.renewalFilingErrorLabel}:</strong> {effectiveFilingError}
         </div>
       )}
@@ -259,6 +358,7 @@ const InFlightRow = ({
 // ─── Page shell ───────────────────────────────────────────────────────────────
 export const RenewalsPage = ({ data, t, user, refresh }) => {
   const [preparing, setPreparing] = useState(null) // a "due" object
+  const [advancing, setAdvancing] = useState(null) // an inFlight item ready to confirm
   const [filingId, setFilingId] = useState(null)
   const [fileErrors, setFileErrors] = useState({})
 
@@ -270,6 +370,7 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
   const documents = data.documents || []
 
   const tenantById = Object.fromEntries(tenants.map(tenant => [tenant.id, tenant]))
+  const contractById = Object.fromEntries(contracts.map(contract => [contract.id, contract]))
   const docById = Object.fromEntries(documents.map(doc => [doc.id, doc]))
 
   const signedDocUrlFor = (renewal) => {
@@ -319,9 +420,9 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
   }
 
   // A renewal "covers the current term" if its new_term_start matches the term
-  // we'd derive from this contract (idempotency guard for the due queue).
-  const hasActiveRenewal = (contract) => {
-    const { newTermStart } = deriveTerm(contract)
+  // we'd derive from this contract's effective chain end date (idempotency guard).
+  const hasActiveRenewal = (contract, effectiveEndDate) => {
+    const { newTermStart } = deriveRenewalTerm(effectiveEndDate)
     return leaseRenewals.some(r =>
       r.contractId === contract.id &&
       r.newTermStart === newTermStart &&
@@ -334,14 +435,16 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
     return date
   })
 
-  // "Renewals due": end_date within ~150 days and no active renewal for the term.
+  // "Renewals due": effective end_date within ~150 days and no active renewal for the term.
   const due = contracts
     .filter(c => c.endDate && (c.status === 'active' || !c.status))
     .map(c => {
-      const daysLeft = daysBetween(today, toDate(c.endDate))
-      return { contract: c, daysLeft }
+      const chain = leaseRenewals.filter(r => r.contractId === c.id)
+      const effectiveEndDate = pickEffectiveEndDate(chain, c.endDate)
+      const daysLeft = daysBetween(today, toDate(effectiveEndDate))
+      return { contract: { ...c, endDate: effectiveEndDate }, chain, effectiveEndDate, daysLeft }
     })
-    .filter(x => x.daysLeft >= 0 && x.daysLeft <= 150 && !hasActiveRenewal(x.contract))
+    .filter(x => x.daysLeft >= 0 && x.daysLeft <= 150 && !hasActiveRenewal(x.contract, x.effectiveEndDate))
     .map(x => {
       const ids = tenantIdsFor(x.contract)
       const signers = ids.map(id => {
@@ -349,12 +452,11 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
         return { tenantId: id, name: signerName(ten), email: ten?.email || '' }
       })
       const blocked = signers.length === 0 || signers.some(s => isPlaceholderEmail(s.email))
-      const chain = leaseRenewals.filter(r => r.contractId === x.contract.id)
       return {
         ...x,
         propertyAddress: propAddress(x.contract.propertyId),
-        term: deriveTerm(x.contract),
-        originalLeaseDate: pickOriginalLeaseDate(chain, x.contract.startDate),
+        term: deriveRenewalTerm(x.effectiveEndDate),
+        originalLeaseDate: pickOriginalLeaseDate(x.chain, x.contract.startDate),
         signers,
         blocked,
         urgent: x.daysLeft < 90,
@@ -362,7 +464,7 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
     })
     .sort((a, b) => a.daysLeft - b.daysLeft)
 
-  // In-flight = any renewal not in a terminal-due state; surfaced for tracking.
+  // In-flight = any renewal not in draft; surface ready-to-advance rows first.
   const inFlight = leaseRenewals
     .filter(r => ['pending_review', 'sent', 'signed', 'countersigned', 'declined', 'blocked'].includes(r.status))
     .map(r => {
@@ -370,23 +472,27 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
       const names = ids.map(id => signerName(tenantById[id])).join(', ')
       return {
         renewal: r,
+        contract: contractById[r.contractId] || null,
         propertyAddress: propAddress(r.propertyId),
         signerNames: names,
         signedDocUrl: signedDocUrlFor(r),
       }
     })
+    .sort((a, b) => Number(isReadyToAdvance(b.renewal)) - Number(isReadyToAdvance(a.renewal)))
 
   const urgentCount = due.filter(d => d.urgent).length
   const blockedCount = due.filter(d => d.blocked).length
+  const readyToAdvanceCount = inFlight.filter(x => isReadyToAdvance(x.renewal)).length
 
   return (
     <div>
       <PageHeader title={t.renewalsTitle} subtitle={t.renewalsSubtitle} />
 
-      <div className="landlord-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16, marginBottom: 28 }}>
+      <div className="landlord-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 16, marginBottom: 28 }}>
         <Stat label={t.renewalStatDue} value={due.length} icon="calendar" />
         <Stat label={t.renewalStatUrgent} value={urgentCount} icon="clock" color="#ef4444" />
         <Stat label={t.renewalStatBlocked} value={blockedCount} icon="x" color="#f59e0b" />
+        <Stat label={t.renewalStatReadyToAdvance} value={readyToAdvanceCount} icon="check" color="#16a34a" />
       </div>
 
       <div style={{ marginBottom: 32 }}>
@@ -409,13 +515,11 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
             {inFlight.map(x => (
               <InFlightRow
                 key={x.renewal.id}
-                renewal={x.renewal}
-                propertyAddress={x.propertyAddress}
-                signerNames={x.signerNames}
-                signedDocUrl={x.signedDocUrl}
+                item={x}
                 filingBusy={filingId === x.renewal.id}
                 fileError={fileErrors[x.renewal.id] || null}
                 onFileToDrive={handleFileToDrive}
+                onAdvance={setAdvancing}
                 t={t}
               />
             ))}
@@ -428,6 +532,14 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
           due={preparing} user={user} t={t}
           onClose={() => setPreparing(null)}
           onDone={() => { setPreparing(null); refresh(); }}
+        />
+      )}
+
+      {advancing && (
+        <AdvanceLeaseModal
+          item={advancing} user={user} t={t}
+          onClose={() => setAdvancing(null)}
+          onDone={() => { setAdvancing(null); refresh(); }}
         />
       )}
     </div>

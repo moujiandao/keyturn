@@ -1,6 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 import { createRenewalSubmission } from '../../../../lib/docuseal/client.js'
-import { deriveRenewalTerm, pickOriginalLeaseDate } from '../../../../lib/docuseal/renewal.js'
+import {
+  deriveRenewalTerm,
+  pickOriginalLeaseDate,
+  pickEffectiveEndDate,
+} from '../../../../lib/docuseal/renewal.js'
 import { requireLandlord, rejectMismatchedLandlord } from '@/lib/auth/authorize'
 
 const PLACEHOLDER_SUFFIX = '@placeholder.local'
@@ -112,21 +116,23 @@ export async function POST(request) {
         .join(', ')
     : ''
 
-  // Derive the new term (shared with the UI via lib/docuseal/renewal.js so the two
-  // never diverge): starts the day after the current end_date, runs 12 months.
-  const { newTermStart, newTermEnd } = deriveRenewalTerm(contract.end_date)
-  const rentAmount = contract.rent_amount
-
   // The "X date" must never drift across a chain of renewals. Pin it to the root of
   // the existing renewal chain for this contract; if none exists yet, the original
-  // lease's start_date is the root.
+  // lease's start_date is the root. Also walk applied renewals so the derived term
+  // always builds from the latest effective end date in the chain.
   const { data: chainRows, error: chainError } = await supabase
     .from('lease_renewals')
-    .select('original_lease_date, created_at')
+    .select('original_lease_date, new_term_end, applied_to_contract, created_at')
     .eq('contract_id', contractId)
     .order('created_at', { ascending: true })
   if (chainError) return Response.json({ error: chainError.message }, { status: 400 })
   const originalLeaseDate = pickOriginalLeaseDate(chainRows, contract.start_date)
+  const effectiveEndDate = pickEffectiveEndDate(chainRows, contract.end_date)
+
+  // Derive the new term (shared with the UI via lib/docuseal/renewal.js so the two
+  // never diverge): starts the day after the current end_date, runs 12 months.
+  const { newTermStart, newTermEnd } = deriveRenewalTerm(effectiveEndDate)
+  const rentAmount = contract.rent_amount
 
   // Build DocuSeal submitters. Tenants share order:0 (parallel group); the landlord is
   // order:1 (countersigns last). The `values` keys below are DocuSeal template FIELD
