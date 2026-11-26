@@ -1,9 +1,9 @@
 # SPEC: DocuSeal Tenant Lease-Renewal Workflow
 
-**Status:** Draft spec — approved for build, v1 scope defined below
-**Date:** 2026-06-19
+**Status:** v1 (Phases 1-3, 5) + Phase 4 (4A Drive auto-filing & 4B manual lease-term advance) implemented in code; live external provisioning (§7) remains manual
+**Date:** 2026-06-19 (Phase 4 implemented 2026-11-25)
 **Owner:** Brian
-**Type:** Feature spec (not yet implemented)
+**Type:** Feature spec
 
 ---
 
@@ -97,28 +97,33 @@ is walked (ordered by term) to compute the next renewal from the latest signed o
 
 ---
 
-## 6. Phase 4 — Filing + lease advance (DEFERRED, nice-to-have)
+## 6. Phase 4 — Filing + lease advance (Implemented)
 
-Out of v1 scope. When picked up:
-- On all-complete: `GET /submissions/{id}/documents?merge=true` → upload signed PDF to the
-  **property's Drive folder** → record link as a `documents` row (`document_type: 'lease_renewal'`).
-- **Prerequisite:** elevate Google service-account scope from `drive.readonly` → `drive.file`
-  (auth in `app/api/documents/sync-drive-folder/route.js`). Confirm the Drive repository is a
-  **Shared Drive** (not a shared My-Drive folder) to avoid service-account ownership/quota quirks.
-- Surface "signed, ready to advance"; landlord **manually** confirms to roll `contracts.end_date`
-  and the renewal chain to the new term.
+Implemented in code (`scripts/add-lease-renewal-phase4.sql`, `lib/google/drive.js`, `lib/docuseal/filing.js`, `lib/docuseal/webhook.js`, `lib/docuseal/advance.js`, `app/api/webhooks/docuseal/route.js`, `app/api/renewals/file/route.js`, `app/api/renewals/advance/route.js`, `renewal-components.jsx`, `phase2-components.jsx`):
 
-**v1 behavior without Phase 4:** the signed PDF lives in DocuSeal; landlord downloads/files it
-manually, and advances the lease term by hand.
+- **Phase 4A (Auto-file signed PDF to Google Drive):**
+  - On countersign completion (`form.completed` in `app/api/webhooks/docuseal/route.js`), persists `countersigned` status first, downloads the merged signed PDF (`GET /submissions/{id}/documents?merge=true` + binary fetch without leaking `X-Auth-Token` to third-party origins), uploads it to the property's Google Drive Shared Drive folder, records a `documents` row (`document_type: 'lease_renewal'`), and stores `signed_document_url` and `document_id` on `lease_renewals`.
+  - Duplicate webhook replays are idempotent. Drive errors (missing folder link, personal My Drive folder, API failures) are recorded in `filing_error` without blocking `countersigned` or failing the webhook; landlords can retry via `POST /api/renewals/file` from `/renewals`.
+  - Shared Google Drive client (`lib/google/drive.js`) uses `drive.readonly` + `drive.file`, passes `supportsAllDrives=true` / `includeItemsFromAllDrives=true`, and verifies `driveId` (Shared Drive) before upload so personal My Drive folders fail fast with an actionable error.
+- **Phase 4B (Manual confirm to advance lease term):**
+  - Webhooks never mutate `contracts`.
+  - `/renewals` surfaces countersigned unapplied renewals with a "Signed - ready to advance" badge, a "Ready to advance" stat card, and an explicit confirmation modal (`AdvanceLeaseModal`).
+  - Confirming calls `POST /api/renewals/advance`, which invokes the atomic `public.advance_lease_renewal(p_renewal_id, p_landlord_id)` RPC to advance `contracts.end_date` to `new_term_end`, preserve `contracts.start_date` and `original_lease_date`, and flip `lease_renewals.applied_to_contract = true` idempotently.
 
 ---
 
 ## 7. External Prerequisites (manual, not code)
 
-- DocuSeal Cloud account; build the renewal template once (place name / date / term /
-  signature fields); obtain API key.
-- New env vars: DocuSeal API key + webhook secret (`whsec_…`).
-- (v2) Elevated Google Drive write scope; confirm Shared Drive destination.
+- Apply `scripts/add-lease-renewals.sql` and `scripts/add-lease-renewal-phase4.sql` in Supabase SQL Editor.
+- Create DocuSeal Cloud account and build the reusable renewal addendum template with exact pre-fill field names:
+  `Tenant Name`, `Property Address`, `Original Lease Date`, `New Term Start`, `New Term End`, `Monthly Rent`.
+- Configure environment variables in Vercel / runtime:
+  - `DOCUSEAL_API_KEY`
+  - `DOCUSEAL_RENEWAL_TEMPLATE_ID`
+  - `DOCUSEAL_WEBHOOK_SECRET` (`whsec_…`)
+  - `RENEWALS_SEND_ENABLED=true` (when ready to release live signing emails)
+  - `GOOGLE_SERVICE_ACCOUNT_JSON` (base64-encoded service account key JSON)
+- Confirm each property's `drive_link` points to a folder inside a Google **Shared Drive** (not a personal My Drive folder) shared with the service account email as Content Manager / Contributor, and verify a live `form.completed` webhook payload against DocuSeal Cloud.
 
 ---
 

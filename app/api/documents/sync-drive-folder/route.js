@@ -9,12 +9,6 @@ import {
   listDriveFolderFiles,
 } from '@/lib/google/drive'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-)
-
 export async function POST(request) {
   const { propertyId, landlordId: requestedLandlordId } = await request.json()
 
@@ -26,6 +20,12 @@ export async function POST(request) {
   const teamMismatch = rejectMismatchedLandlord(requestedLandlordId, auth.landlordId)
   if (teamMismatch) return teamMismatch
   const landlordId = auth.landlordId
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
 
   // Get property drive_link
   const { data: property } = await supabase

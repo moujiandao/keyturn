@@ -41,6 +41,19 @@ they don't get lost between sessions.
   and the Stripe subscription columns exist, but billing and plan gating are not
   built.
 
+## [2026-11-25]
+
+### Added
+
+- Auto-file countersigned DocuSeal renewal PDFs to the property's Google Drive Shared Drive folder on `form.completed`, record a `documents` row (`document_type: 'lease_renewal'`), and link it back to `lease_renewals` idempotently (Phase 4A). Add authenticated `POST /api/renewals/file` for manual filing/retry and expose `lease_renewal` filtering on the Documents page.
+- Add shared Google Drive client (`lib/google/drive.js`) with elevated `drive.readonly` + `drive.file` scopes, Shared Drive preflight validation (`supportsAllDrives=true`), and multipart PDF upload.
+- Add manual landlord confirmation to advance `contracts.end_date` from a countersigned renewal and flip `lease_renewals.applied_to_contract = true` atomically via `POST /api/renewals/advance` and `public.advance_lease_renewal` RPC, with bilingual EN/ZH UI in `RenewalsPage` (Phase 4B). Run `scripts/add-lease-renewal-phase4.sql` in Supabase before using Phase 4 in production.
+
+### Changed
+
+- Route `app/api/documents/sync-drive-folder` through the shared Google Drive client with `supportsAllDrives=true` / `includeItemsFromAllDrives=true` and `drive.readonly` + `drive.file` scopes.
+- Walk applied renewals via `pickEffectiveEndDate` in renewal term derivation so multi-year renewal chains stay aligned across `RenewalsPage` and `POST /api/renewals/create`.
+
 ## [2026-11-24]
 
 ### Changed
