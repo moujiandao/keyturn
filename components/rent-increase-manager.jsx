@@ -67,19 +67,19 @@ const agaInputWrap = {
   border: '1px solid var(--ld-border)',
   borderRadius: radius.sm,
   background: 'var(--ld-surface)',
-  overflow: 'hidden',
 }
 const agaInput = {
   width: 112,
   border: 0,
+  borderRadius: `${radius.sm - 1}px 0 0 ${radius.sm - 1}px`,
   padding: '9px 10px',
   background: 'transparent',
   color: 'var(--ld-ink)',
   font: 'inherit',
-  outline: 'none',
 }
 const agaSuffix = {
   padding: '0 10px',
+  borderRadius: `0 ${radius.sm - 1}px ${radius.sm - 1}px 0`,
   color: 'var(--ld-muted)',
   fontSize: 14,
   fontWeight: 600,
@@ -196,12 +196,12 @@ export function RentIncreaseManager({ property, units, tenants, setData, refresh
   const [currentYear] = useState(() => new Date().getFullYear())
   const upcomingYear = currentYear + 1
   const propertyMx = usePropertyMutations()
-  const [agaDraft, setAgaDraft] = useState(() =>
-    property.maxAgaPercent == null ? '' : String(property.maxAgaPercent)
-  )
+  const [agaDraft, setAgaDraft] = useState(null)
   const [agaSaving, setAgaSaving] = useState(false)
   const [agaError, setAgaError] = useState(null)
   const [agaSaved, setAgaSaved] = useState(false)
+  const agaPending = useRef(false)
+  const displayedAga = agaDraft ?? (property.maxAgaPercent == null ? '' : String(property.maxAgaPercent))
   const preferenceStorage = STORAGE_KEYS.rentHistoryYears(property.id)
   const [yearPreferences, setYearPreferences] = useState(() => readYearPreferences(preferenceStorage))
   const [anchorYear, setAnchorYear] = useState(upcomingYear)
@@ -261,19 +261,20 @@ export function RentIncreaseManager({ property, units, tenants, setData, refresh
 
   async function saveMaxAga(event) {
     event.preventDefault()
-    if (agaSaving) return
+    if (agaPending.current) return
     setAgaError(null)
     setAgaSaved(false)
 
     let parsed
     try {
-      parsed = parseMaxAgaPercent(agaDraft)
+      parsed = parseMaxAgaPercent(displayedAga)
     } catch {
       setAgaError(t.rentMaxAgaInvalid)
       return
     }
 
     const previousValue = property.maxAgaPercent ?? null
+    agaPending.current = true
     setAgaSaving(true)
     if (setData) {
       setData(prev => ({
@@ -284,8 +285,8 @@ export function RentIncreaseManager({ property, units, tenants, setData, refresh
       }))
     }
     try {
-      const saved = await propertyMx.setMaxAgaPercent(property.id, agaDraft)
-      setAgaDraft(saved == null ? '' : String(saved))
+      await propertyMx.setMaxAgaPercent(property.id, parsed)
+      setAgaDraft(null)
       setAgaSaved(true)
       if (refresh) refresh()
     } catch {
@@ -293,12 +294,15 @@ export function RentIncreaseManager({ property, units, tenants, setData, refresh
         setData(prev => ({
           ...prev,
           properties: prev.properties.map(p =>
-            p.id === property.id ? { ...p, maxAgaPercent: previousValue } : p
+            p.id === property.id && p.maxAgaPercent === parsed
+              ? { ...p, maxAgaPercent: previousValue }
+              : p
           ),
         }))
       }
       setAgaError(t.rentMaxAgaSaveError)
     } finally {
+      agaPending.current = false
       setAgaSaving(false)
     }
   }
@@ -321,8 +325,10 @@ export function RentIncreaseManager({ property, units, tenants, setData, refresh
                 type="text"
                 inputMode="decimal"
                 placeholder={t.rentMaxAgaPlaceholder}
-                value={agaDraft}
+                value={displayedAga}
                 disabled={agaSaving}
+                aria-invalid={Boolean(agaError)}
+                aria-describedby={agaError ? 'property-max-aga-error' : undefined}
                 onChange={event => {
                   setAgaDraft(event.target.value)
                   if (agaSaved) setAgaSaved(false)
@@ -333,11 +339,11 @@ export function RentIncreaseManager({ property, units, tenants, setData, refresh
               <span style={agaSuffix} aria-hidden="true">%</span>
             </div>
           </div>
-          <Btn type="submit" disabled={agaSaving}>
+          <Btn disabled={agaSaving}>
             {agaSaving ? t.saving : t.save}
           </Btn>
           {agaSaved && <span role="status" style={agaSavedText}>{t.rentMaxAgaSaved}</span>}
-          {agaError && <p role="alert" style={agaErrorText}>{agaError}</p>}
+          {agaError && <p id="property-max-aga-error" role="alert" style={agaErrorText}>{agaError}</p>}
         </form>
 
         {units.length === 0 ? (

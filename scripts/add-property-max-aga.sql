@@ -4,7 +4,7 @@
 
 ALTER TABLE public.properties
   ADD COLUMN IF NOT EXISTS max_aga_percent numeric
-  CHECK (
+  CONSTRAINT properties_max_aga_percent_check CHECK (
     max_aga_percent IS NULL
     OR (
       max_aga_percent >= 0
