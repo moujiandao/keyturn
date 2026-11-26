@@ -4419,7 +4419,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
     if (!form.name || !form.email || !form.password) { setMsg({ text: t.adminErrFields, error: true }); return; }
     if (form.password.length < 8) { setMsg({ text: t.adminErrPassword, error: true }); return; }
     setLoading(true);
-    const res = await fetch("/api/auth/register-landlord", {
+    const res = await fetch("/api/auth/add-admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -4480,7 +4480,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
                 <td style={{ padding: "14px 20px", fontSize: 13, color: "#6b7280" }}>{u.email || "—"}</td>
                 <td style={{ padding: "14px 20px" }}><RoleBadge role={u.role} /></td>
                 <td style={{ padding: "14px 20px", textAlign: "right" }}>
-                  {u.id !== currentUser?.id && (
+                  {u.id !== currentUser?.authId && (
                     <button onClick={() => { setDeleteError(null); setConfirmDelete(u); }}
                       style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, padding: "4px 8px", borderRadius: 6 }}
                       onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#9ca3af"}>
