@@ -6,6 +6,7 @@ import { RentIncreaseNotice } from '@/components/rent-increase-notice'
 import { Btn, Icon, Modal, PageHeader } from '@/property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
 import { routes } from '@/lib/routes'
+import { STORAGE_KEYS, readMigratedStorage, writeStorage } from '@/lib/storage'
 import { createClient } from '@/lib/supabase/client'
 import { radius } from '@/lib/theme'
 import { createRentHistoryAdapter } from '@/lib/units/rent-history-adapter'
@@ -52,10 +53,10 @@ const errorText = { color: '#b42318', fontSize: 14 }
 
 const emptyYearPreferences = { added: [], hidden: [] }
 
-function readYearPreferences(key) {
+function readYearPreferences(storageEntry) {
   if (typeof window === 'undefined') return emptyYearPreferences
   try {
-    const saved = JSON.parse(localStorage.getItem(key))
+    const saved = JSON.parse(readMigratedStorage(storageEntry))
     return {
       added: Array.isArray(saved?.added) ? saved.added.filter(Number.isInteger) : [],
       hidden: Array.isArray(saved?.hidden) ? saved.hidden.filter(Number.isInteger) : [],
@@ -152,8 +153,8 @@ function RentEntryEditor({ entry, save, close, t }) {
 
 export function RentIncreaseManager({ property, units, tenants, lang, t }) {
   const [currentYear] = useState(() => new Date().getFullYear())
-  const preferenceKey = `propmanager_rent_history_years_${property.id}`
-  const [yearPreferences, setYearPreferences] = useState(() => readYearPreferences(preferenceKey))
+  const preferenceStorage = STORAGE_KEYS.rentHistoryYears(property.id)
+  const [yearPreferences, setYearPreferences] = useState(() => readYearPreferences(preferenceStorage))
   const [anchorYear, setAnchorYear] = useState(currentYear + 1)
   const [addingYear, setAddingYear] = useState(false)
   const [editor, setEditor] = useState(null)
@@ -181,7 +182,7 @@ export function RentIncreaseManager({ property, units, tenants, lang, t }) {
 
   function updateYearPreferences(preferences) {
     setYearPreferences(preferences)
-    try { localStorage.setItem(preferenceKey, JSON.stringify(preferences)) } catch {}
+    writeStorage(preferenceStorage, JSON.stringify(preferences))
   }
 
   function addYear(event) {

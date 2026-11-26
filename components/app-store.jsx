@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { loadAllData, EMPTY_DATA } from '@/lib/dashboard/load'
 import { T } from '@/lib/i18n/strings'
+import { STORAGE_KEYS, readMigratedStorage, writeStorage } from '@/lib/storage'
 
 // The app's client store, hoisted out of `App()` so it can live in a layout.
 //
@@ -75,9 +76,9 @@ export function AppProvider({ initialUser, children }) {
   // Read the stored language during the first render, not in an effect. Reading
   // it afterwards meant every load painted "zh" and then corrected itself.
   const [lang, setLang] = useState(() =>
-    (typeof window !== 'undefined' && localStorage.getItem('propmanager_lang')) || 'zh'
+    readMigratedStorage(STORAGE_KEYS.lang) || 'zh'
   )
-  useEffect(() => { localStorage.setItem('propmanager_lang', lang) }, [lang])
+  useEffect(() => { writeStorage(STORAGE_KEYS.lang, lang) }, [lang])
 
   useEffect(() => { document.body.style.margin = '0'; document.body.style.background = '#fafafa' }, [])
 

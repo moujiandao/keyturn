@@ -1,10 +1,10 @@
-# PropManager Agent Guide
+# Keyturn Agent Guide
 
 This is the active repository guide for Codex. `CLAUDE.md` is the detailed legacy architecture record and decision log. Read the relevant section of `CLAUDE.md` before changing a subsystem with non-obvious behavior. If this file and `CLAUDE.md` disagree, follow this file and verify the current code.
 
 ## Project Snapshot
 
-PropManager is a property-management web application for landlords and tenants.
+Keyturn is a property-management web application for landlords and tenants.
 
 - Next.js 16, App Router, Turbopack
 - React 19
