@@ -2,7 +2,7 @@
 
 Keyturn is a multi-tenant property operations application for landlords and tenants. It brings property records, leases, payments, maintenance, parking, documents, renewals, and scheduled communication into one authenticated system.
 
-[Open the deployed application](https://propmanager-rho.vercel.app)
+[Open the deployed application](https://keyturnapp.vercel.app)
 
 The application is built for a small property portfolio and remains under active development. There is no public demo account, and the repository should be run with synthetic data.
 

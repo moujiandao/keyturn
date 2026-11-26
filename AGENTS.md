@@ -134,6 +134,14 @@ The seamed entities are `maintenance`, `tenant`, `property`, `payment-reminders`
 
 Add the Supabase table and RLS, mapper, dashboard load, store entry, write seam or API route, and tests. Preserve legacy text columns when adding `unit_id` foreign keys unless a migration explicitly retires them.
 
+### Add a page to Learnings
+
+Triggered when Brian says "add a page to my learnings" (typically after finishing a system design or feature effort). Follow `.agents/skills/add-learning-page/SKILL.md` and its HTML/SVG template at `.agents/skills/add-learning-page/resources/template.html`:
+
+1. Summarize at a high systems-design level (architecture, tradeoffs, full-stack patterns, and real failure modes caught) while preserving **all exact names** of technologies, software, protocols, APIs, and concepts verbatim. No em dashes and no real PII/secrets.
+2. Render via headless Chrome (`--no-pdf-header-footer --print-to-pdf`) to `docs/learnings/YYYY-MM-DD-<slug>.pdf`, visually inspect every page with `read_file` to confirm an exact, unclipped 2-page layout, and prepend the newest-first EN/ZH entry to `lib/learnings/catalog.js`.
+3. Run `npm test` (validates `lib/learnings/catalog.test.mjs`) and `npm run build` (verify `.nft.json` traces the new PDF).
+
 ## Verification Checklist
 
 For code changes:

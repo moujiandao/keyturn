@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>System Design Brief: Keyturn - Topic Title</title>
+  <style>
+    @page {
+      size: Letter;
+      margin: 0.38in 0.52in 0.36in 0.52in;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #18201b;
+      background: #ffffff;
+      font-size: 9.2pt;
+      line-height: 1.41;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .header {
+      border-bottom: 2px solid #183629;
+      padding-bottom: 9px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      font-size: 7.7pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #246144;
+      margin-bottom: 3px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 17pt;
+      line-height: 1.15;
+      color: #111f18;
+      letter-spacing: -0.02em;
+    }
+
+    .meta {
+      text-align: right;
+      font-size: 8pt;
+      color: #526159;
+      line-height: 1.36;
+      white-space: nowrap;
+    }
+
+    .lead {
+      background: #f4f8f5;
+      border-left: 3.5px solid #246144;
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      margin: 0 0 11px 0;
+      font-size: 9pt;
+      color: #1f2e26;
+    }
+
+    h2 {
+      font-size: 10.9pt;
+      color: #153527;
+      margin: 10px 0 6px 0;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #dde6e0;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin: 0 0 6px 0;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 7.8pt;
+      background: #f1f4f2;
+      color: #163728;
+      padding: 0.5px 3.5px;
+      border-radius: 3px;
+    }
+
+    .diagram-box {
+      border: 1px solid #dce5df;
+      border-radius: 10px;
+      padding: 9px 9px 6px 9px;
+      background: #fbfdfb;
+      margin: 5px 0 11px 0;
+    }
+
+    .diagram-caption {
+      font-size: 7.8pt;
+      color: #5b6b62;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 5px 0 7px 0;
+      font-size: 8.2pt;
+    }
+
+    th {
+      background: #f1f6f3;
+      color: #183629;
+      text-align: left;
+      font-weight: 700;
+      padding: 5px 7px;
+      border: 1px solid #d7e2db;
+      font-size: 7.6pt;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      padding: 3.6px 7px;
+      border: 1px solid #e1e8e4;
+      vertical-align: top;
+      line-height: 1.27;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafcfa;
+    }
+
+    .concept {
+      font-weight: 700;
+      color: #153527;
+      display: block;
+      margin-bottom: 1.5px;
+    }
+
+    .grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin: 5px 0 8px 0;
+    }
+
+    .card {
+      border: 1px solid #dce5df;
+      border-radius: 8px;
+      padding: 7px 9px;
+      background: #ffffff;
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 6.8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #1f573d;
+      background: #e5f1ea;
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-bottom: 3px;
+    }
+
+    .card-title {
+      font-size: 8.9pt;
+      font-weight: 700;
+      color: #111f18;
+      margin: 0 0 3px 0;
+    }
+
+    .card p {
+      font-size: 8pt;
+      color: #38463e;
+      margin: 0;
+      line-height: 1.34;
+    }
+
+    .callout {
+      background: #fffbeb;
+      border: 1px solid #f5d887;
+      border-radius: 8px;
+      padding: 7px 11px;
+      margin: 7px 0 0 0;
+      font-size: 8.2pt;
+      color: #5c3f08;
+      line-height: 1.34;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .footer-note {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid #e1e8e4;
+      font-size: 7.6pt;
+      color: #617168;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1 -->
+  <div class="header">
+    <div>
+      <div class="eyebrow">Full-Stack &amp; AI System Design Brief</div>
+      <h1>Feature / System Title</h1>
+    </div>
+    <div class="meta">
+      <div><strong>App:</strong> Keyturn (Next.js 16 + React 19 on Vercel)</div>
+      <div><strong>Services:</strong> Supabase (PostgreSQL) | External Services</div>
+      <div><strong>Date:</strong> Month DD, YYYY</div>
+    </div>
+  </div>
+
+  <p class="lead">
+    <strong>System Goal:</strong> One concise paragraph explaining the problem, reliability target, and key edge cases handled.
+  </p>
+
+  <h2>1. High-Level System Architecture</h2>
+  <div class="diagram-box">
+    <svg viewBox="0 0 760 180" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b5246" />
+        </marker>
+      </defs>
+      <!-- Replace with 4-5 primary stages on y=15..70 and control-plane / guarantees row on y=108..158 -->
+      <rect x="8" y="15" width="744" height="55" rx="8" fill="#f1f6f3" stroke="#246144" stroke-width="1.2"/>
+      <text x="380" y="46" text-anchor="middle" font-size="10" font-weight="700" fill="#153527">Replace with end-to-end architecture stages (preserving exact service/protocol names)</text>
+    </svg>
+    <div class="diagram-caption">Figure 1: Concise one-line architecture summary.</div>
+  </div>
+
+  <h2>2. Core Architectural Tradeoffs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:22%;">System Concept</th>
+        <th style="width:39%;">Chosen Design &amp; Rationale</th>
+        <th style="width:39%;">Rejected Alternative &amp; Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="concept">Concept Name</span>Sub-label</td>
+        <td>Chosen approach with exact technology/protocol names.</td>
+        <td>Rejected alternative and concrete reason it was rejected.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE 2 -->
+  <div class="page-break"></div>
+
+  <h2>3. Full-Stack Engineering &amp; Delivery Patterns</h2>
+  <div class="grid-2x2">
+    <div class="card">
+      <div class="card-tag">Architecture</div>
+      <div class="card-title">Pattern 1</div>
+      <p>Concise explanation with exact concepts and concrete metrics.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">Delivery</div>
+      <div class="card-title">Pattern 2</div>
+      <p>Concise explanation with exact concepts and concrete metrics.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">Frontend State</div>
+      <div class="card-title">Pattern 3</div>
+      <p>Concise explanation with exact concepts and concrete metrics.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">Operations</div>
+      <div class="card-title">Pattern 4</div>
+      <p>Concise explanation with exact concepts and concrete metrics.</p>
+    </div>
+  </div>
+
+  <h2>4. Real System Failure Modes Caught &amp; Reusable Engineering Rules</h2>
+  <p>Short intro noting what code review, testing, or live verification surfaced:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:24%;">Concept &amp; Failure Mode</th>
+        <th style="width:38%;">What Happened in Keyturn</th>
+        <th style="width:38%;">Reusable Full-Stack System Rule</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="concept">Category</span>Failure Mode Name</td>
+        <td>Concrete bug or failure observed during build, review, or live testing.</td>
+        <td>Portable full-stack engineering rule that prevents it next time.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Core Takeaway:</strong> One durable systems-level synthesis tying the architecture and lessons together.
+  </div>
+
+  <div class="footer-note">
+    <span>Keyturn System Design Brief - Topic (Stack Summary)</span>
+    <span>PR #XX | Tests passing | Verified</span>
+  </div>
+
+</body>
+</html>

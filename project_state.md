@@ -1,33 +1,31 @@
 ---
 project: Keyturn
-priority: P1
-state: READY
-attention: ACTION
-human_blocked: true
+priority: P2
+state: IDLE
+attention: NONE
+human_blocked: false
 owner: brian
 agent: none
-current_task: Provision live Chase/Resend Zelle dogfooding (#25)
-next_action: Follow docs/zelle-dogfood-runbook.md to run Supabase SQL migrations, provision inbound token, and connect Resend Inbound MX + Gmail filter
-waiting_on: Manual Supabase migrations, Resend Inbound MX DNS, and Gmail Chase forward filter (#25)
-updated: 2026-11-25T11:42:00-08:00
+current_task: None
+next_action: Run scripts/add-property-max-aga.sql in Supabase SQL Editor if not yet applied
+waiting_on: None
+updated: 2026-11-25T19:58:00-08:00
 ---
 
 # Current State
 
-[PR #26](https://github.com/moujiandao/propmanager/pull/26) rebase-merged to `main` (`cc7a2d0`), closing `#19`-`#24`. All 280 tests, ESLint (0 errors), Next.js production build, PII scan, and read-only code review passed.
+Repository, local checkout, Vercel deployment (`https://keyturnapp.vercel.app`), Supabase Auth URLs, and webhooks are fully rebranded and cut over to **Keyturn** (`moujiandao/keyturn` at `/Users/brianmar/workspace/keyturn`). All 7 linked worktrees remain repaired to `/Users/brianmar/workspace/keyturn/.git`.
 
 # Recent Work
 
-Merged Chase Zelle email ingestion and rent reconciliation: HTML-only Chase parser, deterministic memo classifier, month attribution, 6-gate auto-poster, bilingual Zelle Inbox UI with 1-click Undo, review triage actions, `zelle_payer_aliases` memory, housemate 1-to-N splits, grouped partial transfers, Claude Haiku fallback (never auto-posts), and the Ticket `#25` dogfood provisioning script/runbook.
+- Merged `chore/rebrand-keyturn` (`5e59141`, `1e91211`): renamed package to `keyturn`, updated `AGENTS.md`, and migrated all 7 browser `localStorage` keys with one-time fallback migration.
+- Merged `feat/property-max-aga` (`070b840`, `aa9727f`): added per-property Max AGA (%) field on Rent Increase Manager with SQL migration `scripts/add-property-max-aga.sql`.
+- Renamed GitHub repo `moujiandao/propmanager` -> `moujiandao/keyturn`, moved local directory to `/Users/brianmar/workspace/keyturn`, updated `origin`, repaired all linked worktrees, and completed Vercel (`https://keyturnapp.vercel.app`), Supabase Auth, webhook, and `README.md` cutover.
 
 # Blocker
 
-Ticket `#25` (live dogfood verification) waits on manual production setup: running `scripts/add-zelle-ingestion.sql` and `scripts/add-zelle-payer-aliases.sql` in Supabase, provisioning the team inbound token, verifying Resend Inbound MX DNS records, and adding the Gmail Chase auto-forward filter.
+None.
 
 # Next Action
 
-Follow `docs/zelle-dogfood-runbook.md` to run the two SQL migrations in Supabase, provision your `zelle+<token>@<domain>` address, verify Resend Inbound MX + `email.received` webhook, and forward one real Chase Zelle alert end-to-end.
-
-# Notes
-
-Merged via PR #26 without touching pre-existing uncommitted pine-theme edits in the local `main` checkout. `load.js` tolerates missing Zelle tables (`PGRST205`/`42P01`) until the two SQL migrations are executed.
+Run `scripts/add-property-max-aga.sql` in Supabase SQL Editor if not yet applied.
