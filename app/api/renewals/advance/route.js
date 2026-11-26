@@ -1,4 +1,4 @@
-import { createClient } from '../../../../lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { requireLandlord, rejectMismatchedLandlord } from '@/lib/auth/authorize'
 import { advanceLeaseRenewal, RenewalAdvanceError } from '../../../../lib/docuseal/advance'
 import { createRenewalAdvanceAdapter } from '../../../../lib/docuseal/adapter'
@@ -25,7 +25,14 @@ export async function POST(request) {
     return Response.json({ error: 'renewalId is required.' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  // Plain service-role client (no cookie session) so PostgREST executes the
+  // service_role-only `advance_lease_renewal` RPC under service_role rather
+  // than the caller's authenticated JWT.
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
   const adapter = createRenewalAdvanceAdapter(supabase)
 
   try {

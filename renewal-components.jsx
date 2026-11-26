@@ -304,7 +304,7 @@ const InFlightRow = ({
             {renewal.appliedToContract && (
               <span style={appliedChip}>
                 {renewal.appliedAt
-                  ? t.renewalAppliedOn.replace('{date}', fmtDate(renewal.appliedAt.slice(0, 10)))
+                  ? t.renewalAppliedOn.replace('{date}', fmtDate(renewal.appliedAt))
                   : t.renewalAppliedBadge}
               </span>
             )}
@@ -359,7 +359,7 @@ const InFlightRow = ({
 export const RenewalsPage = ({ data, t, user, refresh }) => {
   const [preparing, setPreparing] = useState(null) // a "due" object
   const [advancing, setAdvancing] = useState(null) // an inFlight item ready to confirm
-  const [filingId, setFilingId] = useState(null)
+  const [filingIds, setFilingIds] = useState({})
   const [fileErrors, setFileErrors] = useState({})
 
   const contracts = data.contracts || []
@@ -388,7 +388,7 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
   }
 
   const handleFileToDrive = async (renewal) => {
-    setFilingId(renewal.id)
+    setFilingIds(prev => ({ ...prev, [renewal.id]: true }))
     setFileErrors(prev => ({ ...prev, [renewal.id]: null }))
     try {
       const res = await fetch('/api/renewals/file', {
@@ -399,14 +399,18 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
       const json = await res.json().catch(() => ({}))
       if (!res.ok) {
         setFileErrors(prev => ({ ...prev, [renewal.id]: json?.error || t.renewalFileFailed }))
-        setFilingId(null)
         return
       }
       refresh()
     } catch (e) {
       setFileErrors(prev => ({ ...prev, [renewal.id]: e.message || t.renewalFileFailed }))
+    } finally {
+      setFilingIds(prev => {
+        const next = { ...prev }
+        delete next[renewal.id]
+        return next
+      })
     }
-    setFilingId(null)
   }
 
   const propAddress = (id) => properties.find(p => p.id === id)?.address || ''
@@ -516,7 +520,7 @@ export const RenewalsPage = ({ data, t, user, refresh }) => {
               <InFlightRow
                 key={x.renewal.id}
                 item={x}
-                filingBusy={filingId === x.renewal.id}
+                filingBusy={Boolean(filingIds[x.renewal.id])}
                 fileError={fileErrors[x.renewal.id] || null}
                 onFileToDrive={handleFileToDrive}
                 onAdvance={setAdvancing}

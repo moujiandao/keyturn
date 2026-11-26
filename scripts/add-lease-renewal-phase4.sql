@@ -111,5 +111,5 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.advance_lease_renewal(UUID, UUID) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.advance_lease_renewal(UUID, UUID) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.advance_lease_renewal(UUID, UUID) TO service_role;

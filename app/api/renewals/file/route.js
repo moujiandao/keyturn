@@ -1,4 +1,4 @@
-import { createClient } from '../../../../lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { requireLandlord, rejectMismatchedLandlord } from '@/lib/auth/authorize'
 import { getSignedDocuments, downloadSignedPdf } from '../../../../lib/docuseal/client'
 import { createRenewalStore } from '../../../../lib/docuseal/adapter'
@@ -32,7 +32,11 @@ export async function POST(request) {
     return Response.json({ error: 'renewalId is required.' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
   const store = createRenewalStore(supabase)
 
   let renewal
