@@ -1,7 +1,13 @@
-import { GoogleAuth } from 'google-auth-library'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import { requireLandlord, rejectMismatchedLandlord } from '@/lib/auth/authorize'
+import {
+  DRIVE_SCOPES,
+  extractDriveFolderId,
+  parseServiceAccountCredentials,
+  getDriveAccessToken,
+  listDriveFolderFiles,
+} from '@/lib/google/drive'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -33,51 +39,30 @@ export async function POST(request) {
     return Response.json({ error: 'No Drive folder linked to this property. Add one on the Properties page.' }, { status: 400 })
   }
 
-  const folderMatch = property.drive_link.match(/\/folders\/([a-zA-Z0-9_-]+)/)
-  if (!folderMatch) {
+  const folderId = extractDriveFolderId(property.drive_link)
+  if (!folderId) {
     return Response.json({ error: 'The Drive link for this property is not a folder URL.' }, { status: 400 })
   }
-  const folderId = folderMatch[1]
 
-  // Authenticate with Google using service account
-  let serviceAccountCredentials
-  try {
-    const raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON || ''
-    serviceAccountCredentials = JSON.parse(Buffer.from(raw, 'base64').toString('utf8'))
-  } catch {
-    return Response.json({ error: 'GOOGLE_SERVICE_ACCOUNT_JSON env var is missing or invalid.' }, { status: 500 })
-  }
-
-  const googleAuth = new GoogleAuth({
-    credentials: {
-      client_email: serviceAccountCredentials.client_email,
-      private_key: serviceAccountCredentials.private_key,
-    },
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  })
-
+  // Authenticate with Google using service account (drive.readonly + drive.file
+  // so both folder sync and Phase 4A renewal PDF uploads share one auth seam).
   let token
   try {
-    const client = await googleAuth.getClient()
-    const tokenRes = await client.getAccessToken()
-    token = tokenRes.token
+    const credentials = parseServiceAccountCredentials()
+    token = await getDriveAccessToken({ credentials, scopes: DRIVE_SCOPES })
   } catch (err) {
-    return Response.json({ error: `Google authentication failed: ${err.message}` }, { status: 500 })
+    return Response.json({ error: err.message }, { status: 500 })
   }
 
-  // List files in the Drive folder
-  const driveRes = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed%3Dfalse&fields=files(id,name,mimeType,webViewLink)&pageSize=100`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  )
-
-  if (!driveRes.ok) {
-    const errText = await driveRes.text()
-    return Response.json({ error: `Drive API error: ${errText}` }, { status: 500 })
+  // List files in the Drive folder (supports both Shared Drives and shared folders).
+  let rawFiles
+  try {
+    rawFiles = await listDriveFolderFiles(folderId, { accessToken: token })
+  } catch (err) {
+    return Response.json({ error: err.message }, { status: 500 })
   }
 
-  const driveData = await driveRes.json()
-  const files = (driveData.files || []).filter(f =>
+  const files = rawFiles.filter(f =>
     f.mimeType === 'application/pdf' ||
     f.mimeType === 'application/vnd.google-apps.document' ||
     f.name?.toLowerCase().endsWith('.pdf')
