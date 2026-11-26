@@ -13,6 +13,7 @@ export default function HomePage() {
     <>
       <Hero />
       <Turnover />
+      <ZelleSpotlight />
       <Features />
       <ClosingCta />
     </>
@@ -289,6 +290,220 @@ function Turnover() {
               <p style={{ fontSize: 15, color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>{s.body}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Zelle Spotlight ──────────────────────────────────────────────────────── */
+const ZELLE_COMPARISON = [
+  {
+    aspect: 'Payment fees',
+    portal: 'Card network cuts (2.9%-3.5%) or ACH processing fees',
+    keyturn: '$0 processor fees. Rent lands straight in your bank account.',
+  },
+  {
+    aspect: 'Tenant onboarding',
+    portal: 'Every short-term tenant must create a login and link checking via Plaid',
+    keyturn: 'No portal setup. Tenants and parents pay with the Zelle they already use.',
+  },
+  {
+    aspect: 'Payout timing',
+    portal: '3-5 business day holds while funds clear through a middleman',
+    keyturn: 'Direct bank deposit, reconciled from forwarded Chase Zelle emails.',
+  },
+  {
+    aspect: 'Bank credentials',
+    portal: 'Requires connecting bank accounts or third-party aggregator tokens',
+    keyturn: 'No bank logins shared. Only inbound deposit notification emails.',
+  },
+  {
+    aspect: 'Parent & split rent',
+    portal: 'Rigid per-tenant invoices break when parents or housemates split rent',
+    keyturn: '6-gate auto-posting with 1-click Undo, plus a review inbox for partial, split, or parent payments.',
+  },
+]
+
+function ZelleSpotlight() {
+  return (
+    <section id="zelle" style={{ padding: '92px 0 0' }}>
+      <div style={container}>
+        <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 44px' }}>
+          <span
+            style={{
+              display: 'inline-block',
+              fontSize: 13,
+              fontWeight: 650,
+              color: palette.accentHover,
+              background: palette.accentTint,
+              border: '1px solid #f0d0ce',
+              borderRadius: radius.pill,
+              padding: '6px 14px',
+              marginBottom: 18,
+            }}
+          >
+            No payment processors. No 3% fees.
+          </span>
+          <h2 id="zelle-heading" style={{ fontSize: 'clamp(30px, 4vw, 44px)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px', color: palette.text, textWrap: 'balance' }}>
+            Keep Zelle. Ditch the payment portal.
+          </h2>
+          <p style={{ fontSize: 18, color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>
+            Other property software pushes tenants onto card networks, ACH middlemen, and 5-day payout holds. Keyturn lets tenants keep paying straight to your bank while automating the ledger behind the scenes.
+          </p>
+        </div>
+
+        <div
+          style={{
+            background: palette.surface,
+            border: `1px solid ${palette.border}`,
+            borderRadius: radius.md,
+            overflow: 'hidden',
+            boxShadow: '0 10px 30px rgba(32,38,42,0.05)',
+          }}
+        >
+          <div
+            role="region"
+            aria-labelledby="zelle-heading"
+            tabIndex={0}
+            style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
+          >
+            <table aria-labelledby="zelle-heading" style={{ width: '100%', minWidth: 620, borderCollapse: 'collapse', textAlign: 'left' }}>
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    style={{
+                      width: '22%',
+                      padding: '16px 20px',
+                      fontSize: 12,
+                      fontWeight: 700,
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      color: palette.textMuted,
+                      background: palette.bgSubtle,
+                      borderBottom: `1px solid ${palette.border}`,
+                    }}
+                  >
+                    What matters
+                  </th>
+                  <th
+                    scope="col"
+                    style={{
+                      width: '41%',
+                      padding: '16px 20px',
+                      fontSize: 14,
+                      fontWeight: 750,
+                      color: palette.accentHover,
+                      background: palette.accentTint,
+                      borderBottom: `2px solid ${palette.accent}`,
+                      borderLeft: '1px solid #f0d0ce',
+                    }}
+                  >
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                      <span>{APP_NAME} + Zelle</span>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 700,
+                          color: '#fff',
+                          background: palette.accent,
+                          padding: '3px 9px',
+                          borderRadius: radius.pill,
+                        }}
+                      >
+                        $0 fees
+                      </span>
+                    </span>
+                  </th>
+                  <th
+                    scope="col"
+                    style={{
+                      width: '37%',
+                      padding: '16px 20px',
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: palette.textMuted,
+                      background: palette.bgSubtle,
+                      borderBottom: `1px solid ${palette.border}`,
+                      borderLeft: '1px solid #f0d0ce',
+                    }}
+                  >
+                    Traditional rent portals
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {ZELLE_COMPARISON.map((row, idx) => {
+                  const rowBorder = idx === 0 ? 'none' : `1px solid ${palette.borderSoft}`
+                  return (
+                    <tr key={row.aspect}>
+                      <th
+                        scope="row"
+                        style={{
+                          padding: '16px 20px',
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: palette.text,
+                          verticalAlign: 'top',
+                          borderTop: rowBorder,
+                        }}
+                      >
+                        {row.aspect}
+                      </th>
+                      <td
+                        style={{
+                          padding: '16px 20px',
+                          fontSize: 14,
+                          lineHeight: 1.5,
+                          color: palette.text,
+                          fontWeight: 500,
+                          verticalAlign: 'top',
+                          background: 'rgba(249, 233, 232, 0.28)',
+                          borderTop: rowBorder,
+                          borderLeft: '1px solid #f0d0ce',
+                        }}
+                      >
+                        <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 9 }}>
+                          <svg
+                            aria-hidden="true"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke={palette.accent}
+                            strokeWidth="2.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{ flexShrink: 0, marginTop: 3 }}
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                          <span>{row.keyturn}</span>
+                        </span>
+                      </td>
+                      <td
+                        style={{
+                          padding: '16px 20px',
+                          fontSize: 14,
+                          lineHeight: 1.5,
+                          color: palette.textMuted,
+                          verticalAlign: 'top',
+                          borderTop: rowBorder,
+                          borderLeft: '1px solid #f0d0ce',
+                        }}
+                      >
+                        <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 9 }}>
+                          <span aria-hidden="true" style={{ color: palette.textFaint, fontWeight: 700, flexShrink: 0, lineHeight: 1.4 }}>✕</span>
+                          <span>{row.portal}</span>
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
