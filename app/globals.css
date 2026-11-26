@@ -41,19 +41,45 @@ html {
   scroll-margin-top: 88px;
 }
 
-/* Hover affordances. These toggle `opacity` only, which the inline styles never
-   set, so the cascade applies cleanly over inline `style={}` props. */
+/* Crimson focus rings matching the logged-in landlord workspace. */
+:is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #ad343e !important;
+  outline-offset: 3px;
+}
+
+/* Hover affordances for marketing and auth controls. */
 .pm-btn,
 .pm-navlink {
-  transition: opacity 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
 .pm-btn:hover {
-  opacity: 0.88;
+  opacity: 0.9;
+}
+
+.pm-btn-primary:hover {
+  background: #8d2932 !important;
+  border-color: #8d2932 !important;
+  opacity: 1;
+}
+
+.pm-btn-secondary:hover {
+  background: #f3f4f4 !important;
+  border-color: #bfc4c4 !important;
+  opacity: 1;
 }
 
 .pm-navlink:hover {
-  opacity: 0.6;
+  color: #ad343e !important;
+}
+
+.pm-card {
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.pm-card:hover {
+  border-color: #bfc4c4 !important;
+  box-shadow: 0 7px 20px rgb(31 38 43 / 8%);
 }
 
 /* Marketing header: collapse the secondary links on narrow screens so the nav
@@ -69,7 +95,7 @@ html {
     display: none;
   }
 
-  /* The fake sidebar is a fixed 168px of chrome. On a phone that leaves too little
+  /* The fake sidebar is a fixed 184px of chrome. On a phone that leaves too little
      room for the panel it exists to frame, so drop it and give the transitions
      list the full width. */
   .pm-mock-sidebar {
@@ -86,5 +112,11 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .pm-btn,
+  .pm-navlink,
+  .pm-card {
+    transition: none;
   }
 }

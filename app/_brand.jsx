@@ -1,5 +1,5 @@
 import { APP_NAME } from '@/lib/brand'
-import { palette } from '@/lib/theme'
+import { palette, tracking } from '@/lib/theme'
 
 // Shared brand mark for marketing + auth surfaces. Server component (pure markup).
 export function Logo({ size = 30, withWordmark = true, color = palette.text }) {
@@ -18,7 +18,7 @@ export function Logo({ size = 30, withWordmark = true, color = palette.text }) {
           flexShrink: 0,
         }}
       >
-        <svg width={size * 0.58} height={size * 0.58} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg aria-hidden="true" width={size * 0.58} height={size * 0.58} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 10.5 12 3l9 7.5" />
           <path d="M5 9.5V21h14V9.5" />
           <path d="M10 21v-6h4v6" />
@@ -30,7 +30,7 @@ export function Logo({ size = 30, withWordmark = true, color = palette.text }) {
           sideways. Note `display` is left to the stylesheet, not set inline, or
           the media query could not override it. */}
       {withWordmark && (
-        <span className="pm-wordmark" style={{ fontSize: size * 0.62, fontWeight: 800, letterSpacing: '-0.02em', color }}>
+        <span className="pm-wordmark" style={{ fontSize: size * 0.62, fontWeight: 800, letterSpacing: tracking.brand, color }}>
           {APP_NAME}
         </span>
       )}

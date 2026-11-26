@@ -20,37 +20,37 @@ function Header() {
         position: 'sticky',
         top: 0,
         zIndex: 20,
-        background: 'rgba(255,255,255,0.85)',
+        background: 'rgba(255,255,255,0.92)',
         backdropFilter: 'saturate(180%) blur(12px)',
         borderBottom: `1px solid ${palette.border}`,
       }}
     >
       <div style={{ ...container, height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link href="/" style={{ textDecoration: 'none' }}>
+        <Link href="/" aria-label={APP_NAME} style={{ textDecoration: 'none' }}>
           <Logo />
         </Link>
         <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <Link href="/#features" className="pm-navlink pm-nav-secondary" style={navLink}>Features</Link>
           <Link href="/pricing" className="pm-navlink pm-nav-secondary" style={navLink}>Pricing</Link>
           <Link href="/login" className="pm-navlink" style={navLink}>Log in</Link>
-          <Link href="/signup" className="pm-btn" style={btnStyle('primary', 'md')}>Start for free</Link>
+          <Link href="/signup" className="pm-btn pm-btn-primary" style={btnStyle('primary', 'md')}>Start for free</Link>
         </nav>
       </div>
     </header>
   )
 }
 
-const navLink = { color: palette.text, textDecoration: 'none', fontSize: 15, fontWeight: 500 }
+const navLink = { color: palette.textMuted, textDecoration: 'none', fontSize: 15, fontWeight: 600 }
 
 function Footer() {
   return (
-    <footer style={{ borderTop: `1px solid ${palette.border}`, background: palette.bgSubtle }}>
+    <footer style={{ borderTop: `1px solid ${palette.border}`, background: palette.surface }}>
       <div style={{ ...container, padding: '40px 24px', display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'space-between', alignItems: 'center' }}>
         <Logo size={26} />
         <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-          <Link href="/#features" className="pm-navlink" style={{ ...navLink, color: palette.textMuted, fontSize: 14 }}>Features</Link>
-          <Link href="/pricing" className="pm-navlink" style={{ ...navLink, color: palette.textMuted, fontSize: 14 }}>Pricing</Link>
-          <Link href="/login" className="pm-navlink" style={{ ...navLink, color: palette.textMuted, fontSize: 14 }}>Log in</Link>
+          <Link href="/#features" className="pm-navlink" style={{ ...navLink, fontSize: 14 }}>Features</Link>
+          <Link href="/pricing" className="pm-navlink" style={{ ...navLink, fontSize: 14 }}>Pricing</Link>
+          <Link href="/login" className="pm-navlink" style={{ ...navLink, fontSize: 14 }}>Log in</Link>
         </div>
         <span style={{ color: palette.textFaint, fontSize: 13 }}>© {new Date().getFullYear()} {APP_NAME}</span>
       </div>

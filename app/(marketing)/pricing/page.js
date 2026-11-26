@@ -1,6 +1,6 @@
 import { APP_NAME } from '@/lib/brand'
 import Link from 'next/link'
-import { palette, container, btnStyle, radius } from '@/lib/theme'
+import { palette, container, btnStyle, radius, tracking } from '@/lib/theme'
 
 export const metadata = {
   title: `Pricing — ${APP_NAME}`,
@@ -60,7 +60,7 @@ export default function PricingPage() {
     <section style={{ padding: '80px 0 96px' }}>
       <div style={container}>
         <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 56px' }}>
-          <h1 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 18px' }}>
+          <h1 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 800, letterSpacing: tracking.display, margin: '0 0 18px' }}>
             A plan for every portfolio
           </h1>
           <p style={{ fontSize: 19, color: palette.textMuted, lineHeight: 1.5, margin: 0 }}>
@@ -110,7 +110,7 @@ const FAQS = [
 function Faq() {
   return (
     <div style={{ maxWidth: 760, margin: '88px auto 0' }}>
-      <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 36px)', fontWeight: 800, letterSpacing: '-0.02em', textAlign: 'center', margin: '0 0 36px' }}>
+      <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 36px)', fontWeight: 800, letterSpacing: tracking.heading, textAlign: 'center', margin: '0 0 36px' }}>
         Frequently asked questions
       </h2>
       <div>
@@ -131,11 +131,11 @@ function PlanCard({ tier }) {
     <div
       style={{
         position: 'relative',
-        background: '#fff',
-        border: highlighted ? `2px solid ${palette.blue}` : `1px solid ${palette.border}`,
-        borderRadius: radius.lg,
-        padding: highlighted ? '34px 28px' : '34px 28px',
-        boxShadow: highlighted ? '0 16px 44px rgba(47,111,237,0.14)' : 'none',
+        background: palette.surface,
+        border: highlighted ? `2px solid ${palette.accent}` : `1px solid ${palette.border}`,
+        borderRadius: radius.md,
+        padding: '34px 28px',
+        boxShadow: highlighted ? '0 16px 40px rgba(173,52,62,0.14)' : 'none',
       }}
     >
       {highlighted && (
@@ -145,7 +145,7 @@ function PlanCard({ tier }) {
             top: -13,
             left: '50%',
             transform: 'translateX(-50%)',
-            background: palette.blue,
+            background: palette.accent,
             color: '#fff',
             fontSize: 12,
             fontWeight: 700,
@@ -160,10 +160,14 @@ function PlanCard({ tier }) {
       <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px' }}>{name}</h2>
       <p style={{ fontSize: 14, color: palette.textMuted, minHeight: 40, margin: '0 0 18px' }}>{blurb}</p>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 22 }}>
-        <span style={{ fontSize: 44, fontWeight: 800, letterSpacing: '-0.03em' }}>{price}</span>
+        <span style={{ fontSize: 44, fontWeight: 800, letterSpacing: tracking.display }}>{price}</span>
         <span style={{ fontSize: 15, color: palette.textMuted }}>{cadence}</span>
       </div>
-      <Link href="/signup" className="pm-btn" style={{ ...btnStyle(highlighted ? 'blue' : 'secondary', 'md'), width: '100%' }}>
+      <Link
+        href="/signup"
+        className={highlighted ? 'pm-btn pm-btn-primary' : 'pm-btn pm-btn-secondary'}
+        style={{ ...btnStyle(highlighted ? 'primary' : 'secondary', 'md'), width: '100%' }}
+      >
         {cta}
       </Link>
       {featuresLabel && (
@@ -183,7 +187,7 @@ function PlanCard({ tier }) {
 
 function Check() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={palette.blue} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={palette.accent} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
       <path d="M20 6 9 17l-5-5" />
     </svg>
   )
