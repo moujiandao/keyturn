@@ -388,18 +388,7 @@ function ZelleLedgerTable({ rows, t, lang, filters, setFilters, expandedIds, tog
                         )}
                       </td>
                       <td style={{ ...ledgerTd, whiteSpace: 'nowrap' }}>
-                        {r.sentDate ? (
-                          <>
-                            <div>{t.zelleSentPrefix} {fmtDate(r.sentDate)}</div>
-                            {r.receivedDate && r.receivedDate !== r.sentDate && (
-                              <div style={ledgerMuted}>{t.zelleEmailPrefix} {fmtDate(r.receivedDate)}</div>
-                            )}
-                          </>
-                        ) : r.receivedDate ? (
-                          <div>{t.zelleEmailPrefix} {fmtDate(r.receivedDate)}</div>
-                        ) : (
-                          '-'
-                        )}
+                        {r.sentDate ? `${t.zelleSentPrefix} ${fmtDate(r.sentDate)}` : '-'}
                       </td>
                       <td style={{ ...ledgerTd, maxWidth: 200, overflowWrap: 'anywhere' }}>
                         {r.memo ? r.memo : <span style={{ color: '#9ca3af' }}>{t.zelleNoMemo}</span>}
