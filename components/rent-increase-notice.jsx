@@ -8,8 +8,8 @@ const panel = {
   marginTop: 24, padding: 'clamp(14px, 3vw, 24px)', border: '1px solid var(--ld-border)',
   borderRadius: 12, background: 'var(--ld-surface)', color: 'var(--ld-ink)',
 }
-const heading = { margin: '0 0 16px', fontSize: 20 }
-const label = { display: 'block', marginBottom: 6, fontSize: 14, fontWeight: 600 }
+const heading = { margin: '0 0 16px', fontSize: "1.25rem" }
+const label = { display: 'block', marginBottom: 6, fontSize: "0.875rem", fontWeight: 600 }
 const input = {
   boxSizing: 'border-box', width: '100%', padding: '10px 12px', border: '1px solid var(--ld-border)',
   borderRadius: 8, background: 'var(--ld-surface)', color: 'var(--ld-ink)', font: 'inherit',
@@ -17,7 +17,7 @@ const input = {
 const unitSelect = { ...input, maxWidth: 250, marginBottom: 16 }
 const letter = { ...input, minHeight: 420, resize: 'vertical', lineHeight: 1.55, tabSize: 4 }
 const actions = { display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 12 }
-const feedback = { margin: '8px 0 0', color: 'var(--ld-muted)', fontSize: 13 }
+const feedback = { margin: '8px 0 0', color: 'var(--ld-muted)', fontSize: "0.8125rem" }
 
 const printStyles = `
   @page { margin: 0.75in; }

@@ -10,11 +10,11 @@ import { fmtDate } from '@/lib/email/format'
 const supabase = createClient()
 
 const card = { background: '#fff', borderRadius: 14, padding: 22, border: '1px solid var(--ld-border, #f5f5f5)' }
-const emptyCard = { ...card, textAlign: 'center', color: '#9ca3af', fontSize: 14, padding: 40 }
-const dangerBtn = { padding: '10px 20px', borderRadius: 9, border: 'none', background: '#ef4444', color: '#fff', fontWeight: 600, fontSize: 14, fontFamily: 'inherit', cursor: 'pointer' }
+const emptyCard = { ...card, textAlign: 'center', color: '#9ca3af', fontSize: "0.875rem", padding: 40 }
+const dangerBtn = { padding: '10px 20px', borderRadius: 9, border: 'none', background: '#ef4444', color: '#fff', fontWeight: 600, fontSize: "0.875rem", fontFamily: 'inherit', cursor: 'pointer' }
 const iconBtn = { background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 6, display: 'inline-flex' }
 const footerRow = { display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }
-const errText = { color: '#ef4444', fontSize: 13, margin: '8px 0 0' }
+const errText = { color: '#ef4444', fontSize: "0.8125rem", margin: '8px 0 0' }
 
 // Every name in this file lands in a string context (a <select> option, a
 // recipient list), so the gender mark comes through as a bare glyph without
@@ -43,10 +43,10 @@ const eventLabel = (t, value) => ({
 // ─── Merge-tag insert bar ─────────────────────────────────────────────────────
 const MergeTagBar = ({ onInsert, t, tags = MERGE_TAGS }) => (
   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, margin: '8px 0' }}>
-    <span style={{ fontSize: 12, color: '#9ca3af', alignSelf: 'center', marginRight: 4 }}>{t.insertField}:</span>
+    <span style={{ fontSize: "0.75rem", color: '#9ca3af', alignSelf: 'center', marginRight: 4 }}>{t.insertField}:</span>
     {tags.map(m => (
       <button key={m.tag} type="button" title={m.label} onClick={() => onInsert(`{${m.tag}}`)}
-        style={{ padding: '3px 8px', fontSize: 12, borderRadius: 6, border: '1px solid #eaeaea', background: '#fafafa', color: '#6b7280', cursor: 'pointer', fontFamily: 'inherit' }}>
+        style={{ padding: '3px 8px', fontSize: "0.75rem", borderRadius: 6, border: '1px solid #eaeaea', background: '#fafafa', color: '#6b7280', cursor: 'pointer', fontFamily: 'inherit' }}>
         {`{${m.tag}}`}
       </button>
     ))}
@@ -94,10 +94,10 @@ const TemplateEditor = ({ initial, user, t, onClose, onSaved }) => {
         <div>
           <Inp label={t.templateName} value={name} onChange={setName} placeholder={t.templateNamePlaceholder} />
           <Inp label={t.templateSubject} value={subject} onChange={setSubject} />
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', margin: '12px 0 6px' }}>{t.templateBody}</label>
+          <label style={{ display: 'block', fontSize: "0.8125rem", fontWeight: 600, color: '#374151', margin: '12px 0 6px' }}>{t.templateBody}</label>
           <MergeTagBar onInsert={insertTag} t={t} />
           <textarea ref={bodyRef} value={body} onChange={e => setBody(e.target.value)}
-            style={{ width: '100%', minHeight: 220, padding: '12px 14px', border: '1px solid #eaeaea', borderRadius: 9, fontSize: 13, color: '#374151', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none', lineHeight: 1.6 }} />
+            style={{ width: '100%', minHeight: 220, padding: '12px 14px', border: '1px solid #eaeaea', borderRadius: 9, fontSize: "0.8125rem", color: '#374151', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none', lineHeight: 1.6 }} />
           {err && <p style={errText}>{err}</p>}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 14 }}>
             <Btn variant="secondary" onClick={onClose}>{t.cancel}</Btn>
@@ -105,12 +105,12 @@ const TemplateEditor = ({ initial, user, t, onClose, onSaved }) => {
           </div>
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>{t.preview}</label>
+          <label style={{ display: 'block', fontSize: "0.8125rem", fontWeight: 600, color: '#374151', marginBottom: 6 }}>{t.preview}</label>
           <div style={{ border: '1px solid #eaeaea', borderRadius: 9, overflow: 'hidden' }}>
-            <div style={{ padding: '10px 14px', background: '#fafafa', borderBottom: '1px solid #eaeaea', fontSize: 13, fontWeight: 600, color: '#111111' }}>{preview.subject || t.previewNoSubject}</div>
-            <div style={{ padding: '16px 14px', fontSize: 14, color: '#111111', minHeight: 180 }} dangerouslySetInnerHTML={{ __html: preview.html || `<span style="color:#9ca3af">${t.previewEmpty}</span>` }} />
+            <div style={{ padding: '10px 14px', background: '#fafafa', borderBottom: '1px solid #eaeaea', fontSize: "0.8125rem", fontWeight: 600, color: '#111111' }}>{preview.subject || t.previewNoSubject}</div>
+            <div style={{ padding: '16px 14px', fontSize: "0.875rem", color: '#111111', minHeight: 180 }} dangerouslySetInnerHTML={{ __html: preview.html || `<span style="color:#9ca3af">${t.previewEmpty}</span>` }} />
           </div>
-          <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 8 }}>{t.previewSampleNote}</p>
+          <p style={{ fontSize: "0.75rem", color: '#9ca3af', marginTop: 8 }}>{t.previewSampleNote}</p>
         </div>
       </div>
     </Modal>
@@ -145,11 +145,11 @@ const TestSendModal = ({ template, eventType, data, user, t, onClose }) => {
 
   return (
     <Modal title={t.testSendTitle} onClose={onClose}>
-      <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 14px' }}>{t.testSendDesc}</p>
+      <p style={{ fontSize: "0.8125rem", color: '#6b7280', margin: '0 0 14px' }}>{t.testSendDesc}</p>
       <Inp label={t.testRecipient} value={toEmail} onChange={setToEmail} type="email" />
       <Sel label={t.testUseTenant} value={tenantId} onChange={setTenantId} options={tenantOptions} />
       {result?.error && <p style={errText}>{result.error}</p>}
-      {result?.ok && <p style={{ color: '#22c55e', fontSize: 13, margin: '8px 0 0' }}>{t.testSent}</p>}
+      {result?.ok && <p style={{ color: '#22c55e', fontSize: "0.8125rem", margin: '8px 0 0' }}>{t.testSent}</p>}
       <div style={footerRow}>
         <Btn variant="secondary" onClick={onClose}>{t.cancel}</Btn>
         <Btn onClick={send} disabled={sending}>{sending ? t.sending : t.send}</Btn>
@@ -183,8 +183,8 @@ const TemplatesTab = ({ data, user, t, refresh }) => {
           {templates.map(tpl => (
             <div key={tpl.id} style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: '#111111' }}>{tpl.name}</div>
-                <div style={{ fontSize: 13, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tpl.subject}</div>
+                <div style={{ fontSize: "0.9375rem", fontWeight: 600, color: '#111111' }}>{tpl.name}</div>
+                <div style={{ fontSize: "0.8125rem", color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tpl.subject}</div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                 <Btn size="sm" variant="secondary" icon="mail" onClick={() => setTesting(tpl)}>{t.sendTest}</Btn>
@@ -202,7 +202,7 @@ const TemplatesTab = ({ data, user, t, refresh }) => {
       {testing && <TestSendModal template={testing} data={data} user={user} t={t} onClose={() => setTesting(null)} />}
       {confirmDel && (
         <Modal title={t.deleteTemplate} onClose={() => setConfirmDel(null)}>
-          <p style={{ fontSize: 14, color: '#374151', margin: '0 0 20px' }}>{t.confirmDeleteTemplate} <strong>{confirmDel.name}</strong>?</p>
+          <p style={{ fontSize: "0.875rem", color: '#374151', margin: '0 0 20px' }}>{t.confirmDeleteTemplate} <strong>{confirmDel.name}</strong>?</p>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
             <Btn variant="secondary" onClick={() => setConfirmDel(null)}>{t.cancel}</Btn>
             <button onClick={del} style={dangerBtn}>{t.deleteTemplate}</button>
@@ -300,18 +300,18 @@ const EmailGeneratorTab = ({ data, t }) => {
   return (
     <div style={{ display: 'grid', gap: 18 }}>
       <div style={{ ...card, background: '#fafafa' }}>
-        <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{t.generatorIntro}</div>
-        <div style={{ fontSize: 13, color: '#16a34a', fontWeight: 600, marginTop: 6 }}>{t.generatorNeverSends}</div>
+        <div style={{ fontSize: "0.875rem", color: '#374151', lineHeight: 1.6 }}>{t.generatorIntro}</div>
+        <div style={{ fontSize: "0.8125rem", color: '#16a34a', fontWeight: 600, marginTop: 6 }}>{t.generatorNeverSends}</div>
       </div>
 
       <div style={card}>
-        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>{t.generatorSubject}</label>
+        <label style={{ display: 'block', fontSize: "0.8125rem", fontWeight: 600, color: '#374151', marginBottom: 6 }}>{t.generatorSubject}</label>
         <input value={subject} onChange={event => setSubject(event.target.value)}
-          style={{ width: '100%', padding: '10px 12px', border: '1px solid #eaeaea', borderRadius: 9, fontSize: 13, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }} />
-        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', margin: '14px 0 6px' }}>{t.generatorBody}</label>
+          style={{ width: '100%', padding: '10px 12px', border: '1px solid #eaeaea', borderRadius: 9, fontSize: "0.8125rem", fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }} />
+        <label style={{ display: 'block', fontSize: "0.8125rem", fontWeight: 600, color: '#374151', margin: '14px 0 6px' }}>{t.generatorBody}</label>
         <MergeTagBar onInsert={insertTag} t={t} tags={generatorTags} />
         <textarea ref={bodyRef} value={body} onChange={event => setBody(event.target.value)}
-          style={{ width: '100%', minHeight: 250, padding: '12px 14px', border: '1px solid #eaeaea', borderRadius: 9, fontSize: 13, color: '#374151', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none', lineHeight: 1.6 }} />
+          style={{ width: '100%', minHeight: 250, padding: '12px 14px', border: '1px solid #eaeaea', borderRadius: 9, fontSize: "0.8125rem", color: '#374151', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none', lineHeight: 1.6 }} />
       </div>
 
       <div style={{ ...card, overflowX: 'auto' }}>
@@ -319,7 +319,7 @@ const EmailGeneratorTab = ({ data, t }) => {
           <thead>
             <tr>
               {[t.generatorUnit, t.generatorNames, t.generatorMonth, t.generatorAmount, ''].map((label, index) => (
-                <th key={`${label}-${index}`} style={{ padding: '0 8px 10px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: '#6b7280' }}>{label}</th>
+                <th key={`${label}-${index}`} style={{ padding: '0 8px 10px', textAlign: 'left', fontSize: "0.75rem", fontWeight: 600, color: '#6b7280' }}>{label}</th>
               ))}
             </tr>
           </thead>
@@ -334,7 +334,7 @@ const EmailGeneratorTab = ({ data, t }) => {
                     {unitOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
                   </select>
                 </td>
-                <td style={{ padding: '10px 8px', minWidth: 180, fontSize: 13, color: details.mergeValues.name ? '#374151' : '#9ca3af' }}>
+                <td style={{ padding: '10px 8px', minWidth: 180, fontSize: "0.8125rem", color: details.mergeValues.name ? '#374151' : '#9ca3af' }}>
                   {details.mergeValues.name || (row.unitId && row.month ? t.generatorNoTenants : t.generatorEnterUnitMonth)}
                 </td>
                 <td style={{ padding: '10px 8px' }}>
@@ -367,7 +367,7 @@ const EmailGeneratorTab = ({ data, t }) => {
 
       {generated && tableComplete && (
         <div style={{ display: 'grid', gap: 14 }}>
-          <h3 style={{ margin: '4px 0 0', fontSize: 17, color: '#111111' }}>{t.generatorResults}</h3>
+          <h3 style={{ margin: '4px 0 0', fontSize: "1.0625rem", color: '#111111' }}>{t.generatorResults}</h3>
           {outputs.map(({ details, rendered }, index) => {
             const resultKey = `${details.unitId}-${index}`
             const subjectKey = `subject-${resultKey}`
@@ -376,8 +376,8 @@ const EmailGeneratorTab = ({ data, t }) => {
             return (
               <div key={resultKey} className="landlord-stack" style={{ ...card, display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 280px', gap: 20 }}>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#111111', marginBottom: 8 }}>{rendered.subject || t.previewNoSubject}</div>
-                  <div style={{ whiteSpace: 'pre-wrap', fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{rendered.text}</div>
+                  <div style={{ fontSize: "0.8125rem", fontWeight: 600, color: '#111111', marginBottom: 8 }}>{rendered.subject || t.previewNoSubject}</div>
+                  <div style={{ whiteSpace: 'pre-wrap', fontSize: "0.875rem", color: '#374151', lineHeight: 1.6 }}>{rendered.text}</div>
                   <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
                     <Btn size="sm" variant="secondary" onClick={() => copy(rendered.subject, subjectKey)}>
                       {copied === subjectKey ? t.generatorCopied : t.generatorCopySubject}
@@ -388,8 +388,8 @@ const EmailGeneratorTab = ({ data, t }) => {
                   </div>
                 </div>
                 <aside style={{ borderLeft: '1px solid #eaeaea', paddingLeft: 18 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', marginBottom: 7 }}>{t.generatorEmailAddresses}</div>
-                  <div style={{ fontSize: 13, color: details.emailAddresses ? '#374151' : '#9ca3af', lineHeight: 1.5, overflowWrap: 'anywhere' }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 600, color: '#6b7280', marginBottom: 7 }}>{t.generatorEmailAddresses}</div>
+                  <div style={{ fontSize: "0.8125rem", color: details.emailAddresses ? '#374151' : '#9ca3af', lineHeight: 1.5, overflowWrap: 'anywhere' }}>
                     {details.emailAddresses || t.generatorNoEmailAddresses}
                   </div>
                   <div style={{ marginTop: 10 }}>
@@ -398,7 +398,7 @@ const EmailGeneratorTab = ({ data, t }) => {
                     </Btn>
                   </div>
                   {details.missingEmailNames.length > 0 && (
-                    <p style={{ color: '#b45309', fontSize: 12, margin: '10px 0 0', lineHeight: 1.4 }}>
+                    <p style={{ color: '#b45309', fontSize: "0.75rem", margin: '10px 0 0', lineHeight: 1.4 }}>
                       {t.generatorMissingEmails(details.missingEmailNames.join(', '))}
                     </p>
                   )}
@@ -526,14 +526,14 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
   if (step === 'loading') {
     return (
       <Modal title={automation.name} onClose={onClose}>
-        <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>{t.batchLoading}</p>
+        <p style={{ fontSize: "0.875rem", color: '#6b7280', margin: 0 }}>{t.batchLoading}</p>
       </Modal>
     )
   }
   if (step === 'error') {
     return (
       <Modal title={automation.name} onClose={onClose}>
-        <p style={{ fontSize: 14, color: '#ef4444', margin: '0 0 16px' }}>{errMsg || t.batchLoadFailed}</p>
+        <p style={{ fontSize: "0.875rem", color: '#ef4444', margin: '0 0 16px' }}>{errMsg || t.batchLoadFailed}</p>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
           <Btn variant="secondary" onClick={onClose}>{t.cancel}</Btn>
         </div>
@@ -545,7 +545,7 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
   if (step === 'result') {
     return (
       <Modal title={t.batchResultTitle} onClose={onClose}>
-        <p style={{ fontSize: 15, color: '#111111', margin: '0 0 8px', fontWeight: 600 }}>
+        <p style={{ fontSize: "0.9375rem", color: '#111111', margin: '0 0 8px', fontWeight: 600 }}>
           {t.batchResultSummary(result.sent, result.failed, result.skipped)}
         </p>
         <div style={footerRow}>
@@ -560,7 +560,7 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
     if (!first) {
       return (
         <Modal title={automation.name} onClose={onClose}>
-          <p style={{ fontSize: 14, color: '#6b7280', margin: '0 0 16px' }}>{t.batchNoRecipients}</p>
+          <p style={{ fontSize: "0.875rem", color: '#6b7280', margin: '0 0 16px' }}>{t.batchNoRecipients}</p>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
             <Btn variant="secondary" onClick={onClose}>{t.cancel}</Btn>
           </div>
@@ -569,10 +569,10 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
     }
     return (
       <Modal title={t.batchPreviewTitle} onClose={onClose} wide>
-        <p style={{ fontSize: 12, color: '#9ca3af', margin: '0 0 12px' }}>{t.batchPreviewNote(tenantName(first.tenant_id))}</p>
+        <p style={{ fontSize: "0.75rem", color: '#9ca3af', margin: '0 0 12px' }}>{t.batchPreviewNote(tenantName(first.tenant_id))}</p>
         <div style={{ border: '1px solid #eaeaea', borderRadius: 9, overflow: 'hidden' }}>
-          <div style={{ padding: '10px 14px', background: '#fafafa', borderBottom: '1px solid #eaeaea', fontSize: 13, fontWeight: 600, color: '#111111' }}>{first.subject || t.batchPreviewNoSubject}</div>
-          <div style={{ padding: '16px 14px', fontSize: 14, color: '#111111', minHeight: 160 }} dangerouslySetInnerHTML={{ __html: renderBody(first) }} />
+          <div style={{ padding: '10px 14px', background: '#fafafa', borderBottom: '1px solid #eaeaea', fontSize: "0.8125rem", fontWeight: 600, color: '#111111' }}>{first.subject || t.batchPreviewNoSubject}</div>
+          <div style={{ padding: '16px 14px', fontSize: "0.875rem", color: '#111111', minHeight: 160 }} dangerouslySetInnerHTML={{ __html: renderBody(first) }} />
         </div>
         <div style={footerRow}>
           <Btn variant="secondary" onClick={onClose}>{t.cancel}</Btn>
@@ -585,10 +585,10 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
   // ── Step 2: review & edit + Step 3 confirm dialog ─────────────────────────────
   return (
     <Modal title={t.batchReviewTitle} onClose={onClose} wide>
-      <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 8px' }}>{t.batchReviewSubtitle}</p>
+      <p style={{ fontSize: "0.8125rem", color: '#6b7280', margin: '0 0 8px' }}>{t.batchReviewSubtitle}</p>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 14px' }}>
-        <span style={{ background: '#f3f4f6', color: '#111111', padding: '4px 12px', borderRadius: 99, fontSize: 13, fontWeight: 600 }}>{t.batchRecipientCount(messages.length)}</span>
-        {saving && <span style={{ fontSize: 12, color: '#9ca3af' }}>{t.batchSaving}</span>}
+        <span style={{ background: '#f3f4f6', color: '#111111', padding: '4px 12px', borderRadius: 99, fontSize: "0.8125rem", fontWeight: 600 }}>{t.batchRecipientCount(messages.length)}</span>
+        {saving && <span style={{ fontSize: "0.75rem", color: '#9ca3af' }}>{t.batchSaving}</span>}
       </div>
 
       <div style={{ display: 'grid', gap: 12, maxHeight: '48vh', overflow: 'auto' }}>
@@ -596,18 +596,18 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
           <div key={m.id} style={{ border: '1px solid #eaeaea', borderRadius: 10, padding: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>{tenantName(m.tenant_id)}</div>
-                <div style={{ fontSize: 12, color: m.to_email ? '#6b7280' : '#ef4444' }}>{m.to_email || t.batchRecipientNoEmail}</div>
+                <div style={{ fontSize: "0.875rem", fontWeight: 600, color: '#111111' }}>{tenantName(m.tenant_id)}</div>
+                <div style={{ fontSize: "0.75rem", color: m.to_email ? '#6b7280' : '#ef4444' }}>{m.to_email || t.batchRecipientNoEmail}</div>
               </div>
               <Btn size="sm" variant="ghost" icon="trash" onClick={() => removeRow(m.id)}>{t.batchRemove}</Btn>
             </div>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#374151', margin: '8px 0 4px' }}>{t.batchRecipientSubject}</label>
+            <label style={{ display: 'block', fontSize: "0.75rem", fontWeight: 600, color: '#374151', margin: '8px 0 4px' }}>{t.batchRecipientSubject}</label>
             <input value={m.subject || ''} onChange={e => editLocal(m.id, 'subject', e.target.value)} onBlur={() => persistSubject(m)}
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #eaeaea', borderRadius: 8, fontSize: 13, color: '#111111', boxSizing: 'border-box', outline: 'none', fontFamily: 'inherit' }} />
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#374151', margin: '10px 0 4px' }}>{t.batchRecipientBody}</label>
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid #eaeaea', borderRadius: 8, fontSize: "0.8125rem", color: '#111111', boxSizing: 'border-box', outline: 'none', fontFamily: 'inherit' }} />
+            <label style={{ display: 'block', fontSize: "0.75rem", fontWeight: 600, color: '#374151', margin: '10px 0 4px' }}>{t.batchRecipientBody}</label>
             <textarea value={m.body_text || ''} onChange={e => editLocal(m.id, 'body_text', e.target.value)}
               onBlur={() => persistBody(m)}
-              style={{ width: '100%', minHeight: 120, padding: '10px 12px', border: '1px solid #eaeaea', borderRadius: 8, fontSize: 13, color: '#374151', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none', lineHeight: 1.6 }} />
+              style={{ width: '100%', minHeight: 120, padding: '10px 12px', border: '1px solid #eaeaea', borderRadius: 8, fontSize: "0.8125rem", color: '#374151', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none', lineHeight: 1.6 }} />
           </div>
         ))}
       </div>
@@ -621,7 +621,7 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
         </div>
       </div>
 
-      {errMsg && <p style={{ color: '#ef4444', fontSize: 13, margin: '4px 0 0' }}>{errMsg}</p>}
+      {errMsg && <p style={{ color: '#ef4444', fontSize: "0.8125rem", margin: '4px 0 0' }}>{errMsg}</p>}
 
       <div style={footerRow}>
         <Btn variant="secondary" onClick={onClose}>{t.cancel}</Btn>
@@ -630,10 +630,10 @@ const BatchSendModal = ({ automation, data, user, t, onClose, refresh }) => {
 
       {confirming && (
         <Modal title={t.batchConfirmTitle} onClose={() => !sending && setConfirming(false)}>
-          <p style={{ fontSize: 14, color: '#374151', margin: '0 0 12px' }}>{t.batchConfirmBody(messages.length)}</p>
+          <p style={{ fontSize: "0.875rem", color: '#374151', margin: '0 0 12px' }}>{t.batchConfirmBody(messages.length)}</p>
           <div style={{ maxHeight: '40vh', overflow: 'auto', border: '1px solid #f0f0f0', borderRadius: 9 }}>
             {messages.map(m => (
-              <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '8px 12px', borderTop: '1px solid #fafafa', fontSize: 13 }}>
+              <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '8px 12px', borderTop: '1px solid #fafafa', fontSize: "0.8125rem" }}>
                 <span style={{ color: '#111111', fontWeight: 600 }}>{tenantName(m.tenant_id)}</span>
                 <span style={{ color: m.to_email ? '#6b7280' : '#ef4444' }}>{m.to_email || t.batchRecipientNoEmail}</span>
               </div>
@@ -688,7 +688,7 @@ const AutomationEditor = ({ initial, data, user, t, onClose, onSaved }) => {
       <Inp label={t.automationName} value={name} onChange={setName} placeholder={t.automationNamePlaceholder} />
       <Sel label={t.automationEvent} value={eventType} onChange={setEventType} options={EVENT_TYPES.map(e => ({ value: e.value, label: eventLabel(t, e.value) }))} />
       <Inp label={t.automationOffsets} value={offsets} onChange={setOffsets} placeholder="10, 5, 3" />
-      <p style={{ fontSize: 12, color: '#9ca3af', margin: '-6px 0 12px' }}>{t.automationOffsetsHint}</p>
+      <p style={{ fontSize: "0.75rem", color: '#9ca3af', margin: '-6px 0 12px' }}>{t.automationOffsetsHint}</p>
       <Sel label={t.automationTemplate} value={templateId} onChange={setTemplateId} options={templateOpts} />
       <Sel label={t.automationScopeProperty} value={propertyId} onChange={setPropertyId} options={propertyOpts} />
       <Sel label={t.automationScopeStatus} value={status} onChange={setStatus} options={statusOpts} />
@@ -733,8 +733,8 @@ const AutomationsTab = ({ data, user, t, refresh }) => {
           {automations.map(a => (
             <div key={a.id} style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: '#111111' }}>{a.name}</div>
-                <div style={{ fontSize: 13, color: '#6b7280' }}>
+                <div style={{ fontSize: "0.9375rem", fontWeight: 600, color: '#111111' }}>{a.name}</div>
+                <div style={{ fontSize: "0.8125rem", color: '#6b7280' }}>
                   {eventLabel(t, a.eventType)} · {t.offsetsLabel}: {(a.offsetDays || []).join(', ')} · {tplName(a.templateId)}
                 </div>
               </div>
@@ -755,7 +755,7 @@ const AutomationsTab = ({ data, user, t, refresh }) => {
       {running && <BatchSendModal automation={running} data={data} user={user} t={t} onClose={() => setRunning(null)} refresh={refresh} />}
       {confirmDel && (
         <Modal title={t.deleteAutomation} onClose={() => setConfirmDel(null)}>
-          <p style={{ fontSize: 14, color: '#374151', margin: '0 0 20px' }}>{t.confirmDeleteAutomation} <strong>{confirmDel.name}</strong>?</p>
+          <p style={{ fontSize: "0.875rem", color: '#374151', margin: '0 0 20px' }}>{t.confirmDeleteAutomation} <strong>{confirmDel.name}</strong>?</p>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
             <Btn variant="secondary" onClick={() => setConfirmDel(null)}>{t.cancel}</Btn>
             <button onClick={del} style={dangerBtn}>{t.deleteAutomation}</button>
@@ -779,7 +779,7 @@ const STATUS_STYLE = {
 }
 const StatusPill = ({ status, label }) => {
   const s = STATUS_STYLE[status] || STATUS_STYLE.queued
-  return <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 20, background: s.bg, color: s.text, textTransform: 'uppercase', letterSpacing: '.4px' }}>{label}</span>
+  return <span style={{ fontSize: "0.6875rem", fontWeight: 700, padding: '3px 9px', borderRadius: 20, background: s.bg, color: s.text, textTransform: 'uppercase', letterSpacing: '.4px' }}>{label}</span>
 }
 
 const InboxTab = ({ data, t }) => {
@@ -797,7 +797,7 @@ const InboxTab = ({ data, t }) => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginBottom: 14 }}>
         <Toggle value={showTests} onChange={setShowTests} />
-        <span style={{ fontSize: 13, color: '#6b7280' }}>{t.inboxShowTests}</span>
+        <span style={{ fontSize: "0.8125rem", color: '#6b7280' }}>{t.inboxShowTests}</span>
       </div>
       {outbound.length === 0 ? (
         <div style={emptyCard}>{t.inboxEmpty}</div>
@@ -810,10 +810,10 @@ const InboxTab = ({ data, t }) => {
               <div key={m.id} style={{ borderTop: '1px solid #fafafa' }}>
                 <div onClick={() => setExpanded(open ? null : m.id)} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 20px', cursor: 'pointer' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#111111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {m.subject || '—'} {m.isTest && <span style={{ fontSize: 11, color: '#9ca3af' }}>· {t.inboxTestTag}</span>}
+                    <div style={{ fontSize: "0.875rem", fontWeight: 600, color: '#111111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {m.subject || '—'} {m.isTest && <span style={{ fontSize: "0.6875rem", color: '#9ca3af' }}>· {t.inboxTestTag}</span>}
                     </div>
-                    <div style={{ fontSize: 12, color: '#6b7280' }}>{tenantName(m.tenantId)} · {m.toEmail} · {fmtDate((m.createdAt || '').split('T')[0])}</div>
+                    <div style={{ fontSize: "0.75rem", color: '#6b7280' }}>{tenantName(m.tenantId)} · {m.toEmail} · {fmtDate((m.createdAt || '').split('T')[0])}</div>
                   </div>
                   {m.repliedAt && <StatusPill status="received" label={t.inboxReplied} />}
                   {!m.repliedAt && m.openedAt && <StatusPill status="opened" label={t.inboxOpened} />}
@@ -821,16 +821,16 @@ const InboxTab = ({ data, t }) => {
                 </div>
                 {open && (
                   <div style={{ padding: '0 20px 18px', background: '#fafbfc' }}>
-                    <div style={{ border: '1px solid #eef2f7', borderRadius: 9, padding: 14, background: '#fff', fontSize: 13, color: '#334155' }}
+                    <div style={{ border: '1px solid #eef2f7', borderRadius: 9, padding: 14, background: '#fff', fontSize: "0.8125rem", color: '#334155' }}
                       dangerouslySetInnerHTML={{ __html: m.bodyHtml || (m.bodyText ? m.bodyText.replace(/\n/g, '<br>') : `<span style="color:#9ca3af">${t.inboxNoBody}</span>`) }} />
                     {replies.length > 0 && (
                       <div style={{ marginTop: 12 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '.4px', marginBottom: 8 }}>{t.inboxReplyThread}</div>
+                        <div style={{ fontSize: "0.75rem", fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '.4px', marginBottom: 8 }}>{t.inboxReplyThread}</div>
                         {replies.map(r => (
                           <div key={r.id} style={{ borderLeft: '3px solid #111111', padding: '8px 12px', marginBottom: 8, background: '#fff', borderRadius: 6 }}>
-                            <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 4 }}>{r.toEmail} · {fmtDate((r.createdAt || '').split('T')[0])}</div>
+                            <div style={{ fontSize: "0.75rem", color: '#9ca3af', marginBottom: 4 }}>{r.toEmail} · {fmtDate((r.createdAt || '').split('T')[0])}</div>
                             {/* Inbound bodies come from external senders — render as plain text, never raw HTML (XSS). */}
-                            <div style={{ fontSize: 13, color: '#334155', whiteSpace: 'pre-wrap' }}>{r.bodyText || stripTags(r.bodyHtml) || ''}</div>
+                            <div style={{ fontSize: "0.8125rem", color: '#334155', whiteSpace: 'pre-wrap' }}>{r.bodyText || stripTags(r.bodyHtml) || ''}</div>
                           </div>
                         ))}
                       </div>
@@ -861,7 +861,7 @@ export const EmailAutomationPage = ({ data, user, t, refresh }) => {
       <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', borderBottom: '1px solid var(--ld-border)', marginBottom: 22 }}>
         {tabs.map(x => (
           <button key={x.id} onClick={() => setTab(x.id)}
-            style={{ padding: '10px 16px', border: 'none', borderBottom: tab === x.id ? '2px solid var(--ld-accent)' : '2px solid transparent', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: tab === x.id ? 600 : 400, color: tab === x.id ? 'var(--ld-accent-hover)' : 'var(--ld-muted)' }}>
+            style={{ padding: '10px 16px', border: 'none', borderBottom: tab === x.id ? '2px solid var(--ld-accent)' : '2px solid transparent', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: "0.875rem", fontWeight: tab === x.id ? 600 : 400, color: tab === x.id ? 'var(--ld-accent-hover)' : 'var(--ld-muted)' }}>
             {x.label}
           </button>
         ))}

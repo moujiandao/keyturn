@@ -7,7 +7,7 @@ import { LEARNINGS, learningPdfUrl } from '@/lib/learnings/catalog'
 
 const PdfViewer = dynamic(() => import('./components/pdf-viewer'), {
   ssr: false,
-  loading: () => <div style={{ padding: 32, textAlign: 'center', color: '#6b7280', fontSize: 14 }}>…</div>,
+  loading: () => <div style={{ padding: 32, textAlign: 'center', color: '#6b7280', fontSize: "0.875rem" }}>…</div>,
 })
 
 const layoutRow = {
@@ -56,7 +56,7 @@ const actionLink = {
   border: '1px solid #d1d5db',
   background: '#fff',
   color: '#111827',
-  fontSize: 13,
+  fontSize: "0.8125rem",
   fontWeight: 600,
   textDecoration: 'none',
   whiteSpace: 'nowrap',
@@ -74,7 +74,7 @@ const tagRow = {
   marginTop: 8,
 }
 const tagPill = {
-  fontSize: 11,
+  fontSize: "0.6875rem",
   fontWeight: 600,
   padding: '2px 8px',
   borderRadius: 14,
@@ -88,7 +88,7 @@ const emptyBox = {
   padding: '48px 24px',
   textAlign: 'center',
   color: '#6b7280',
-  fontSize: 14,
+  fontSize: "0.875rem",
 }
 const pdfFrame = {
   background: '#f8fafc',
@@ -133,14 +133,14 @@ export function LearningsPage({ t, lang }) {
                     fontFamily: 'inherit',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#6b7280', marginBottom: 4 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: "0.6875rem", fontWeight: 700, color: '#6b7280', marginBottom: 4 }}>
                     <Icon name="calendar" size={13} />
                     <span>{fmtDate(item.date)}</span>
                   </div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: '#111827', lineHeight: 1.35 }}>
+                  <div style={{ fontSize: "0.84375rem", fontWeight: 700, color: '#111827', lineHeight: 1.35 }}>
                     {item.title[locale] || item.title.en}
                   </div>
-                  <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4, lineHeight: 1.4 }}>
+                  <div style={{ fontSize: "0.75rem", color: '#6b7280', marginTop: 4, lineHeight: 1.4 }}>
                     {item.summary[locale] || item.summary.en}
                   </div>
                 </button>
@@ -151,13 +151,13 @@ export function LearningsPage({ t, lang }) {
           <div style={viewerCard}>
             <div style={viewerHeader}>
               <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#6b7280', marginBottom: 4, overflowWrap: 'anywhere' }}>
+                <div style={{ fontSize: "0.75rem", fontWeight: 700, color: '#6b7280', marginBottom: 4, overflowWrap: 'anywhere' }}>
                   {fmtDate(selected.date)} · <code>{selected.fileName}</code>
                 </div>
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#111111' }}>
+                <h2 style={{ margin: 0, fontSize: "1.125rem", fontWeight: 700, color: '#111111' }}>
                   {selected.title[locale] || selected.title.en}
                 </h2>
-                <p style={{ margin: '6px 0 0', fontSize: 13, color: '#4b5563', lineHeight: 1.45 }}>
+                <p style={{ margin: '6px 0 0', fontSize: "0.8125rem", color: '#4b5563', lineHeight: 1.45 }}>
                   {selected.summary[locale] || selected.summary.en}
                 </p>
                 <div style={tagRow}>

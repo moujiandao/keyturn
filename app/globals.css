@@ -19,12 +19,13 @@ body {
   -webkit-tap-highlight-color: rgba(173, 52, 62, 0.12);
 }
 
-/* Prevent iOS/iPadOS Safari from auto-zooming the viewport on form inputs < 16px. */
+/* Prevent iOS/iPadOS Safari from auto-zooming the viewport on form inputs < 16px,
+   while still scaling up if the root font size increases beyond ~18.3px. */
 @media (pointer: coarse) {
   input:not([type="checkbox"]):not([type="radio"]),
   select,
   textarea {
-    font-size: 16px !important;
+    font-size: max(16px, 0.875rem) !important;
   }
 }
 
@@ -32,8 +33,10 @@ a {
   color: inherit;
 }
 
-/* Smooth in-page anchor scrolling; offset targets below the sticky header. */
+/* Scale root typography by 12.5% (16px -> 18px default) for comfortable reading on iPad
+   and desktop; all authenticated app and auth font sizes use rem so they scale together. */
 html {
+  font-size: 112.5%;
   scroll-behavior: smooth;
 }
 

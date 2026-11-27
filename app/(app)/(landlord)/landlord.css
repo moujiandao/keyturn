@@ -9,10 +9,10 @@
   --ld-accent-hover: #8d2932;
   --ld-accent-tint: #f9e9e8;
   --ld-radius: 12px;
-  --ld-heading-size: clamp(2rem, 3.5vw, 2.7rem);
+  --ld-heading-size: clamp(2rem, 3.5vw, 2.55rem);
   --ld-heading-weight: 780;
   --ld-heading-tracking: -.045em;
-  --ld-rail-width: 222px;
+  --ld-rail-width: 236px;
   display: grid;
   grid-template-columns: var(--ld-rail-width) minmax(0, 1fr);
   min-height: 100dvh;

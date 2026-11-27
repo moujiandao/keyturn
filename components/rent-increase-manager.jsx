@@ -22,9 +22,9 @@ import {
 } from '@/lib/units/rent-history'
 
 const panel = { background: 'var(--ld-surface)', border: '1px solid var(--ld-border)', borderRadius: radius.md }
-const backLink = { display: 'inline-flex', gap: 6, alignItems: 'center', marginBottom: 16, color: 'var(--ld-muted)', fontSize: 14, textDecoration: 'none' }
+const backLink = { display: 'inline-flex', gap: 6, alignItems: 'center', marginBottom: 16, color: 'var(--ld-muted)', fontSize: "0.875rem", textDecoration: 'none' }
 const tableStyle = { width: '100%', borderCollapse: 'separate', borderSpacing: 0, textAlign: 'left' }
-const heading = { background: 'var(--ld-subtle)', color: 'var(--ld-ink)', padding: '12px 16px', fontSize: 13 }
+const heading = { background: 'var(--ld-subtle)', color: 'var(--ld-ink)', padding: '12px 16px', fontSize: "0.8125rem" }
 const firstColumn = { position: 'sticky', left: 0, zIndex: 1, minWidth: 72, borderRight: '1px solid var(--ld-border)' }
 const currentHeading = { background: 'var(--ld-accent-tint)', color: 'var(--ld-accent-hover)' }
 const currentCell = { background: 'color-mix(in srgb, var(--ld-accent-tint) 45%, var(--ld-surface))' }
@@ -32,7 +32,7 @@ const toolbar = { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 
 const trailingAction = { marginLeft: 'auto' }
 const yearHeading = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }
 const yearLabel = { display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 7 }
-const currentLabel = { fontSize: 11, fontWeight: 650 }
+const currentLabel = { fontSize: "0.6875rem", fontWeight: 650 }
 const removeButton = {
   display: 'grid', placeItems: 'center', flexShrink: 0, width: 32, height: 32,
   padding: 0, border: 0, borderRadius: 6, background: 'transparent',
@@ -43,14 +43,14 @@ const cellButton = {
   width: '100%', minWidth: 202, padding: '12px 16px', border: 0, background: 'transparent',
   color: 'var(--ld-ink)', font: 'inherit', textAlign: 'left', cursor: 'pointer',
 }
-const cellAmount = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, fontWeight: 760, fontSize: 21, letterSpacing: '-.03em' }
-const cellDetail = { display: 'block', marginTop: 4, color: 'var(--ld-muted)', fontSize: 12 }
+const cellAmount = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, fontWeight: 760, fontSize: "1.3125rem", letterSpacing: '-.03em' }
+const cellDetail = { display: 'block', marginTop: 4, color: 'var(--ld-muted)', fontSize: "0.75rem" }
 const field = {
   display: 'block', width: '100%', boxSizing: 'border-box', margin: '6px 0 16px',
   padding: '10px 12px', border: '1px solid var(--ld-border)', borderRadius: radius.sm, font: 'inherit',
 }
-const formLabel = { color: 'var(--ld-ink)', fontSize: 14, fontWeight: 600 }
-const errorText = { color: '#b42318', fontSize: 14 }
+const formLabel = { color: 'var(--ld-ink)', fontSize: "0.875rem", fontWeight: 600 }
+const errorText = { color: '#b42318', fontSize: "0.875rem" }
 const agaCard = {
   ...panel,
   padding: '14px 16px',
@@ -81,7 +81,7 @@ const agaSuffix = {
   padding: '0 10px',
   borderRadius: `0 ${radius.sm - 1}px ${radius.sm - 1}px 0`,
   color: 'var(--ld-muted)',
-  fontSize: 14,
+  fontSize: "0.875rem",
   fontWeight: 600,
   borderLeft: '1px solid var(--ld-border)',
   alignSelf: 'stretch',
@@ -89,7 +89,7 @@ const agaSuffix = {
   placeItems: 'center',
   background: 'var(--ld-subtle)',
 }
-const agaSavedText = { color: '#15803d', fontSize: 13, fontWeight: 600, alignSelf: 'center' }
+const agaSavedText = { color: '#15803d', fontSize: "0.8125rem", fontWeight: 600, alignSelf: 'center' }
 const agaErrorText = { ...errorText, margin: 0, alignSelf: 'center' }
 
 const emptyYearPreferences = { added: [], hidden: [] }

@@ -18,20 +18,20 @@ const navStyles = {
     borderRight: 'var(--ld-rail-right, 1px solid var(--ld-border))', borderBottom: 'var(--ld-rail-bottom, 0)',
   },
   brandBar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: 'var(--ld-brand-padding, 23px 17px 21px)' },
-  brand: { display: 'inline-flex', gap: 9, alignItems: 'center', minWidth: 0, fontSize: 16, fontWeight: 800, letterSpacing: '-.035em', textDecoration: 'none' },
+  brand: { display: 'inline-flex', gap: 9, alignItems: 'center', minWidth: 0, fontSize: "1rem", fontWeight: 800, letterSpacing: '-.035em', textDecoration: 'none' },
   mark: { display: 'grid', placeItems: 'center', flex: '0 0 34px', height: 34, borderRadius: 9, color: '#fff', background: 'var(--ld-accent)' },
   body: { flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto', overscrollBehavior: 'contain' },
   nav: { flex: 1, padding: '4px 12px 12px' },
   group: { display: 'grid', gap: 3 },
   secondary: { display: 'grid', gap: 3, marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--ld-border)' },
-  link: { display: 'flex', alignItems: 'center', gap: 10, minHeight: 'var(--ld-nav-link-height, 39px)', padding: '8px 10px', borderRadius: 8, fontSize: 13, lineHeight: 1.25, textDecoration: 'none' },
-  button: { alignItems: 'center', justifyContent: 'center', gap: 6, padding: '8px 10px', border: '1px solid var(--ld-border)', borderRadius: 8, color: 'var(--ld-ink)', cursor: 'pointer', font: 'inherit', fontSize: 13, fontWeight: 650, whiteSpace: 'nowrap' },
+  link: { display: 'flex', alignItems: 'center', gap: 10, minHeight: 'var(--ld-nav-link-height, 39px)', padding: '8px 10px', borderRadius: 8, fontSize: "0.8125rem", lineHeight: 1.25, textDecoration: 'none' },
+  button: { alignItems: 'center', justifyContent: 'center', gap: 6, padding: '8px 10px', border: '1px solid var(--ld-border)', borderRadius: 8, color: 'var(--ld-ink)', cursor: 'pointer', font: 'inherit', fontSize: "0.8125rem", fontWeight: 650, whiteSpace: 'nowrap' },
   account: { padding: 12, borderTop: '1px solid var(--ld-border)' },
-  language: { display: 'flex', alignItems: 'center', gap: 3, padding: 4, border: '1px solid var(--ld-border)', borderRadius: 8, background: 'var(--ld-subtle)', fontSize: 12 },
+  language: { display: 'flex', alignItems: 'center', gap: 3, padding: 4, border: '1px solid var(--ld-border)', borderRadius: 8, background: 'var(--ld-subtle)', fontSize: "0.75rem" },
   languageLabel: { display: 'inline-flex', alignItems: 'center', flex: 1, gap: 4, paddingLeft: 3, color: 'var(--ld-muted)' },
   languageButton: { padding: '5px 7px', border: 0, borderRadius: 5, color: 'var(--ld-muted)', background: 'transparent', font: 'inherit', fontWeight: 700, cursor: 'pointer' },
   details: { display: 'flex', alignItems: 'center', gap: 7, marginTop: 12 },
-  avatar: { display: 'grid', placeItems: 'center', flex: '0 0 30px', height: 30, borderRadius: '50%', background: 'var(--ld-accent-tint)', color: 'var(--ld-accent-hover)', fontSize: 11, fontWeight: 750 },
+  avatar: { display: 'grid', placeItems: 'center', flex: '0 0 30px', height: 30, borderRadius: '50%', background: 'var(--ld-accent-tint)', color: 'var(--ld-accent-hover)', fontSize: "0.6875rem", fontWeight: 750 },
   name: { flex: 1, minWidth: 0 },
   singleLine: { display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
 }
@@ -111,8 +111,8 @@ function LandlordSidebar({ user, lang, setLang, t, primary, secondary, activeHre
             <div style={navStyles.details}>
               <span style={navStyles.avatar} aria-hidden="true">{initials}</span>
               <div style={navStyles.name}>
-                <strong style={{ ...navStyles.singleLine, fontSize: 12, fontWeight: 650 }}>{user.name || user.email}</strong>
-                <small style={{ ...navStyles.singleLine, fontSize: 11, color: "var(--ld-muted)" }}>{user.email}</small>
+                <strong style={{ ...navStyles.singleLine, fontSize: "0.75rem", fontWeight: 650 }}>{user.name || user.email}</strong>
+                <small style={{ ...navStyles.singleLine, fontSize: "0.6875rem", color: "var(--ld-muted)" }}>{user.email}</small>
               </div>
               <button type="button" className="landlord-menu-button landlord-logout" style={{ ...navStyles.button, display: "inline-flex", padding: 7 }}
                 aria-label={t.logout} title={t.logout} onClick={logout}>
@@ -179,7 +179,7 @@ export function Sidebar() {
       // supabase.auth.getUser() — a network round trip, not a local decode.
       <Link href={item.href} prefetch={false}
         style={{ width: "100%", display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", borderRadius: 9, border: "none", cursor: "pointer", marginBottom: 3, textAlign: "left", fontFamily: "inherit", transition: "all .15s", textDecoration: "none",
-          background: active ? "rgba(255,255,255,.10)" : "transparent", color: active ? "#ffffff" : "#9ca3af", fontWeight: active ? 600 : 400, fontSize: 14 }}>
+          background: active ? "rgba(255,255,255,.10)" : "transparent", color: active ? "#ffffff" : "#9ca3af", fontWeight: active ? 600 : 400, fontSize: "0.875rem" }}>
         <Icon name={item.icon} size={17} />{item.label}
         {active && <span style={{ marginLeft: "auto", width: 4, height: 4, background: "#ffffff", borderRadius: "50%" }} />}
       </Link>
@@ -208,8 +208,8 @@ export function Sidebar() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 38, height: 38, background: "linear-gradient(135deg,#111111,#000000)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#fff" }}><Icon name="building" size={20} /></div>
           <div>
-            <div style={{ color: "#f5f5f5", fontWeight: 700, fontSize: 16, fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.appName}</div>
-            <div style={{ color: "#9ca3af", fontSize: 11, textTransform: "uppercase", letterSpacing: ".7px" }}>{t.tenant}</div>
+            <div style={{ color: "#f5f5f5", fontWeight: 700, fontSize: "1rem", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.appName}</div>
+            <div style={{ color: "#9ca3af", fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: ".7px" }}>{t.tenant}</div>
           </div>
         </div>
       </div>
@@ -220,10 +220,10 @@ export function Sidebar() {
 
       <div style={{ padding: "16px 12px", borderTop: "1px solid rgba(255,255,255,.06)" }}>
         <div style={{ padding: "10px 12px", marginBottom: 4 }}>
-          <div style={{ color: "#f5f5f5", fontSize: 14, fontWeight: 600 }}>{user.name}</div>
-          <div style={{ color: "#9ca3af", fontSize: 12 }}>{user.email}</div>
+          <div style={{ ...navStyles.singleLine, color: "#f5f5f5", fontSize: "0.875rem", fontWeight: 600 }}>{user.name}</div>
+          <div style={{ ...navStyles.singleLine, color: "#9ca3af", fontSize: "0.75rem" }}>{user.email}</div>
         </div>
-        <button onClick={logout} style={{ width: "100%", display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", borderRadius: 9, border: "none", cursor: "pointer", background: "transparent", color: "#6b7280", fontFamily: "inherit", fontSize: 14 }}>
+        <button onClick={logout} style={{ width: "100%", display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", borderRadius: 9, border: "none", cursor: "pointer", background: "transparent", color: "#6b7280", fontFamily: "inherit", fontSize: "0.875rem" }}>
           <Icon name="logout" size={17} />{t.logout}
         </button>
       </div>

@@ -63,7 +63,7 @@ export default function PdfViewer({ url, labels }) {
 
   if (error) {
     return (
-      <div style={{ padding: 24, color: '#ef4444', fontSize: 14 }}>
+      <div style={{ padding: 24, color: '#ef4444', fontSize: "0.875rem" }}>
         {copy.error}
       </div>
     )
@@ -75,24 +75,24 @@ export default function PdfViewer({ url, labels }) {
         file={url}
         onLoadSuccess={({ numPages }) => { setNumPages(numPages); setPage(1); }}
         onLoadError={() => setError(true)}
-        loading={<div style={{ padding: 32, color: '#94a3b8', fontSize: 14 }}>{copy.loading}</div>}
+        loading={<div style={{ padding: 32, color: '#94a3b8', fontSize: "0.875rem" }}>{copy.loading}</div>}
       >
         <Page pageNumber={page} width={width} />
       </Document>
       {numPages > 1 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 12, fontSize: 13, color: '#374151' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 12, fontSize: "0.8125rem", color: '#374151' }}>
           <button
             type="button"
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '8px 14px', minHeight: 36, cursor: page === 1 ? 'default' : 'pointer', opacity: page === 1 ? 0.4 : 1, fontSize: 13 }}
+            style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '8px 14px', minHeight: 36, cursor: page === 1 ? 'default' : 'pointer', opacity: page === 1 ? 0.4 : 1, fontSize: "0.8125rem" }}
           >{copy.prev}</button>
           <span>{page} / {numPages}</span>
           <button
             type="button"
             onClick={() => setPage(p => Math.min(numPages, p + 1))}
             disabled={page === numPages}
-            style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '8px 14px', minHeight: 36, cursor: page === numPages ? 'default' : 'pointer', opacity: page === numPages ? 0.4 : 1, fontSize: 13 }}
+            style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '8px 14px', minHeight: 36, cursor: page === numPages ? 'default' : 'pointer', opacity: page === numPages ? 0.4 : 1, fontSize: "0.8125rem" }}
           >{copy.next}</button>
         </div>
       )}

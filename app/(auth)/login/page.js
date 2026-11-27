@@ -75,11 +75,11 @@ export default function LoginPage() {
         </SubmitButton>
       </form>
 
-      <p style={{ textAlign: 'center', fontSize: 14, color: palette.textMuted, margin: '20px 0 6px' }}>
+      <p style={{ textAlign: 'center', fontSize: "0.875rem", color: palette.textMuted, margin: '20px 0 6px' }}>
         New to {APP_NAME}?{' '}
         <Link href="/signup" style={{ color: palette.text, fontWeight: 600, textDecoration: 'none' }}>Start for free</Link>
       </p>
-      <p style={{ textAlign: 'center', fontSize: 13, color: palette.textFaint, margin: 0 }}>
+      <p style={{ textAlign: 'center', fontSize: "0.8125rem", color: palette.textFaint, margin: 0 }}>
         Tenants: use the email and password your landlord set up for you.
       </p>
     </AuthCard>

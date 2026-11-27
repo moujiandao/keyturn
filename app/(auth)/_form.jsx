@@ -14,8 +14,8 @@ export function AuthCard({ title, subtitle, children }) {
         boxShadow: '0 4px 24px rgba(17,17,17,0.05)',
       }}
     >
-      <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 8px' }}>{title}</h1>
-      {subtitle && <p style={{ fontSize: 15, color: palette.textMuted, margin: '0 0 24px' }}>{subtitle}</p>}
+      <h1 style={{ fontSize: "1.625rem", fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 8px' }}>{title}</h1>
+      {subtitle && <p style={{ fontSize: "0.9375rem", color: palette.textMuted, margin: '0 0 24px' }}>{subtitle}</p>}
       {children}
     </div>
   )
@@ -24,7 +24,7 @@ export function AuthCard({ title, subtitle, children }) {
 export function Field({ label, name, type = 'text', value, onChange, onKeyDown, autoFocus, autoComplete }) {
   return (
     <label style={{ display: 'block', marginBottom: 16 }}>
-      <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: palette.text, marginBottom: 6 }}>{label}</span>
+      <span style={{ display: 'block', fontSize: "0.8125rem", fontWeight: 600, color: palette.text, marginBottom: 6 }}>{label}</span>
       <input
         name={name}
         type={type}
@@ -41,7 +41,7 @@ export function Field({ label, name, type = 'text', value, onChange, onKeyDown, 
           border: `1px solid ${palette.border}`,
           borderRadius: radius.sm,
           color: palette.text,
-          fontSize: 16,
+          fontSize: "1rem",
           outline: 'none',
           fontFamily: 'inherit',
         }}
@@ -64,7 +64,7 @@ export function SubmitButton({ children, onClick, loading, type = 'button' }) {
         color: '#fff',
         border: 'none',
         borderRadius: radius.sm,
-        fontSize: 16,
+        fontSize: "1rem",
         fontWeight: 600,
         cursor: loading ? 'not-allowed' : 'pointer',
         opacity: loading ? 0.7 : 1,
@@ -84,7 +84,7 @@ export function Alert({ kind = 'error', children }) {
     success: { color: '#166534', background: '#f0fdf4', border: '1px solid #bbf7d0' },
   }
   return (
-    <p style={{ fontSize: 13.5, padding: '10px 14px', borderRadius: radius.sm, margin: '0 0 16px', ...styles[kind] }}>
+    <p style={{ fontSize: "0.84375rem", padding: '10px 14px', borderRadius: radius.sm, margin: '0 0 16px', ...styles[kind] }}>
       {children}
     </p>
   )

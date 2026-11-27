@@ -35,7 +35,7 @@ const emptyBox = {
   border: '1px solid #eaeaea',
   textAlign: 'center',
   color: '#6b7280',
-  fontSize: 14,
+  fontSize: "0.875rem",
 }
 const subTabRow = {
   display: 'flex',
@@ -44,7 +44,7 @@ const subTabRow = {
   marginBottom: 18,
 }
 const pillBase = {
-  fontSize: 11,
+  fontSize: "0.6875rem",
   fontWeight: 700,
   padding: '3px 9px',
   borderRadius: 20,
@@ -58,7 +58,7 @@ const rawEmailBox = {
   borderRadius: 10,
   background: '#fafafa',
   border: '1px solid #eaeaea',
-  fontSize: 12,
+  fontSize: "0.75rem",
   lineHeight: 1.55,
   color: '#374151',
   whiteSpace: 'pre-wrap',
@@ -85,7 +85,7 @@ const fieldWrap = {
   gap: 4,
 }
 const fieldLabel = {
-  fontSize: 11,
+  fontSize: "0.6875rem",
   fontWeight: 700,
   color: '#6b7280',
   textTransform: 'uppercase',
@@ -95,7 +95,7 @@ const controlStyle = {
   padding: '8px 10px',
   borderRadius: 8,
   border: '1px solid #d1d5db',
-  fontSize: 13,
+  fontSize: "0.8125rem",
   color: '#111827',
   background: '#fff',
   fontFamily: 'inherit',
@@ -107,7 +107,7 @@ const errBanner = {
   borderRadius: 8,
   padding: '10px 14px',
   marginBottom: 14,
-  fontSize: 13,
+  fontSize: "0.8125rem",
   color: '#dc2626',
 }
 const okBanner = {
@@ -116,7 +116,7 @@ const okBanner = {
   borderRadius: 8,
   padding: '10px 14px',
   marginBottom: 14,
-  fontSize: 13,
+  fontSize: "0.8125rem",
   color: '#047857',
 }
 const warnNote = {
@@ -124,7 +124,7 @@ const warnNote = {
   border: '1px solid #fde68a',
   borderRadius: 8,
   padding: '7px 11px',
-  fontSize: 12,
+  fontSize: "0.75rem",
   color: '#92400e',
 }
 const splitBox = {
@@ -370,7 +370,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                 border: active ? '1px solid #111111' : '1px solid #e5e7eb',
                 background: active ? '#111111' : '#fff',
                 color: active ? '#fff' : '#374151',
-                fontSize: 13,
+                fontSize: "0.8125rem",
                 fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
@@ -382,7 +382,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
               <span>{tab.label}</span>
               <span
                 style={{
-                  fontSize: 11,
+                  fontSize: "0.6875rem",
                   fontWeight: 700,
                   padding: '1px 7px',
                   borderRadius: 12,
@@ -406,13 +406,13 @@ export function ZelleInboxPanel({ data, t, refresh }) {
               <div key={group.key} style={groupCard}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#111111' }}>
+                    <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: '#111111' }}>
                       {t.zellePartialGroupTitle(who, group.monthKey)}
                     </div>
-                    <div style={{ fontSize: 13, color: group.meetsExpected ? '#047857' : '#92400e', fontWeight: 600, marginTop: 4 }}>
+                    <div style={{ fontSize: "0.8125rem", color: group.meetsExpected ? '#047857' : '#92400e', fontWeight: 600, marginTop: 4 }}>
                       {t.zellePartialGroupProgress(fmt(group.runningTotal), fmt(group.expectedTotal), group.events.length)}
                     </div>
-                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6, fontSize: 12, color: '#4b5563' }}>
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6, fontSize: "0.75rem", color: '#4b5563' }}>
                       {group.events.map((e) => (
                         <span key={e.id} style={{ ...pillBase, background: '#fff', border: '1px solid #d1d5db', color: '#111827' }}>
                           {fmt(e.amount)} ({e.sentOn ? fmtDate(e.sentOn) : '-'})
@@ -451,10 +451,10 @@ export function ZelleInboxPanel({ data, t, refresh }) {
               <div key={alias.id} style={card}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#111111' }}>
+                    <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: '#111111' }}>
                       {alias.payerNameDisplay}
                     </div>
-                    <div style={{ fontSize: 13, color: '#6b7280', marginTop: 4 }}>
+                    <div style={{ fontSize: "0.8125rem", color: '#6b7280', marginTop: 4 }}>
                       {alias.tenantId ? (
                         <span>
                           {t.zelleAliasMappedToTenant}:{' '}
@@ -541,10 +541,10 @@ export function ZelleInboxPanel({ data, t, refresh }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
-                    <span style={{ fontSize: 16, fontWeight: 700, color: '#111111' }}>
+                    <span style={{ fontSize: "1rem", fontWeight: 700, color: '#111111' }}>
                       {ev.payerName || t.zelleUnknownPayer}
                     </span>
-                    <span style={{ fontSize: 16, fontWeight: 700, color: '#111111' }}>
+                    <span style={{ fontSize: "1rem", fontWeight: 700, color: '#111111' }}>
                       {ev.amount != null ? fmt(ev.amount) : '-'}
                     </span>
                     <span style={{ ...pillBase, background: statusStyle.bg, color: statusStyle.text }}>
@@ -560,7 +560,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                     )}
                   </div>
 
-                  <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: '#6b7280' }}>
+                  <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: "0.8125rem", color: '#6b7280' }}>
                     <span>{ev.sentOn ? fmtDate(ev.sentOn) : ev.receivedAt ? fmtDate(ev.receivedAt) : '-'}</span>
                     <span>
                       {t.zelleMonthLabel}: <strong style={{ color: '#111827' }}>{formatMonth(ev.targetMonth)}</strong>
@@ -571,19 +571,19 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                     </span>
                     {ev.zelleTxnId && (
                       <span>
-                        {t.zelleTxnLabel}: <code style={{ fontSize: 12 }}>{ev.zelleTxnId}</code>
+                        {t.zelleTxnLabel}: <code style={{ fontSize: "0.75rem" }}>{ev.zelleTxnId}</code>
                       </span>
                     )}
                   </div>
 
                   {postedTenants.length > 0 && (
-                    <div style={{ marginTop: 8, fontSize: 13, color: '#047857' }}>
+                    <div style={{ marginTop: 8, fontSize: "0.8125rem", color: '#047857' }}>
                       {t.zellePostedTo}: <strong>{postedTenants.join(', ')}</strong>
                     </div>
                   )}
 
                   {postedTenants.length === 0 && suggestedTenants.length > 0 && (
-                    <div style={{ marginTop: 8, fontSize: 13, color: '#4b5563' }}>
+                    <div style={{ marginTop: 8, fontSize: "0.8125rem", color: '#4b5563' }}>
                       {t.zelleSuggestedFor}: <strong>{suggestedTenants.join(', ')}</strong>
                     </div>
                   )}
@@ -624,7 +624,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                               border: active ? '1px solid #111111' : '1px solid #d1d5db',
                               background: active ? '#111111' : '#fff',
                               color: active ? '#fff' : '#4b5563',
-                              fontSize: 12,
+                              fontSize: "0.75rem",
                               fontWeight: 600,
                               cursor: 'pointer',
                               fontFamily: 'inherit',
@@ -785,7 +785,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                     <div style={splitBox}>
                       {splitTenants.map((ten) => (
                         <div key={ten.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>
+                          <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: '#111827' }}>
                             {tenantDisplayName(ten)}
                           </span>
                           <input
@@ -804,7 +804,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                           />
                         </div>
                       ))}
-                      <div style={{ fontSize: 12, fontWeight: 600, color: splitBalanced ? '#047857' : '#b45309', textAlign: 'right' }}>
+                      <div style={{ fontSize: "0.75rem", fontWeight: 600, color: splitBalanced ? '#047857' : '#b45309', textAlign: 'right' }}>
                         {t.zelleSplitTotalLabel(fmt(splitSum), fmt(targetAmt))}
                       </div>
                     </div>
@@ -817,7 +817,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                   )}
 
                   {draft.category === 'rent' && ev.payerName && (
-                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: 10, minHeight: 40, fontSize: 13, color: '#374151', cursor: 'pointer' }}>
+                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: 10, minHeight: 40, fontSize: "0.8125rem", color: '#374151', cursor: 'pointer' }}>
                       <input
                         type="checkbox"
                         checked={Boolean(draft.rememberAlias)}

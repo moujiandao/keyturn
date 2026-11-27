@@ -8,7 +8,7 @@ import { fmt } from '@/lib/format'
 
 const PdfViewer = dynamic(() => import('./components/pdf-viewer'), {
   ssr: false,
-  loading: () => <p style={{ color: '#9ca3af', padding: '24px', fontSize: 14 }}>Loading PDF…</p>,
+  loading: () => <p style={{ color: '#9ca3af', padding: '24px', fontSize: "0.875rem" }}>Loading PDF…</p>,
 })
 
 const supabase = createClient()
@@ -54,10 +54,10 @@ export const DocViewer = ({ doc, onClose }) => {
     >
       <div style={{ background: '#fff', borderRadius: 14, width: '90vw', maxWidth: 900, maxHeight: '85vh', overflow: 'auto', boxShadow: '0 25px 60px rgba(0,0,0,0.3)', position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', borderBottom: '1px solid #f5f5f5', position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#111111', fontFamily: "'Inter',system-ui,-apple-system,sans-serif", maxWidth: '80%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: "0.875rem", fontWeight: 600, color: '#111111', fontFamily: "'Inter',system-ui,-apple-system,sans-serif", maxWidth: '80%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {doc.fileName || doc.driveLink || 'Document'}
           </span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#6b7280', lineHeight: 1, padding: '0 4px' }}>×</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: "1.25rem", cursor: 'pointer', color: '#6b7280', lineHeight: 1, padding: '0 4px' }}>×</button>
         </div>
         <div style={{ padding: 16 }}>
           {embedUrl ? (
@@ -68,11 +68,11 @@ export const DocViewer = ({ doc, onClose }) => {
               title="Document"
             />
           ) : loading ? (
-            <p style={{ color: '#9ca3af', padding: 24, fontSize: 14 }}>Loading…</p>
+            <p style={{ color: '#9ca3af', padding: 24, fontSize: "0.875rem" }}>Loading…</p>
           ) : signedUrl ? (
             <PdfViewer url={signedUrl} />
           ) : (
-            <p style={{ color: '#ef4444', padding: 24, fontSize: 14 }}>Could not load document.</p>
+            <p style={{ color: '#ef4444', padding: 24, fontSize: "0.875rem" }}>Could not load document.</p>
           )}
         </div>
       </div>
@@ -169,7 +169,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
 
   if (!property) {
     return (
-      <div style={{ color: "#9ca3af", fontSize: 15, padding: 40 }}>
+      <div style={{ color: "#9ca3af", fontSize: "0.9375rem", padding: 40 }}>
         {t.unitPropertyNotFound}
       </div>
     )
@@ -183,7 +183,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 28 }}>
         <button
           onClick={onBack}
-          style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
+          style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit" }}
           onMouseEnter={e => e.currentTarget.style.background = "#f5f5f5"}
           onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
         >
@@ -196,14 +196,14 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
           <h1 style={{ margin: 0, fontSize: "var(--ld-heading-size)", fontWeight: 780, color: "var(--ld-ink)", letterSpacing: "-.045em", overflowWrap: "anywhere" }}>
             {property.address}
           </h1>
-          <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: 13 }}>
+          <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: "0.8125rem" }}>
             {property.city}, {property.state} {property.zip} &middot; {property.type} &middot; {t.unitsOccupiedCount(occupiedCount, units.length)}
           </p>
         </div>
         <div style={{ marginLeft: "auto" }}>
           <button
             onClick={openAdd}
-            style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: 14, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit" }}
+            style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit" }}
             onMouseEnter={e => e.currentTarget.style.opacity = ".85"}
             onMouseLeave={e => e.currentTarget.style.opacity = "1"}
           >
@@ -215,7 +215,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
 
       {/* Units grid */}
       {units.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#9ca3af", fontSize: 15, padding: "60px 0" }}>
+        <div style={{ textAlign: "center", color: "#9ca3af", fontSize: "0.9375rem", padding: "60px 0" }}>
           {t.unitsEmpty}
         </div>
       ) : (
@@ -242,16 +242,16 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
                   <div style={{ width: 32, height: 32, background: isOccupied ? "rgba(17,17,17,.15)" : "rgba(148,163,184,.1)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
                     <Icon name="home" size={14} />
                   </div>
-                  <h3 style={{ margin: "0 0 2px", fontSize: 14, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
+                  <h3 style={{ margin: "0 0 2px", fontSize: "0.875rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
                     {t.unitLabel(unit.unitNumber)}
                   </h3>
-                  <p style={{ margin: 0, fontSize: 11, color: "#6b7280" }}>
+                  <p style={{ margin: 0, fontSize: "0.6875rem", color: "#6b7280" }}>
                     {t.unitBedBath(unit.bedrooms, unit.bathrooms)}
                   </p>
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#9ca3af" }}>
+                  <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#9ca3af" }}>
                     {unit.monthlyRent ? t.unitRentPerMonth(fmt(unit.monthlyRent)) : "—"}
                   </span>
                   <Badge status={unit.status || "vacant"} t={t} />
@@ -259,31 +259,31 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
 
                 {isOccupied && tenants.length > 0 ? (
                   <div style={{ borderTop: "1px solid #eaeaea", paddingTop: 10 }}>
-                    <div style={{ color: "#6b7280", marginBottom: 5, textTransform: "uppercase", fontSize: 10, letterSpacing: ".5px", fontWeight: 600 }}>
+                    <div style={{ color: "#6b7280", marginBottom: 5, textTransform: "uppercase", fontSize: "0.625rem", letterSpacing: ".5px", fontWeight: 600 }}>
                       {tenants.length === 1 ? t.unitTenantHeading : t.unitTenantsHeading(tenants.length)}
                     </div>
                     {tenants.map(ten => (
                       <div key={ten.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3px 0" }}>
                         <button
                           onClick={() => onNavigateToTenant && onNavigateToTenant(ten.id)}
-                          style={{ background: "none", border: "none", color: "#9ca3af", fontWeight: 600, cursor: "pointer", padding: 0, fontSize: 12, fontFamily: "inherit", textAlign: "left" }}
+                          style={{ background: "none", border: "none", color: "#9ca3af", fontWeight: 600, cursor: "pointer", padding: 0, fontSize: "0.75rem", fontFamily: "inherit", textAlign: "left" }}
                           onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
                           onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
                         >
                           {ten.lastName ? `${ten.name} ${ten.lastName}` : ten.name}<GenderMark gender={ten.gender} t={t} />
                         </button>
-                        <span style={{ fontSize: 12, color: ten.monthlyRent ? "#111111" : "#9ca3af", fontWeight: 600 }}>
+                        <span style={{ fontSize: "0.75rem", color: ten.monthlyRent ? "#111111" : "#9ca3af", fontWeight: 600 }}>
                           {ten.monthlyRent ? fmt(ten.monthlyRent) : "—"}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : isOccupied ? (
-                  <div style={{ borderTop: "1px solid #eaeaea", paddingTop: 10, fontSize: 12, color: "#9ca3af" }}>
+                  <div style={{ borderTop: "1px solid #eaeaea", paddingTop: 10, fontSize: "0.75rem", color: "#9ca3af" }}>
                     {t.unitOccupiedUnlinked}
                   </div>
                 ) : (
-                  <div style={{ borderTop: "1px solid #eaeaea", paddingTop: 10, fontSize: 12, color: "#9ca3af" }}>
+                  <div style={{ borderTop: "1px solid #eaeaea", paddingTop: 10, fontSize: "0.75rem", color: "#9ca3af" }}>
                     {t.unitVacant}
                   </div>
                 )}
@@ -329,7 +329,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
           {/* No Status field: occupancy is derived from the unit's tenants on
               every load, so anything chosen here would be overwritten. */}
           {error && (
-            <p style={{ color: "#ef4444", fontSize: 13, margin: "0 0 12px" }}>{error}</p>
+            <p style={{ color: "#ef4444", fontSize: "0.8125rem", margin: "0 0 12px" }}>{error}</p>
           )}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 8 }}>
             <Btn variant="secondary" onClick={() => setShowModal(false)}>{t.cancel}</Btn>
@@ -346,7 +346,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
         >
           {blockingTenants(deleteTarget).length > 0 ? (
             <>
-              <p style={{ margin: "0 0 12px", fontSize: 14, color: "#111111" }}>
+              <p style={{ margin: "0 0 12px", fontSize: "0.875rem", color: "#111111" }}>
                 {t.unitDeleteBlocked(blockingTenants(deleteTarget).length)}
               </p>
               {/* Naming them is the point: a previous tenant can block a delete
@@ -361,21 +361,21 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
                     onMouseEnter={e => { if (onNavigateToTenant) e.currentTarget.style.background = "#fafafa" }}
                     onMouseLeave={e => e.currentTarget.style.background = "#fff"}
                   >
-                    <span style={{ fontSize: 14, fontWeight: 600, color: "#111111" }}>
+                    <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111111" }}>
                       {ten.lastName ? `${ten.name} ${ten.lastName}` : ten.name}<GenderMark gender={ten.gender} t={t} />
                     </span>
                     <Badge status={ten.status} t={t} />
                   </button>
                 ))}
               </div>
-              <p style={{ margin: "0 0 20px", fontSize: 13, color: "#6b7280" }}>{t.unitDeleteReassignHint}</p>
+              <p style={{ margin: "0 0 20px", fontSize: "0.8125rem", color: "#6b7280" }}>{t.unitDeleteReassignHint}</p>
             </>
           ) : (
-            <p style={{ margin: "0 0 20px", fontSize: 13, color: "#6b7280" }}>
+            <p style={{ margin: "0 0 20px", fontSize: "0.8125rem", color: "#6b7280" }}>
               {t.unitDeleteWarning}
             </p>
           )}
-          {deleteError && <p style={{ margin: "0 0 12px", fontSize: 13, color: "#ef4444" }}>{deleteError}</p>}
+          {deleteError && <p style={{ margin: "0 0 12px", fontSize: "0.8125rem", color: "#ef4444" }}>{deleteError}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => { setDeleteTarget(null); setDeleteError("") }} disabled={deleting}>{t.cancel}</Btn>
             {/* Hidden, not just disabled, when tenants are assigned — the message
@@ -384,7 +384,7 @@ export const PropertyDetailPage = ({ data, setData, refresh, user, t, propertyId
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
-                style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: 14, fontWeight: 600, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1, fontFamily: "inherit" }}
+                style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: "0.875rem", fontWeight: 600, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1, fontFamily: "inherit" }}
               >
                 {deleting ? t.deleting : t.unitDeleteConfirm}
               </button>
@@ -516,9 +516,9 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
   if (filterTenant) docs = docs.filter(d => d.tenantId === filterTenant)
   if (filterType) docs = docs.filter(d => d.documentType === filterType)
 
-  const filterSelectStyle = { background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: 14 }
-  const uploadLabelStyle = { display: 'block', fontSize: 12, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 6 }
-  const uploadSelectStyle = { width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--ld-border, #eaeaea)', background: '#fff', color: '#111111', fontSize: 15 }
+  const filterSelectStyle = { background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: "0.875rem" }
+  const uploadLabelStyle = { display: 'block', fontSize: "0.75rem", fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 6 }
+  const uploadSelectStyle = { width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--ld-border, #eaeaea)', background: '#fff', color: '#111111', fontSize: "0.9375rem" }
 
   return (
     <div>
@@ -563,7 +563,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
                 if (json.linked > 0) refresh()
               }}
               disabled={syncing}
-              style={{ background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.7 : 1, fontFamily: 'inherit' }}
+              style={{ background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: "0.8125rem", fontWeight: 600, cursor: syncing ? 'wait' : 'pointer', opacity: syncing ? 0.7 : 1, fontFamily: 'inherit' }}
             >
               {syncing ? 'Syncing…' : '⟳ Sync from Drive'}
             </button>
@@ -573,7 +573,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
 
       {/* Sync result banner */}
       {syncResult && (
-        <div style={{ background: syncResult.linked > 0 ? '#f0fdf4' : '#fafafa', border: `1px solid ${syncResult.linked > 0 ? '#86efac' : '#eaeaea'}`, borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: '#111111' }}>
+        <div style={{ background: syncResult.linked > 0 ? '#f0fdf4' : '#fafafa', border: `1px solid ${syncResult.linked > 0 ? '#86efac' : '#eaeaea'}`, borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: "0.8125rem", color: '#111111' }}>
           <strong>{syncResult.linked > 0 ? `✓ Linked ${syncResult.linked} of ${syncResult.total} files` : `No new files linked (${syncResult.total} files scanned)`}</strong>
           {syncResult.unmatched?.length > 0 && (
             <div style={{ marginTop: 6, color: '#6b7280' }}>
@@ -589,7 +589,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
         </div>
       )}
       {syncError && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: '#991b1b' }}>
+        <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: "0.8125rem", color: '#991b1b' }}>
           {syncError}
         </div>
       )}
@@ -604,10 +604,10 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
             <div key={doc.id} style={{ background: '#fff', borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-                  <span style={{ color: '#111111', fontWeight: 600, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.fileName}</span>
-                  <span style={{ background: docTypeBadgeColor[doc.documentType] || '#6b7280', color: '#fff', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, textTransform: 'uppercase', flexShrink: 0 }}>{(doc.documentType || '').replace(/_/g, ' ')}</span>
+                  <span style={{ color: '#111111', fontWeight: 600, fontSize: "0.9375rem", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.fileName}</span>
+                  <span style={{ background: docTypeBadgeColor[doc.documentType] || '#6b7280', color: '#fff', fontSize: "0.6875rem", fontWeight: 700, padding: '2px 8px', borderRadius: 20, textTransform: 'uppercase', flexShrink: 0 }}>{(doc.documentType || '').replace(/_/g, ' ')}</span>
                 </div>
-                <div style={{ color: '#9ca3af', fontSize: 13 }}>
+                <div style={{ color: '#9ca3af', fontSize: "0.8125rem" }}>
                   {tenant && <span>{tenant.name}</span>}
                   {tenant && property && <span> · </span>}
                   {property && <span>{property.address}</span>}
@@ -615,25 +615,25 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
                 </div>
                 {/* Parse error display */}
                 {parseError?.docId === doc.id && (
-                  <div style={{ marginTop: 10, background: '#450a0a', borderRadius: 8, padding: 12, fontSize: 13, color: '#fca5a5' }}>
+                  <div style={{ marginTop: 10, background: '#450a0a', borderRadius: 8, padding: 12, fontSize: "0.8125rem", color: '#fca5a5' }}>
                     Error: {parseError.message}
                   </div>
                 )}
                 {/* Approval panel */}
                 {parsedResult?.docId === doc.id && (
-                  <div style={{ marginTop: 10, background: '#fafafa', borderRadius: 8, padding: 16, fontSize: 13 }}>
-                    <div style={{ color: '#111111', fontWeight: 700, marginBottom: 12, fontSize: 15 }}>Parsed Results - Review & Apply</div>
+                  <div style={{ marginTop: 10, background: '#fafafa', borderRadius: 8, padding: 16, fontSize: "0.8125rem" }}>
+                    <div style={{ color: '#111111', fontWeight: 700, marginBottom: 12, fontSize: "0.9375rem" }}>Parsed Results - Review & Apply</div>
 
                     {/* Section 1: People on the lease */}
                     <div style={{ marginBottom: 16 }}>
-                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8 }}>People Found</div>
+                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: "0.6875rem", textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8 }}>People Found</div>
                       {[parsedResult.extracted.tenant_name, ...(parsedResult.extracted.housemates || [])].filter(n => n && n.trim()).map((name, i) => {
                         const existingTenant = (data.tenants || []).find(t => t.name?.toLowerCase() === name.toLowerCase())
                         return (
                           <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, cursor: 'pointer' }}>
                             <input type="checkbox" checked={approvedTenants[name] || false} onChange={() => setApprovedTenants(prev => ({ ...prev, [name]: !prev[name] }))} style={{ accentColor: 'var(--ld-accent, #111111)' }} />
                             <span style={{ color: '#111111' }}>{name}</span>
-                            <span style={{ color: existingTenant ? '#22c55e' : '#f59e0b', fontSize: 11, fontWeight: 600 }}>
+                            <span style={{ color: existingTenant ? '#22c55e' : '#f59e0b', fontSize: "0.6875rem", fontWeight: 600 }}>
                               {existingTenant ? 'matches existing tenant' : 'will create new profile'}
                             </span>
                           </label>
@@ -643,7 +643,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
 
                     {/* Section 2: Extracted fields */}
                     <div style={{ marginBottom: 16 }}>
-                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8 }}>Lease Details</div>
+                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: "0.6875rem", textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8 }}>Lease Details</div>
                       {[
                         { key: 'lease_start_date', label: 'Start Date' },
                         { key: 'lease_end_date', label: 'End Date' },
@@ -656,7 +656,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
                         </label>
                       ))}
 
-                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8, marginTop: 14 }}>Tenant Info</div>
+                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: "0.6875rem", textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8, marginTop: 14 }}>Tenant Info</div>
                       {[
                         { key: 'email', label: 'Email' },
                         { key: 'phone', label: 'Phone' },
@@ -677,13 +677,13 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
 
                     {/* Section 3: Property/Unit assignment */}
                     <div style={{ marginBottom: 16 }}>
-                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8 }}>Assignment</div>
+                      <div style={{ color: '#9ca3af', fontWeight: 700, fontSize: "0.6875rem", textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8 }}>Assignment</div>
                       <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
-                        <select value={leasePropertyId} onChange={e => { setLeasePropertyId(e.target.value); setLeaseUnitId('') }} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}>
+                        <select value={leasePropertyId} onChange={e => { setLeasePropertyId(e.target.value); setLeaseUnitId('') }} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: "0.8125rem" }}>
                           <option value="">Select Property</option>
                           {(data.properties || []).map(p => <option key={p.id} value={p.id}>{p.address}</option>)}
                         </select>
-                        <select value={leaseUnitId} onChange={e => setLeaseUnitId(e.target.value)} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}>
+                        <select value={leaseUnitId} onChange={e => setLeaseUnitId(e.target.value)} style={{ flex: 1, background: '#fff', color: '#111111', border: '1px solid var(--ld-border, #eaeaea)', borderRadius: 8, padding: '8px 12px', fontSize: "0.8125rem" }}>
                           <option value="">Select Unit</option>
                           {(data.units || []).filter(u => u.propertyId === leasePropertyId).map(u => <option key={u.id} value={u.id}>Unit {u.unitNumber}</option>)}
                         </select>
@@ -699,19 +699,19 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
                           handleProcessLease()
                         }}
                         disabled={leaseProcessing || !leasePropertyId}
-                        style={{ background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 14, fontWeight: 700, cursor: leaseProcessing || !leasePropertyId ? 'not-allowed' : 'pointer', opacity: leaseProcessing || !leasePropertyId ? 0.7 : 1 }}>
+                        style={{ background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: "0.875rem", fontWeight: 700, cursor: leaseProcessing || !leasePropertyId ? 'not-allowed' : 'pointer', opacity: leaseProcessing || !leasePropertyId ? 0.7 : 1 }}>
                         {leaseProcessing ? 'Applying...' : 'Apply Selected'}
                       </button>
                       <button
                         onClick={() => { setParsedResult(null); setApprovedFields({}); setApprovedTenants({}) }}
-                        style={{ background: '#eaeaea', color: '#111111', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 14, cursor: 'pointer' }}>
+                        style={{ background: '#eaeaea', color: '#111111', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: "0.875rem", cursor: 'pointer' }}>
                         Cancel
                       </button>
                     </div>
 
                     {/* Success result */}
                     {leaseResult && (
-                      <div style={{ marginTop: 12, background: '#052e16', borderRadius: 8, padding: 12, color: '#86efac', fontSize: 13 }}>
+                      <div style={{ marginTop: 12, background: '#052e16', borderRadius: 8, padding: 12, color: '#86efac', fontSize: "0.8125rem" }}>
                         {leaseResult.created?.length > 0 && <div>Created: {leaseResult.created.join(', ')}</div>}
                         {leaseResult.updated?.length > 0 && <div>Updated: {leaseResult.updated.join(', ')}</div>}
                         {leaseResult.skipped?.length > 0 && <div>Skipped: {leaseResult.skipped.join(', ')}</div>}
@@ -722,11 +722,11 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
                 )}
               </div>
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                <button onClick={() => handleView(doc)} style={{ background: '#eaeaea', color: '#111111', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, cursor: 'pointer' }}>View</button>
-                <button onClick={() => handleParse(doc.id)} disabled={parsing === doc.id} style={{ background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, cursor: parsing === doc.id ? 'not-allowed' : 'pointer', opacity: parsing === doc.id ? 0.7 : 1 }}>
+                <button onClick={() => handleView(doc)} style={{ background: '#eaeaea', color: '#111111', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: "0.8125rem", cursor: 'pointer' }}>View</button>
+                <button onClick={() => handleParse(doc.id)} disabled={parsing === doc.id} style={{ background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: "0.8125rem", cursor: parsing === doc.id ? 'not-allowed' : 'pointer', opacity: parsing === doc.id ? 0.7 : 1 }}>
                   {parsing === doc.id ? 'Parsing...' : 'Parse with AI'}
                 </button>
-                <button onClick={() => handleDelete(doc.id)} style={{ background: '#7f1d1d', color: '#fca5a5', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, cursor: 'pointer' }}>Delete</button>
+                <button onClick={() => handleDelete(doc.id)} style={{ background: '#7f1d1d', color: '#fca5a5', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: "0.8125rem", cursor: 'pointer' }}>Delete</button>
               </div>
             </div>
           )
@@ -763,7 +763,7 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
               <option value="other">Other</option>
             </select>
           </div>
-          <button onClick={handleUpload} disabled={uploading || !uploadFile} style={{ width: '100%', padding: 12, background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 15, cursor: uploading || !uploadFile ? 'not-allowed' : 'pointer', opacity: uploading || !uploadFile ? 0.7 : 1 }}>
+          <button onClick={handleUpload} disabled={uploading || !uploadFile} style={{ width: '100%', padding: 12, background: 'var(--ld-accent, #111111)', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: "0.9375rem", cursor: uploading || !uploadFile ? 'not-allowed' : 'pointer', opacity: uploading || !uploadFile ? 0.7 : 1 }}>
             {uploading ? 'Uploading...' : 'Upload'}
           </button>
         </Modal>
@@ -776,14 +776,14 @@ export const DocumentsPageV2 = ({ data, setData, refresh, user, t }) => {
 // ─── TENANT CONTACT PAGE ──────────────────────────────────────────────────────
 const InfoRow = ({ label, value, children }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 2, marginBottom: 14 }}>
-    <span style={{ fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px" }}>{label}</span>
-    {children || <span style={{ fontSize: 14, color: value ? "#111111" : "#9ca3af" }}>{value || "—"}</span>}
+    <span style={{ fontSize: "0.6875rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px" }}>{label}</span>
+    {children || <span style={{ fontSize: "0.875rem", color: value ? "#111111" : "#9ca3af" }}>{value || "—"}</span>}
   </div>
 )
 
 const TenantCard = ({ title, children }) => (
   <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid var(--ld-border, #eaeaea)" }}>
-    <h3 style={{ margin: "0 0 18px", fontSize: 14, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px" }}>{title}</h3>
+    <h3 style={{ margin: "0 0 18px", fontSize: "0.875rem", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px" }}>{title}</h3>
     {children}
   </div>
 )
@@ -830,10 +830,10 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
     return (
       <div>
         {viewingDoc && <DocViewer doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
-        <button onClick={onBack} style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", marginBottom: 24 }}>
+        <button onClick={onBack} style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit", marginBottom: 24 }}>
           ← {t.unitBack}
         </button>
-        <p style={{ color: "#9ca3af", fontSize: 15 }}>{t.tenantNotFound}</p>
+        <p style={{ color: "#9ca3af", fontSize: "0.9375rem" }}>{t.tenantNotFound}</p>
       </div>
     )
   }
@@ -948,7 +948,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 28 }}>
         <button
           onClick={onBack}
-          style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
+          style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "8px 14px", color: "#9ca3af", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit" }}
           onMouseEnter={e => e.currentTarget.style.background = "#f5f5f5"}
           onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
         >
@@ -958,14 +958,14 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
           {t.unitBack}
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "var(--ld-accent, #111111)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 18, fontWeight: 700, flexShrink: 0 }}>
+          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "var(--ld-accent, #111111)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "1.125rem", fontWeight: 700, flexShrink: 0 }}>
             {tenant.name.charAt(0)}
           </div>
           <div>
             <h1 style={{ margin: 0, fontSize: "var(--ld-heading-size)", fontWeight: 780, color: "var(--ld-ink)", letterSpacing: "-.045em", overflowWrap: "anywhere" }}>
               {tenant.name}{tenant.lastName ? ` ${tenant.lastName}` : ""}<GenderMark gender={tenant.gender} t={t} />
             </h1>
-            <p style={{ margin: "3px 0 0", color: "#6b7280", fontSize: 13 }}>
+            <p style={{ margin: "3px 0 0", color: "#6b7280", fontSize: "0.8125rem" }}>
               {tenant.email}
               {tenant.status && <span style={{ marginLeft: 10 }}><Badge status={tenant.status} t={t} /></span>}
             </p>
@@ -974,17 +974,17 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
         <div style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
           {editing ? (
             <>
-              <button disabled={saving} onClick={() => { setForm(null); setSaveError(""); }} style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>
+              <button disabled={saving} onClick={() => { setForm(null); setSaveError(""); }} style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit" }}>
                 {t.cancel}
               </button>
-              <button onClick={handleSave} disabled={saving} style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
+              <button onClick={handleSave} disabled={saving} style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: "0.8125rem", fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
                 {saving ? t.saving : t.saveChanges}
               </button>
             </>
           ) : (
             <>
               <button onClick={openEditor}
-                style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}
+                style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}
                 onMouseEnter={e => e.currentTarget.style.background = "#f5f5f5"}
                 onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
               >
@@ -993,7 +993,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
               {/* Same delete as the tenants table, reachable from the page the
                   landlord is already on when they decide a record is junk. */}
               <button onClick={() => setDeleteOpen(true)}
-                style={{ background: "#ffffff", border: "1px solid #fecaca", borderRadius: 9, padding: "9px 18px", color: "#dc2626", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}
+                style={{ background: "#ffffff", border: "1px solid #fecaca", borderRadius: 9, padding: "9px 18px", color: "#dc2626", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}
                 onMouseEnter={e => e.currentTarget.style.background = "#fef2f2"}
                 onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
               >
@@ -1005,7 +1005,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
       </div>
 
       {saveError && (
-        <div style={{ background: "rgba(239,68,68,.1)", border: "1px solid rgba(239,68,68,.3)", borderRadius: 10, padding: "12px 16px", color: "#fca5a5", fontSize: 13, marginBottom: 20 }}>
+        <div style={{ background: "rgba(239,68,68,.1)", border: "1px solid rgba(239,68,68,.3)", borderRadius: 10, padding: "12px 16px", color: "#fca5a5", fontSize: "0.8125rem", marginBottom: 20 }}>
           {saveError}
         </div>
       )}
@@ -1039,7 +1039,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
                 options={[{ value: "", label: "— No property —" }, ...(data.properties || []).map(p => ({ value: p.id, label: p.address }))]}
               />
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Unit</div>
+                <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Unit</div>
                 {(() => {
                   const propUnits = (data.units || []).filter(u => u.propertyId === form.propertyId);
                   return (
@@ -1051,7 +1051,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
                         setF("unitId", uid || "");
                         setF("unit", matched ? matched.unitNumber : "");
                       }}
-                      style={{ width: "100%", background: "#fff", color: "#111111", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 8, padding: "10px 14px", fontSize: 14, fontFamily: "inherit" }}
+                      style={{ width: "100%", background: "#fff", color: "#111111", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 8, padding: "10px 14px", fontSize: "0.875rem", fontFamily: "inherit" }}
                       disabled={!form.propertyId}
                     >
                       {!form.propertyId ? (
@@ -1081,7 +1081,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
               </div>
               <Inp label="Monthly Rent ($)" value={form.monthlyRent} onChange={v => setF("monthlyRent", v)} type="number" placeholder="e.g. 1500" />
               <Inp label="Security Deposit ($)" value={form.securityDeposit} onChange={v => setF("securityDeposit", v)} type="number" placeholder="e.g. 1500" />
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#374151", marginTop: 4 }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginTop: 4 }}>
                 <input type="checkbox" checked={!!form.securityDepositRefunded} onChange={e => setF("securityDepositRefunded", e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
                 Security Deposit Refunded
               </label>
@@ -1091,41 +1091,41 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
               <InfoRow label="Property">
                 {property ? (
                   <button onClick={() => onNavigateToProperty && onNavigateToProperty(property.id)}
-                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "#111111", fontSize: 14, fontWeight: 600, fontFamily: "inherit", textAlign: "left" }}
+                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "#111111", fontSize: "0.875rem", fontWeight: 600, fontFamily: "inherit", textAlign: "left" }}
                     onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
                     onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
                   >
                     {property.address}
                   </button>
-                ) : <span style={{ color: "#9ca3af", fontSize: 14 }}>—</span>}
+                ) : <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>—</span>}
               </InfoRow>
               <InfoRow label="Unit">
                 {linkedUnit ? (
-                  <span style={{ fontSize: 14, color: "#111111" }}>Unit {linkedUnit.unitNumber} ({linkedUnit.bedrooms}bd / {linkedUnit.bathrooms}ba)</span>
-                ) : <span style={{ color: "#9ca3af", fontSize: 14 }}>{tenant.unit || "—"}</span>}
+                  <span style={{ fontSize: "0.875rem", color: "#111111" }}>Unit {linkedUnit.unitNumber} ({linkedUnit.bedrooms}bd / {linkedUnit.bathrooms}ba)</span>
+                ) : <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>{tenant.unit || "—"}</span>}
               </InfoRow>
               <InfoRow label="Move-in Date" value={tenant.moveInDate} />
               <InfoRow label="Move-out Date" value={tenant.moveOutDate} />
               <InfoRow label="Monthly Rent">
-                <span style={{ fontSize: 15, fontWeight: 700, color: "#9ca3af" }}>
+                <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#9ca3af" }}>
                   {displayRent ? fmt(displayRent) + "/mo" : "—"}
                 </span>
               </InfoRow>
               <InfoRow label="Security Deposit">
                 {tenant.securityDeposit && +tenant.securityDeposit > 0 ? (
-                  <span style={{ fontSize: 15, fontWeight: 700, color: "#9ca3af" }}>{fmt(+tenant.securityDeposit)}</span>
+                  <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#9ca3af" }}>{fmt(+tenant.securityDeposit)}</span>
                 ) : (
-                  <span style={{ fontSize: 13, color: "#dc2626", fontWeight: 600 }}>Not received</span>
+                  <span style={{ fontSize: "0.8125rem", color: "#dc2626", fontWeight: 600 }}>Not received</span>
                 )}
               </InfoRow>
               <InfoRow label="Deposit Refunded">
-                <span style={{ fontSize: 14, fontWeight: 600, color: tenant.securityDepositRefunded ? "#16a34a" : "#9ca3af" }}>{tenant.securityDepositRefunded ? "Refunded" : "Not refunded"}</span>
+                <span style={{ fontSize: "0.875rem", fontWeight: 600, color: tenant.securityDepositRefunded ? "#16a34a" : "#9ca3af" }}>{tenant.securityDepositRefunded ? "Refunded" : "Not refunded"}</span>
               </InfoRow>
               <InfoRow label="Account Created">
-                <span style={{ fontSize: 14, color: "#6b7280" }}>{tenant.createdAt ? new Date(tenant.createdAt).toLocaleDateString() : "—"}</span>
+                <span style={{ fontSize: "0.875rem", color: "#6b7280" }}>{tenant.createdAt ? new Date(tenant.createdAt).toLocaleDateString() : "—"}</span>
               </InfoRow>
               <InfoRow label="Last Updated">
-                <span style={{ fontSize: 14, color: "#6b7280" }}>{tenant.updatedAt ? new Date(tenant.updatedAt).toLocaleDateString() : "—"}</span>
+                <span style={{ fontSize: "0.875rem", color: "#6b7280" }}>{tenant.updatedAt ? new Date(tenant.updatedAt).toLocaleDateString() : "—"}</span>
               </InfoRow>
             </>
           )}
@@ -1164,13 +1164,13 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
               onChange={e => setF("notes", e.target.value)}
               placeholder="Internal notes about this tenant"
               rows={5}
-              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 8, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }}
+              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 8, fontSize: "0.875rem", color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }}
             />
           ) : (
             tenant.notes ? (
-              <p style={{ margin: 0, fontSize: 14, color: "#111111", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{tenant.notes}</p>
+              <p style={{ margin: 0, fontSize: "0.875rem", color: "#111111", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{tenant.notes}</p>
             ) : (
-              <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>No notes</p>
+              <p style={{ color: "#9ca3af", fontSize: "0.875rem", margin: 0 }}>No notes</p>
             )
           )}
         </TenantCard>
@@ -1178,15 +1178,15 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
         {/* Housemates */}
         <TenantCard title="Housemates">
           {housemates.length === 0 ? (
-            <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>No housemates</p>
+            <p style={{ color: "#9ca3af", fontSize: "0.875rem", margin: 0 }}>No housemates</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {housemates.map(hm => (
                 <div key={hm.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#0ea5e9,#0369a1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#0ea5e9,#0369a1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.75rem", fontWeight: 700, flexShrink: 0 }}>
                     {hm.name.charAt(0)}
                   </div>
-                  <span style={{ fontSize: 14, color: "#111111", fontWeight: 600 }}>{hm.name}</span>
+                  <span style={{ fontSize: "0.875rem", color: "#111111", fontWeight: 600 }}>{hm.name}</span>
                 </div>
               ))}
             </div>
@@ -1196,19 +1196,19 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
         {/* Documents */}
         <TenantCard title="Documents">
           {tenantDocs.length === 0 ? (
-            <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>No documents uploaded for this tenant.</p>
+            <p style={{ color: "#9ca3af", fontSize: "0.875rem", margin: 0 }}>No documents uploaded for this tenant.</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {tenantDocs.map(doc => (
                 <div key={doc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, background: doc.documentType === "lease" ? "rgba(17,17,17,.08)" : "#fafafa", borderRadius: 9, padding: "10px 14px", border: doc.documentType === "lease" ? "1px solid rgba(17,17,17,.2)" : "1px solid #eaeaea" }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#111111", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.fileName}</span>
-                      <span style={{ background: docTypeBadgeColor[doc.documentType] || "#6b7280", color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", flexShrink: 0 }}>{doc.documentType}</span>
+                      <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#111111", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.fileName}</span>
+                      <span style={{ background: docTypeBadgeColor[doc.documentType] || "#6b7280", color: "#fff", fontSize: "0.625rem", fontWeight: 700, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", flexShrink: 0 }}>{doc.documentType}</span>
                     </div>
-                    <span style={{ fontSize: 12, color: "#6b7280" }}>{new Date(doc.uploadedAt).toLocaleDateString()}</span>
+                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{new Date(doc.uploadedAt).toLocaleDateString()}</span>
                   </div>
-                  <button onClick={() => handleViewDoc(doc)} style={{ background: "#eaeaea", color: "#111111", border: "none", borderRadius: 7, padding: "6px 12px", fontSize: 12, cursor: "pointer", flexShrink: 0 }}>
+                  <button onClick={() => handleViewDoc(doc)} style={{ background: "#eaeaea", color: "#111111", border: "none", borderRadius: 7, padding: "6px 12px", fontSize: "0.75rem", cursor: "pointer", flexShrink: 0 }}>
                     View
                   </button>
                 </div>
@@ -1220,15 +1220,15 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
         {/* Import from Document - only shown when parsable docs exist */}
         {parsableDocs.length > 0 && (
           <TenantCard title="Import from Document">
-            <p style={{ color: "#9ca3af", fontSize: 13, marginTop: 0, marginBottom: 16 }}>
+            <p style={{ color: "#9ca3af", fontSize: "0.8125rem", marginTop: 0, marginBottom: 16 }}>
               Auto-fill tenant profile fields from AI-parsed documents.
             </p>
             <div style={{ marginBottom: 14 }}>
-              <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Select Document</label>
+              <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Select Document</label>
               <select
                 value={selectedDocId}
                 onChange={e => { setSelectedDocId(e.target.value); setShowImportPreview(false); }}
-                style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid var(--ld-border, #eaeaea)", background: "#fff", color: "#111111", fontSize: 14, fontFamily: "inherit" }}
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid var(--ld-border, #eaeaea)", background: "#fff", color: "#111111", fontSize: "0.875rem", fontFamily: "inherit" }}
               >
                 <option value="">— Choose a parsed document —</option>
                 {parsableDocs.map(d => (
@@ -1239,7 +1239,7 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
             {selectedDocId && !showImportPreview && (
               <button
                 onClick={() => setShowImportPreview(true)}
-                style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}
+                style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}
               >
                 Preview &amp; Apply
               </button>
@@ -1247,8 +1247,8 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
             {showImportPreview && selectedParsedDoc && (
               <div style={{ marginTop: 12 }}>
                 <div style={{ background: "#fff", borderRadius: 10, padding: 14, marginBottom: 14, border: "1px solid var(--ld-border, #eaeaea)" }}>
-                  <div style={{ color: "#111111", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>Extracted Fields</div>
-                  <pre style={{ margin: 0, fontSize: 12, color: "#9ca3af", whiteSpace: "pre-wrap", wordBreak: "break-all", maxHeight: 200, overflow: "auto" }}>
+                  <div style={{ color: "#111111", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>Extracted Fields</div>
+                  <pre style={{ margin: 0, fontSize: "0.75rem", color: "#9ca3af", whiteSpace: "pre-wrap", wordBreak: "break-all", maxHeight: 200, overflow: "auto" }}>
                     {JSON.stringify(selectedParsedDoc.aiExtracted, null, 2)}
                   </pre>
                 </div>
@@ -1256,13 +1256,13 @@ export const TenantContactPage = ({ data, setData, refresh, user, t, tenantId, o
                   <button
                     onClick={() => handleApplyExtracted(selectedParsedDoc.aiExtracted)}
                     disabled={saving}
-                    style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}
+                    style={{ background: "var(--ld-accent, #111111)", color: "#fff", border: "none", borderRadius: 9, padding: "9px 18px", fontSize: "0.8125rem", fontWeight: 600, cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}
                   >
                     {saving ? "Applying…" : "Apply to Profile"}
                   </button>
                   <button
                     onClick={() => setShowImportPreview(false)}
-                    style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}
+                    style={{ background: "#ffffff", border: "1px solid var(--ld-border, #eaeaea)", borderRadius: 9, padding: "9px 18px", color: "#9ca3af", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit" }}
                   >
                     Cancel
                   </button>

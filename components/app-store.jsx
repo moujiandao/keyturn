@@ -28,7 +28,7 @@ export const useAppData = () => useContext(DataContext)
 const supabase = createClient()
 
 const loadingScreen = (
-  <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fafafa", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", color: "#6b7280", fontSize: 16 }}>
+  <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fafafa", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", color: "#6b7280", fontSize: "1rem" }}>
     <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'); -webkit-font-smoothing: antialiased;`}</style>
     Loading your portfolio…
   </div>
@@ -38,9 +38,9 @@ function loadErrorScreen({ t, onRetry, loading }) {
   return (
     <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "#fafafa", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>
       <div style={{ width: "min(100%, 440px)", background: "#fff", border: "1px solid #eaeaea", borderRadius: 14, padding: 28, textAlign: "center", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-        <h1 style={{ margin: "0 0 10px", color: "#111111", fontSize: 20 }}>{t.dataLoadErrorTitle}</h1>
-        <p style={{ margin: "0 0 20px", color: "#6b7280", fontSize: 14, lineHeight: 1.5 }}>{t.dataLoadErrorDetail}</p>
-        <button onClick={onRetry} disabled={loading} style={{ background: "#111111", color: "#fff", border: 0, borderRadius: 8, padding: "10px 16px", font: "600 14px inherit", cursor: loading ? "wait" : "pointer", opacity: loading ? .65 : 1 }}>
+        <h1 style={{ margin: "0 0 10px", color: "#111111", fontSize: "1.25rem" }}>{t.dataLoadErrorTitle}</h1>
+        <p style={{ margin: "0 0 20px", color: "#6b7280", fontSize: "0.875rem", lineHeight: 1.5 }}>{t.dataLoadErrorDetail}</p>
+        <button onClick={onRetry} disabled={loading} style={{ background: "#111111", color: "#fff", border: 0, borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: "0.875rem", fontFamily: "inherit", cursor: loading ? "wait" : "pointer", opacity: loading ? .65 : 1 }}>
           {loading ? t.dataLoadRetrying : t.dataLoadRetry}
         </button>
       </div>
@@ -50,9 +50,9 @@ function loadErrorScreen({ t, onRetry, loading }) {
 
 function refreshErrorBanner({ t, onRetry, loading }) {
   return (
-    <div role="status" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "10px 16px", background: "#fff7ed", borderBottom: "1px solid #fed7aa", color: "#9a3412", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", fontSize: 13 }}>
+    <div role="status" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "10px 16px", background: "#fff7ed", borderBottom: "1px solid #fed7aa", color: "#9a3412", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", fontSize: "0.8125rem" }}>
       <span>{t.dataLoadErrorDetail}</span>
-      <button onClick={onRetry} disabled={loading} style={{ flexShrink: 0, background: "transparent", color: "#9a3412", border: "1px solid #fdba74", borderRadius: 7, padding: "6px 10px", font: "600 13px inherit", cursor: loading ? "wait" : "pointer", opacity: loading ? .65 : 1 }}>
+      <button onClick={onRetry} disabled={loading} style={{ flexShrink: 0, background: "transparent", color: "#9a3412", border: "1px solid #fdba74", borderRadius: 7, padding: "6px 10px", fontWeight: 600, fontSize: "0.8125rem", fontFamily: "inherit", cursor: loading ? "wait" : "pointer", opacity: loading ? .65 : 1 }}>
         {loading ? t.dataLoadRetrying : t.dataLoadRetry}
       </button>
     </div>

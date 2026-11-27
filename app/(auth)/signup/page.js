@@ -57,7 +57,7 @@ export default function SignupPage() {
         {loading ? 'Creating account…' : 'Create free account'}
       </SubmitButton>
 
-      <p style={{ textAlign: 'center', fontSize: 14, color: palette.textMuted, margin: '20px 0 0' }}>
+      <p style={{ textAlign: 'center', fontSize: "0.875rem", color: palette.textMuted, margin: '20px 0 0' }}>
         Already have an account?{' '}
         <Link href="/login" style={{ color: palette.text, fontWeight: 600, textDecoration: 'none' }}>Log in</Link>
       </p>

@@ -161,7 +161,7 @@ export const Badge = ({ status, t }) => {
   const raw = t ? (t[`st_${status}`] || status) : status;
   const label = raw.charAt(0).toUpperCase() + raw.slice(1);
   return (
-    <span style={{ background: c.bg, color: c.text, padding: "2px 10px", borderRadius: 99, fontSize: 12, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5, fontFamily: "inherit" }}>
+    <span style={{ background: c.bg, color: c.text, padding: "2px 10px", borderRadius: 99, fontSize: "0.75rem", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5, fontFamily: "inherit" }}>
       <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.dot, display: "inline-block" }} />{label}
     </span>
   );
@@ -177,7 +177,7 @@ export const Modal = ({ title, onClose, closeLabel, children, wide }) => (
   <div style={{ position: "fixed", inset: 0, background: "rgba(17,17,17,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left))", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}>
     <div style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: wide ? 680 : 480, maxHeight: "100%", overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch", border: `1px solid ${theme.border}`, boxShadow: "0 12px 40px rgba(0,0,0,.10)" }}>
       <div style={{ position: "sticky", top: 0, zIndex: 2, background: "#fff", padding: "18px 22px", borderBottom: `1px solid ${theme.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: theme.text, letterSpacing: "-0.02em", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{title}</h3>
+        <h3 style={{ margin: 0, fontSize: "1.125rem", fontWeight: 700, color: theme.text, letterSpacing: "-0.02em", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{title}</h3>
         <button type="button" aria-label={closeLabel || "Close"} onClick={onClose} style={{ background: theme.bgSubtle, border: "none", borderRadius: 8, width: 44, height: 44, flexShrink: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: theme.textMuted }}><Icon name="x" size={18} /></button>
       </div>
       <div style={{ padding: "22px 24px" }}>{children}</div>
@@ -187,17 +187,17 @@ export const Modal = ({ title, onClose, closeLabel, children, wide }) => (
 
 export const Inp = ({ label, value, onChange, type = "text", placeholder, readOnly }) => (
   <div style={{ marginBottom: 16 }}>
-    {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{label}</label>}
+    {label && <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{label}</label>}
     <input type={type} value={value} onChange={e => onChange && onChange(e.target.value)} placeholder={placeholder} readOnly={readOnly}
-      style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 14, color: theme.text, background: readOnly ? theme.bgSubtle : theme.bg, boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+      style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: "0.875rem", color: theme.text, background: readOnly ? theme.bgSubtle : theme.bg, boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
   </div>
 );
 
 export const Sel = ({ label, value, onChange, options }) => (
   <div style={{ marginBottom: 16 }}>
-    {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{label}</label>}
+    {label && <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{label}</label>}
     <select value={value} onChange={e => onChange(e.target.value)}
-      style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 14, color: theme.text, background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
+      style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: "0.875rem", color: theme.text, background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
       {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   </div>
@@ -208,17 +208,17 @@ export const Sel = ({ label, value, onChange, options }) => (
 // what the dates currently in the form resolve to, and updates live as they are edited.
 export const DerivedStatusField = ({ moveInDate, moveOutDate, t }) => (
   <div style={{ marginBottom: 16 }}>
-    <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.colStatus}</label>
+    <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.colStatus}</label>
     <div style={{ display: "flex", alignItems: "center", width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, background: theme.bgSubtle, boxSizing: "border-box", minHeight: 42 }}>
       <Badge status={statusFor({ moveInDate: moveInDate || null, moveOutDate: moveOutDate || null })} t={t} />
     </div>
-    <p style={{ margin: "5px 0 0", fontSize: 11, color: "#9ca3af", lineHeight: 1.4 }}>{t.tenStatusDerived}</p>
+    <p style={{ margin: "5px 0 0", fontSize: "0.6875rem", color: "#9ca3af", lineHeight: 1.4 }}>{t.tenStatusDerived}</p>
   </div>
 );
 
 export const Btn = ({ children, onClick, variant = "primary", size = "md", icon, disabled = false }) => {
   const s = { primary: { background: theme.accent, color: "#fff", border: `1px solid ${theme.accent}` }, secondary: { background: "#fff", color: theme.text, border: `1px solid ${theme.border}` }, ghost: { background: "transparent", color: theme.textMuted, border: "none" } };
-  const sz = { sm: { padding: "6px 14px", fontSize: 13 }, md: { padding: "10px 20px", fontSize: 14 } };
+  const sz = { sm: { padding: "6px 14px", fontSize: "0.8125rem" }, md: { padding: "10px 20px", fontSize: "0.875rem" } };
   return (
     <button onClick={onClick} disabled={disabled} style={{ ...s[variant], ...sz[size], borderRadius: "var(--ld-radius, 8px)", cursor: disabled ? "not-allowed" : "pointer", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit", transition: "opacity .15s", opacity: disabled ? 0.6 : 1 }}
       onMouseEnter={e => { if (!disabled) e.currentTarget.style.opacity = ".85"; }} onMouseLeave={e => { e.currentTarget.style.opacity = disabled ? "0.6" : "1"; }}>
@@ -233,8 +233,8 @@ export const Btn = ({ children, onClick, variant = "primary", size = "md", icon,
 export const PageHeader = ({ title, subtitle, action }) => (
   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "var(--ld-page-header-wrap, nowrap)", gap: "var(--ld-page-header-gap, 0px)", marginBottom: 28 }}>
     <div>
-      <h1 style={{ margin: 0, fontSize: "var(--ld-heading-size, 26px)", fontWeight: "var(--ld-heading-weight, 700)", color: theme.text, fontFamily: "'Inter',system-ui,-apple-system,sans-serif", letterSpacing: "var(--ld-heading-tracking, -0.5px)", lineHeight: 1.13, overflowWrap: "anywhere" }}>{title}</h1>
-      {subtitle && <p style={{ margin: "4px 0 0", color: theme.textMuted, fontSize: 14 }}>{subtitle}</p>}
+      <h1 style={{ margin: 0, fontSize: "var(--ld-heading-size, 1.625rem)", fontWeight: "var(--ld-heading-weight, 700)", color: theme.text, fontFamily: "'Inter',system-ui,-apple-system,sans-serif", letterSpacing: "var(--ld-heading-tracking, -0.5px)", lineHeight: 1.13, overflowWrap: "anywhere" }}>{title}</h1>
+      {subtitle && <p style={{ margin: "4px 0 0", color: theme.textMuted, fontSize: "0.875rem" }}>{subtitle}</p>}
     </div>
     {action}
   </div>
@@ -243,9 +243,9 @@ export const PageHeader = ({ title, subtitle, action }) => (
 // Property filter chip row, shared by the Tenants and Payments pages. `hidden` is a Set of
 // HIDDEN chip ids (not shown ones) so a newly-added property is visible by default without
 // needing to touch stored state. Callers own persistence; this is presentation only.
-const filterChipBase = { display: "flex", alignItems: "center", gap: 7, padding: "5px 12px", borderRadius: 7, border: "1px solid", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" };
-const filterLinkBase = { marginLeft: 4, fontSize: 12, fontWeight: 600, background: "transparent", border: "none", cursor: "pointer", padding: 0 };
-const filterBarLabel = { fontSize: 12, fontWeight: 600, color: theme.textMuted, textTransform: "uppercase", letterSpacing: ".5px" };
+const filterChipBase = { display: "flex", alignItems: "center", gap: 7, padding: "5px 12px", borderRadius: 7, border: "1px solid", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" };
+const filterLinkBase = { marginLeft: 4, fontSize: "0.75rem", fontWeight: 600, background: "transparent", border: "none", cursor: "pointer", padding: 0 };
+const filterBarLabel = { fontSize: "0.75rem", fontWeight: 600, color: theme.textMuted, textTransform: "uppercase", letterSpacing: ".5px" };
 
 export const PropertyFilterBar = ({ chips, hidden, setHidden, t }) => {
   if (chips.length <= 1) return null;
@@ -284,9 +284,9 @@ const StatCard = ({ label, value, sub, icon, color }) => (
   <div style={{ background: "#fff", borderRadius: 14, padding: "20px 22px", border: "1px solid var(--ld-border, #f5f5f5)", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
       <div>
-        <p style={{ margin: "0 0 6px", color: "#6b7280", fontSize: 13, fontWeight: 500 }}>{label}</p>
-        <p style={{ margin: 0, fontSize: 28, fontWeight: 700, color: theme.text, fontVariantNumeric: "tabular-nums", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{value}</p>
-        {sub && <p style={{ margin: "4px 0 0", fontSize: 12, color: "#9ca3af" }}>{sub}</p>}
+        <p style={{ margin: "0 0 6px", color: "#6b7280", fontSize: "0.8125rem", fontWeight: 500 }}>{label}</p>
+        <p style={{ margin: 0, fontSize: "1.75rem", fontWeight: 700, color: theme.text, fontVariantNumeric: "tabular-nums", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{value}</p>
+        {sub && <p style={{ margin: "4px 0 0", fontSize: "0.75rem", color: "#9ca3af" }}>{sub}</p>}
       </div>
       <div style={{ width: 42, height: 42, borderRadius: 11, background: color ? `${color}18` : "var(--ld-accent-tint, #11111118)", display: "flex", alignItems: "center", justifyContent: "center", color: color || theme.accent }}><Icon name={icon} size={20} /></div>
     </div>
@@ -295,7 +295,7 @@ const StatCard = ({ label, value, sub, icon, color }) => (
 
 // Shared by both dashboard transition-acknowledgment buttons ("…have moved in" /
 // "…have moved out"); only cursor + opacity differ while a confirm is in flight.
-const ackBtnStyle = { alignSelf: "flex-start", marginTop: 4, background: theme.accent, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, fontFamily: "inherit" };
+const ackBtnStyle = { alignSelf: "flex-start", marginTop: 4, background: theme.accent, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: "0.8125rem", fontWeight: 600, fontFamily: "inherit" };
 
 // ─── LANDLORD DASHBOARD ───────────────────────────────────────────────────────
 export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
@@ -578,7 +578,7 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
       <PageHeader title={t.dashTitle} subtitle={t.dashSubtitle} />
       {dismissReady && visibleNewTenants.length > 0 && (
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, background: "#f0fdf4", border: "1px solid #dcfce7", borderRadius: 12, padding: "14px 16px", marginBottom: 20 }}>
-          <div style={{ fontSize: 14, color: "#166534", lineHeight: 1.6 }}>
+          <div style={{ fontSize: "0.875rem", color: "#166534", lineHeight: 1.6 }}>
             <span style={{ fontWeight: 600 }}>{t.dashNewTenantsTitle}</span>{": "}
             {visibleNewTenants.map((x, i) => {
               const prop = properties.find(p => p.id === x.propertyId);
@@ -587,7 +587,7 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
               return (
                 <span key={x.id}>
                   {i > 0 && ", "}
-                  <Link href={routes.tenant(x)} style={{ background: "none", border: "none", padding: 0, color: "#166534", fontWeight: 600, fontSize: 14, cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" }}>
+                  <Link href={routes.tenant(x)} style={{ background: "none", border: "none", padding: 0, color: "#166534", fontWeight: 600, fontSize: "0.875rem", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline" }}>
                     {x.name}{x.lastName ? ` ${x.lastName}` : ""}
                   </Link>
                   {loc && <span style={{ color: "#4d7c5a", fontWeight: 400 }}>{` (${loc})`}</span>}
@@ -595,7 +595,7 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
               );
             })}
           </div>
-          <button onClick={dismissNewTenants} title={t.dashDismiss} aria-label={t.dashDismiss} style={{ background: "none", border: "none", padding: 0, color: "#166534", fontSize: 18, lineHeight: 1, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>×</button>
+          <button onClick={dismissNewTenants} title={t.dashDismiss} aria-label={t.dashDismiss} style={{ background: "none", border: "none", padding: 0, color: "#166534", fontSize: "1.125rem", lineHeight: 1, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>×</button>
         </div>
       )}
       <div style={{ background: "linear-gradient(135deg,#f5f5f5,#fafafa)", borderRadius: 14, padding: 22, border: "1px solid #f3f4f6", marginBottom: 20 }}>
@@ -604,29 +604,29 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
             <div style={{ width: 32, height: 32, borderRadius: 10, background: "#111111", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
               <Icon name="sparkles" size={16} />
             </div>
-            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashSummaryTitle}</h3>
+            <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashSummaryTitle}</h3>
           </div>
           <button
             onClick={generateSummary}
             disabled={summaryLoading || !user?.id}
-            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 600, color: "#fff", background: summaryLoading ? "#9ca3af" : "#111111", border: "none", borderRadius: 8, cursor: summaryLoading ? "default" : "pointer" }}
+            style={{ padding: "8px 14px", fontSize: "0.8125rem", fontWeight: 600, color: "#fff", background: summaryLoading ? "#9ca3af" : "#111111", border: "none", borderRadius: 8, cursor: summaryLoading ? "default" : "pointer" }}
           >
             {summaryLoading ? t.dashSummaryLoading : (summary ? t.dashSummaryRegenerate : t.dashSummaryGenerate)}
           </button>
         </div>
         {summaryError ? (
-          <div style={{ fontSize: 14, color: "#b91c1c", lineHeight: 1.55 }}>{t.dashSummaryError}</div>
+          <div style={{ fontSize: "0.875rem", color: "#b91c1c", lineHeight: 1.55 }}>{t.dashSummaryError}</div>
         ) : summary ? (
           <div>
-            <div style={{ fontSize: 15, color: "#1a1a1a", lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{summary}</div>
+            <div style={{ fontSize: "0.9375rem", color: "#1a1a1a", lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{summary}</div>
             {summaryGeneratedAt && (
-              <div style={{ marginTop: 10, fontSize: 12, color: "#6b7280" }}>
+              <div style={{ marginTop: 10, fontSize: "0.75rem", color: "#6b7280" }}>
                 {t.dashSummaryGeneratedAt(new Date(summaryGeneratedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }))}
               </div>
             )}
           </div>
         ) : summaryLoading ? null : (
-          <div style={{ fontSize: 13, color: "#6b7280" }}>{t.dashSummaryEmpty}</div>
+          <div style={{ fontSize: "0.8125rem", color: "#6b7280" }}>{t.dashSummaryEmpty}</div>
         )}
       </div>
       <div className="landlord-stack" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16, marginBottom: 28 }}>
@@ -636,9 +636,9 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
       </div>
       <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)", marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
-          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashTransitions}</h3>
+          <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashTransitions}</h3>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.dashUnitCount(transitionRows.length)}</span>
+            <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{t.dashUnitCount(transitionRows.length)}</span>
             {transitionRows.length > 0 && (() => {
               const allExpanded = transitionRows.every(r => expandedTransitions.has(r.key));
               return (
@@ -654,7 +654,7 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
           </div>
         </div>
         {transitionRows.length === 0 ? (
-          <div style={{ padding: "14px 0", fontSize: 13, color: "#6b7280" }}>{t.dashTransitionsEmpty}</div>
+          <div style={{ padding: "14px 0", fontSize: "0.8125rem", color: "#6b7280" }}>{t.dashTransitionsEmpty}</div>
         ) : transitionRows.map(row => {
           const showGapBadge = row.gapMonths > 0 || row.gapDays > 0;
           const showUnresolvedBadge = !showGapBadge && (row.outgoing.length > 0 || row.vacantNow) && row.incoming.length === 0;
@@ -667,38 +667,38 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 13, color: "#9ca3af", userSelect: "none" }}>{expandedTransitions.has(row.key) ? "▾" : "▸"}</span>
+                  <span style={{ fontSize: "0.8125rem", color: "#9ca3af", userSelect: "none" }}>{expandedTransitions.has(row.key) ? "▾" : "▸"}</span>
                   {/* stopPropagation so following the link doesn't also toggle
                       the accordion this row sits inside. */}
                   {row.propertyId ? (
                     <Link
                       href={routes.property(row.propertyId)}
                       onClick={e => e.stopPropagation()}
-                      style={{ fontSize: 16, fontWeight: 700, color: "#111111", cursor: "pointer", textDecoration: "none" }}
+                      style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", cursor: "pointer", textDecoration: "none" }}
                       onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; }}
                       onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; }}
                     >
                       Unit {row.unitLabel} · {row.propertyAddress}
                     </Link>
                   ) : (
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#111111" }}>
+                    <div style={{ fontSize: "1rem", fontWeight: 700, color: "#111111" }}>
                       Unit {row.unitLabel} · {row.propertyAddress}
                     </div>
                   )}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                   {showGapBadge && (
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#92400e", background: "#fef3c7", padding: "4px 10px", borderRadius: 6, letterSpacing: ".3px" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#92400e", background: "#fef3c7", padding: "4px 10px", borderRadius: 6, letterSpacing: ".3px" }}>
                       {t.dashGap(row.gapMonths, row.gapDays)}
                     </span>
                   )}
                   {showUnresolvedBadge && (
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#991b1b", background: "#fee2e2", padding: "4px 10px", borderRadius: 6, letterSpacing: ".3px" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#991b1b", background: "#fee2e2", padding: "4px 10px", borderRadius: 6, letterSpacing: ".3px" }}>
                       {t.dashGapUnresolved}
                     </span>
                   )}
                   {row.allCurrentMovingOut && row.incoming.length > 0 && row.earliestIncomingDate && (
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#0369a1" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#0369a1" }}>
                       {t.dashCleanBefore(fmtDate(row.earliestIncomingDate))}
                     </span>
                   )}
@@ -706,22 +706,22 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
               </div>
               {expandedTransitions.has(row.key) && <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>{t.dashMovingOut}</div>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>{t.dashMovingOut}</div>
                   {row.outgoing.length > 0 ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                       {row.outgoing.map(ten => (
                         <div key={ten.id} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#fb923c,#ea580c)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>{(ten.name || "?").charAt(0)}</div>
+                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#fb923c,#ea580c)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.875rem", fontWeight: 700, flexShrink: 0 }}>{(ten.name || "?").charAt(0)}</div>
                           <div>
                             <Link
                               href={routes.tenant(ten)}
-                              style={{ fontSize: 15, fontWeight: 600, color: "#111111", cursor: "pointer", textDecoration: "none", display: "block" }}
+                              style={{ fontSize: "0.9375rem", fontWeight: 600, color: "#111111", cursor: "pointer", textDecoration: "none", display: "block" }}
                               onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; }}
                               onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; }}
                             ><TenantName tenant={ten} t={t} /></Link>
-                            <div style={{ fontSize: 13, color: "#9ca3af" }}>{fmtDate(ten.moveOutDate)}</div>
+                            <div style={{ fontSize: "0.8125rem", color: "#9ca3af" }}>{fmtDate(ten.moveOutDate)}</div>
                             {awaitingMoveOutAck(ten) && (
-                              <div style={{ fontSize: 12, color: "#b45309", fontWeight: 600, marginTop: 2 }}>{t.dashAckPendingMoveOut}</div>
+                              <div style={{ fontSize: "0.75rem", color: "#b45309", fontWeight: 600, marginTop: 2 }}>{t.dashAckPendingMoveOut}</div>
                             )}
                           </div>
                         </div>
@@ -737,33 +737,33 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
                       )}
                     </div>
                   ) : (
-                    <div style={{ fontSize: 14, color: "#9ca3af", fontStyle: "italic" }}>
+                    <div style={{ fontSize: "0.875rem", color: "#9ca3af", fontStyle: "italic" }}>
                       {row.vacantNow ? t.dashVacantNow : t.dashNoOutgoing}
                     </div>
                   )}
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>{t.dashMovingIn}</div>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>{t.dashMovingIn}</div>
                   {row.incoming.length > 0 ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                       {row.incoming.map(ten => (
                         <div key={ten.id} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#22c55e,#16a34a)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>{(ten.name || "?").charAt(0)}</div>
+                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#22c55e,#16a34a)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.875rem", fontWeight: 700, flexShrink: 0 }}>{(ten.name || "?").charAt(0)}</div>
                           <div>
                             <Link
                               href={routes.tenant(ten)}
-                              style={{ fontSize: 15, fontWeight: 600, color: "#111111", cursor: "pointer", textDecoration: "none", display: "block" }}
+                              style={{ fontSize: "0.9375rem", fontWeight: 600, color: "#111111", cursor: "pointer", textDecoration: "none", display: "block" }}
                               onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; }}
                               onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; }}
                             ><TenantName tenant={ten} t={t} /></Link>
-                            <div style={{ fontSize: 13, color: "#16a34a" }}>{ten.moveInDate ? fmtDate(ten.moveInDate) : "—"}</div>
+                            <div style={{ fontSize: "0.8125rem", color: "#16a34a" }}>{ten.moveInDate ? fmtDate(ten.moveInDate) : "—"}</div>
                             {(!ten.securityDeposit || +ten.securityDeposit <= 0) ? (
-                              <div style={{ fontSize: 12, color: "#dc2626", fontWeight: 600, marginTop: 2 }}>{t.securityDepositNotReceived}</div>
+                              <div style={{ fontSize: "0.75rem", color: "#dc2626", fontWeight: 600, marginTop: 2 }}>{t.securityDepositNotReceived}</div>
                             ) : (
-                              <div style={{ fontSize: 12, color: "#16a34a", fontWeight: 600, marginTop: 2 }}>{t.securityDepositReceived}</div>
+                              <div style={{ fontSize: "0.75rem", color: "#16a34a", fontWeight: 600, marginTop: 2 }}>{t.securityDepositReceived}</div>
                             )}
                             {awaitingMoveInAck(ten) && (
-                              <div style={{ fontSize: 12, color: "#b45309", fontWeight: 600, marginTop: 2 }}>{t.dashAckPendingMoveIn}</div>
+                              <div style={{ fontSize: "0.75rem", color: "#b45309", fontWeight: 600, marginTop: 2 }}>{t.dashAckPendingMoveIn}</div>
                             )}
                           </div>
                         </div>
@@ -791,12 +791,12 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
                     }
                     return (
                       <div>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 14, fontWeight: 700, color: "#b91c1c", background: "#fee2e2", border: "1px solid #fecaca", padding: "7px 12px", borderRadius: 8, letterSpacing: ".2px" }}>
-                          <span style={{ fontSize: 15, lineHeight: 1 }}>⚠</span>
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: "0.875rem", fontWeight: 700, color: "#b91c1c", background: "#fee2e2", border: "1px solid #fecaca", padding: "7px 12px", borderRadius: 8, letterSpacing: ".2px" }}>
+                          <span style={{ fontSize: "0.9375rem", lineHeight: 1 }}>⚠</span>
                           {t.dashNoIncoming}
                         </div>
                         {availableLabel && (
-                          <div style={{ fontSize: 14, fontWeight: 700, color: "#b91c1c", marginTop: 8 }}>
+                          <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "#b91c1c", marginTop: 8 }}>
                             {availableLabel}
                           </div>
                         )}
@@ -812,22 +812,22 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
       <div className="landlord-stack" style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 20 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
-            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashUnpaidRent} — {currentMonthLabel}</h3>
-            <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.dashTenantCount(unpaidTenants.length)}</span>
+            <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.dashUnpaidRent} — {currentMonthLabel}</h3>
+            <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{t.dashTenantCount(unpaidTenants.length)}</span>
           </div>
           {unpaidTenants.length === 0 ? (
-            <div style={{ padding: "14px 0", fontSize: 13, color: "#6b7280" }}>{t.dashUnpaidEmpty}</div>
+            <div style={{ padding: "14px 0", fontSize: "0.8125rem", color: "#6b7280" }}>{t.dashUnpaidEmpty}</div>
           ) : unpaidTenants.map(ten => {
             const prop = properties.find(p => p.id === ten.propertyId);
             return (
               <div key={ten.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 0", borderBottom: "1px solid #fafafa" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>{(ten.name || "?").charAt(0)}</div>
+                  <div style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.8125rem", fontWeight: 700 }}>{(ten.name || "?").charAt(0)}</div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#111111" }}><TenantName tenant={ten} t={t} /></div>
-                    <div style={{ fontSize: 12, color: "#9ca3af" }}>{ten.unit} · {prop?.address}</div>
+                    <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111111" }}><TenantName tenant={ten} t={t} /></div>
+                    <div style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{ten.unit} · {prop?.address}</div>
                     {ten.notes && (
-                      <div style={{ fontSize: 12, color: "#dc2626", fontWeight: 600, marginTop: 4 }}>{ten.notes}</div>
+                      <div style={{ fontSize: "0.75rem", color: "#dc2626", fontWeight: 600, marginTop: 4 }}>{ten.notes}</div>
                     )}
                   </div>
                 </div>
@@ -837,10 +837,10 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
           })}
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.recentPayments}</h3>
+          <h3 style={{ margin: "0 0 16px", fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.recentPayments}</h3>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ color: "#9ca3af", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
+              <tr style={{ color: "#9ca3af", fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
                 {[t.colTenant, t.colAmount, t.colDueDate].map(h => <th key={h} style={{ padding: "0 12px 10px 0", textAlign: "left", whiteSpace: "nowrap" }}>{h}</th>)}
               </tr>
             </thead>
@@ -849,9 +849,9 @@ export const LandlordDashboard = ({ data, setData, t, lang, user }) => {
                 const ten = tenants.find(ten => ten.id === p.tenantId);
                 return (
                   <tr key={p.id} style={{ borderTop: "1px solid #fafafa" }}>
-                    <td style={{ padding: "11px 12px 11px 0", fontSize: 14, fontWeight: 500 }}>{ten ? <TenantName tenant={ten} t={t} /> : "—"}</td>
-                    <td style={{ padding: "11px 12px 11px 0", fontSize: 14 }}>{fmt(p.amount || ten?.monthlyRent || 0)}</td>
-                    <td style={{ padding: "11px 12px 11px 0", fontSize: 13, color: "#6b7280" }}>{p.dueDate ? fmtDate(p.dueDate.slice(0,7) + "-05T12:00:00") : "—"}</td>
+                    <td style={{ padding: "11px 12px 11px 0", fontSize: "0.875rem", fontWeight: 500 }}>{ten ? <TenantName tenant={ten} t={t} /> : "—"}</td>
+                    <td style={{ padding: "11px 12px 11px 0", fontSize: "0.875rem" }}>{fmt(p.amount || ten?.monthlyRent || 0)}</td>
+                    <td style={{ padding: "11px 12px 11px 0", fontSize: "0.8125rem", color: "#6b7280" }}>{p.dueDate ? fmtDate(p.dueDate.slice(0,7) + "-05T12:00:00") : "—"}</td>
                   </tr>
                 );
               })}
@@ -881,7 +881,7 @@ const propertyIconButton = {
 const rentManagerLinkStyle = {
   position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: 8,
   width: "fit-content", padding: "9px 12px", borderRadius: 8, color: theme.accent,
-  background: "var(--ld-accent-tint, #f5f5f5)", fontSize: 13, fontWeight: 700, textDecoration: "none",
+  background: "var(--ld-accent-tint, #f5f5f5)", fontSize: "0.8125rem", fontWeight: 700, textDecoration: "none",
 };
 
 export const PropertiesPage = ({ data, t, refresh, user }) => {
@@ -984,18 +984,18 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
                 <button
                   onClick={() => { setUploadError(null); fileInputRefs.current[p.id]?.click(); }}
                   disabled={uploadingId === p.id}
-                  style={{ position: "absolute", bottom: 12, right: 12, zIndex: 2, background: "rgba(27,32,36,.86)", color: "#fff", border: "none", borderRadius: 7, padding: "8px 11px", fontSize: 12, fontWeight: 600, fontFamily: "inherit", cursor: uploadingId === p.id ? "default" : "pointer" }}>
+                  style={{ position: "absolute", bottom: 12, right: 12, zIndex: 2, background: "rgba(27,32,36,.86)", color: "#fff", border: "none", borderRadius: 7, padding: "8px 11px", fontSize: "0.75rem", fontWeight: 600, fontFamily: "inherit", cursor: uploadingId === p.id ? "default" : "pointer" }}>
                   {uploadingId === p.id ? t.uploadingPhoto : p.imageUrl ? t.changePhoto : t.uploadPhoto}
                 </button>
                 {uploadError && uploadingId !== p.id && (
-                  <div style={{ position: "absolute", top: 42, left: 12, right: 12, background: "#991b1b", color: "#fff", borderRadius: 7, padding: "6px 10px", fontSize: 12 }}>{uploadError}</div>
+                  <div style={{ position: "absolute", top: 42, left: 12, right: 12, background: "#991b1b", color: "#fff", borderRadius: 7, padding: "6px 10px", fontSize: "0.75rem" }}>{uploadError}</div>
                 )}
               </div>
               <div style={{ padding: "17px 17px 13px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
                   <div style={{ minWidth: 0 }}>
-                    <h3 style={{ margin: 0, fontSize: 21, fontWeight: 750, letterSpacing: "-.035em", color: theme.text, overflowWrap: "anywhere" }}>{p.address}</h3>
-                    <p style={{ margin: "5px 0 0", color: theme.textMuted, fontSize: 13 }}>{[locality, p.type].filter(Boolean).join(" · ")}</p>
+                    <h3 style={{ margin: 0, fontSize: "1.3125rem", fontWeight: 750, letterSpacing: "-.035em", color: theme.text, overflowWrap: "anywhere" }}>{p.address}</h3>
+                    <p style={{ margin: "5px 0 0", color: theme.textMuted, fontSize: "0.8125rem" }}>{[locality, p.type].filter(Boolean).join(" · ")}</p>
                   </div>
                   <div style={{ display: "flex", gap: 5, flexShrink: 0 }}>
                     <button type="button" onClick={() => openEdit(p)} aria-label={t.propEditAction} className="ld-property-action" style={propertyIconButton}>
@@ -1007,10 +1007,10 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
                   </div>
                 </div>
                 {p.inProduction === false && (
-                  <span style={{ display: "inline-block", marginTop: 9, padding: "3px 7px", borderRadius: 5, color: "#991b1b", background: "#fee2e2", fontSize: 11, fontWeight: 700 }}>{t.propNotInProduction}</span>
+                  <span style={{ display: "inline-block", marginTop: 9, padding: "3px 7px", borderRadius: 5, color: "#991b1b", background: "#fee2e2", fontSize: "0.6875rem", fontWeight: 700 }}>{t.propNotInProduction}</span>
                 )}
-                <div style={{ display: "flex", alignItems: "baseline", gap: 7, marginTop: 13, color: theme.textMuted, fontSize: 13 }}>
-                  <strong style={{ color: theme.text, fontSize: 21, letterSpacing: "-.025em", fontVariantNumeric: "tabular-nums" }}>{occupiedUnits}/{propertyUnits.length}</strong>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 7, marginTop: 13, color: theme.textMuted, fontSize: "0.8125rem" }}>
+                  <strong style={{ color: theme.text, fontSize: "1.3125rem", letterSpacing: "-.025em", fontVariantNumeric: "tabular-nums" }}>{occupiedUnits}/{propertyUnits.length}</strong>
                   {t.propOccupiedUnits}
                 </div>
               </div>
@@ -1036,11 +1036,11 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
             <Sel label={t.status} value={form.status} onChange={v => setF("status",v)} options={[{value:"vacant",label:t.st_vacant},{value:"occupied",label:t.st_occupied}]} />
           </div>
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#374151" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.8125rem", fontWeight: 600, color: "#374151" }}>
               <input type="checkbox" checked={form.inProduction} onChange={e => setF("inProduction", e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
               {t.inProduction}
             </label>
-            {!form.inProduction && <p style={{ margin: "5px 0 0", fontSize: 11, color: "#9ca3af", lineHeight: 1.4 }}>{t.inProductionHint}</p>}
+            {!form.inProduction && <p style={{ margin: "5px 0 0", fontSize: "0.6875rem", color: "#9ca3af", lineHeight: 1.4 }}>{t.inProductionHint}</p>}
           </div>
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 8 }}>
             <Btn variant="secondary" onClick={() => setShow(false)}>{t.cancel}</Btn>
@@ -1062,13 +1062,13 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
           </div>
           <Inp label={t.driveFolderUrl} value={editForm.driveLink} onChange={v => setEF("driveLink",v)} placeholder="https://drive.google.com/drive/folders/..." />
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#374151" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.8125rem", fontWeight: 600, color: "#374151" }}>
               <input type="checkbox" checked={editForm.inProduction} onChange={e => setEF("inProduction", e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
               {t.inProduction}
             </label>
-            {!editForm.inProduction && <p style={{ margin: "5px 0 0", fontSize: 11, color: "#9ca3af", lineHeight: 1.4 }}>{t.inProductionHint}</p>}
+            {!editForm.inProduction && <p style={{ margin: "5px 0 0", fontSize: "0.6875rem", color: "#9ca3af", lineHeight: 1.4 }}>{t.inProductionHint}</p>}
           </div>
-          {editError && <div style={{ fontSize: 13, color: "#ef4444", marginTop: 4 }}>{editError}</div>}
+          {editError && <div style={{ fontSize: "0.8125rem", color: "#ef4444", marginTop: 4 }}>{editError}</div>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 8 }}>
             <Btn variant="secondary" onClick={() => { setEditing(null); setEditError(null); }}>{t.cancel}</Btn>
             <Btn onClick={saveEdit}>{t.saveChanges}</Btn>
@@ -1077,7 +1077,7 @@ export const PropertiesPage = ({ data, t, refresh, user }) => {
       )}
       {confirmDelete && (
         <Modal title={t.propDeleteTitle} closeLabel={t.cancel} onClose={() => setConfirmDelete(null)}>
-          <p style={{ margin: "0 0 20px", fontSize: 14, color: "#374151" }}>{t.propDeleteWarning(confirmDelete.address)}</p>
+          <p style={{ margin: "0 0 20px", fontSize: "0.875rem", color: "#374151" }}>{t.propDeleteWarning(confirmDelete.address)}</p>
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setConfirmDelete(null)}>{t.cancel}</Btn>
             <Btn onClick={deleteProperty}>{t.propDeleteConfirm}</Btn>
@@ -1134,35 +1134,35 @@ export const TenantDeleteModal = ({ tenant, data, t, onClose, onDeleted }) => {
     <Modal title={t.deleteTenant} onClose={() => { if (!deleting) onClose(); }}>
       {blockers.length > 0 ? (
         <>
-          <p style={{ margin: "0 0 12px", fontSize: 14, color: "#111111" }}>
+          <p style={{ margin: "0 0 12px", fontSize: "0.875rem", color: "#111111" }}>
             {t.deleteTenantBlockedBefore}<strong><TenantName tenant={tenant} t={t} /></strong>{t.deleteTenantBlockedAfter}
           </p>
           <div style={{ margin: "0 0 16px", border: `1px solid ${theme.border}`, borderRadius: 8, overflow: "hidden" }}>
             {blockers.map((b, i) => (
-              <div key={b.key} style={{ padding: "10px 12px", fontSize: 14, color: "#374151", borderTop: i === 0 ? "none" : "1px solid #f5f5f5" }}>
+              <div key={b.key} style={{ padding: "10px 12px", fontSize: "0.875rem", color: "#374151", borderTop: i === 0 ? "none" : "1px solid #f5f5f5" }}>
                 {t[`blocker_${b.key}`] ? t[`blocker_${b.key}`](b.count) : `${b.count} × ${b.key}`}
               </div>
             ))}
           </div>
-          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#6b7280" }}>{t.deleteTenantBlockedHint}</p>
+          <p style={{ margin: "0 0 20px", fontSize: "0.8125rem", color: "#6b7280" }}>{t.deleteTenantBlockedHint}</p>
         </>
       ) : (
         <>
-          <p style={{ margin: "0 0 8px", fontSize: 14, color: "#374151" }}>
+          <p style={{ margin: "0 0 8px", fontSize: "0.875rem", color: "#374151" }}>
             {t.deleteTenantConfirmBefore}<strong><TenantName tenant={tenant} t={t} /></strong>{t.deleteTenantConfirmAfter}
           </p>
-          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#9ca3af" }}>
+          <p style={{ margin: "0 0 20px", fontSize: "0.8125rem", color: "#9ca3af" }}>
             {t.deleteWarning}
           </p>
         </>
       )}
-      {error && <p style={{ margin: "0 0 12px", fontSize: 13, color: "#ef4444" }}>{error}</p>}
+      {error && <p style={{ margin: "0 0 12px", fontSize: "0.8125rem", color: "#ef4444" }}>{error}</p>}
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
         <Btn variant="secondary" onClick={onClose} disabled={deleting}>{t.cancel}</Btn>
         {/* Hidden, not disabled, while something is in the way — the list above
             already says why, and the server would refuse anyway. */}
         {blockers.length === 0 && (
-          <button onClick={confirmDelete} disabled={deleting} style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: 14, fontWeight: 600, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1, fontFamily: "inherit" }}>
+          <button onClick={confirmDelete} disabled={deleting} style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 9, padding: "10px 20px", fontSize: "0.875rem", fontWeight: 600, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1, fontFamily: "inherit" }}>
             {deleting ? t.deleting : t.deleteTenant}
           </button>
         )}
@@ -1358,20 +1358,20 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
       <tr key={ten.id} style={{ borderTop: "1px solid #fafafa" }}>
         <td style={{ padding: "14px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>{(ten.name || "?").charAt(0)}</div>
-            <Link href={routes.tenant(ten)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#111111", fontFamily: "inherit", textAlign: "left", textDecoration: "none" }} onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; }} onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; }}><TenantName tenant={ten} t={t} /></Link>
+            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.8125rem", fontWeight: 700, flexShrink: 0 }}>{(ten.name || "?").charAt(0)}</div>
+            <Link href={routes.tenant(ten)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: "0.875rem", fontWeight: 600, color: "#111111", fontFamily: "inherit", textAlign: "left", textDecoration: "none" }} onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; }} onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; }}><TenantName tenant={ten} t={t} /></Link>
           </div>
         </td>
         <td style={{ padding: "14px 20px" }}>
-          <div style={{ fontSize: 13, color: "#374151" }}>{ten.email}</div>
-          <div style={{ fontSize: 12, color: "#9ca3af" }}>{ten.phone}</div>
+          <div style={{ fontSize: "0.8125rem", color: "#374151" }}>{ten.email}</div>
+          <div style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{ten.phone}</div>
         </td>
         <td style={{ padding: "14px 20px" }}>
-          <div style={{ fontSize: 13, color: "#374151" }}>{prop?.address || "—"}</div>
-          <div style={{ fontSize: 12, color: "#9ca3af" }}>{ten.unit || data.units.find(u => u.id === ten.unitId)?.unitNumber || "—"}</div>
+          <div style={{ fontSize: "0.8125rem", color: "#374151" }}>{prop?.address || "—"}</div>
+          <div style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{ten.unit || data.units.find(u => u.id === ten.unitId)?.unitNumber || "—"}</div>
         </td>
         <td style={{ padding: "14px 20px" }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: ten.monthlyRent ? "#111111" : "#9ca3af" }}>
+          <span style={{ fontSize: "0.875rem", fontWeight: 600, color: ten.monthlyRent ? "#111111" : "#9ca3af" }}>
             {ten.monthlyRent ? fmt(ten.monthlyRent) : "—"}
           </span>
         </td>
@@ -1380,20 +1380,20 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
           {statusFilter === "past" ? (
             <label style={{ display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
               <input type="checkbox" checked={!!ten.securityDepositRefunded} onChange={e => toggleRefunded(ten, e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
-              <span style={{ fontSize: 13, fontWeight: 600, color: ten.securityDepositRefunded ? "#16a34a" : "#9ca3af" }}>{ten.securityDepositRefunded ? t.depositRefunded : t.depositNotRefunded}</span>
+              <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: ten.securityDepositRefunded ? "#16a34a" : "#9ca3af" }}>{ten.securityDepositRefunded ? t.depositRefunded : t.depositNotRefunded}</span>
             </label>
           ) : (!ten.securityDeposit || +ten.securityDeposit <= 0) ? (
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#dc2626" }}>{t.securityDepositNotReceived}</span>
+            <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#dc2626" }}>{t.securityDepositNotReceived}</span>
           ) : (
-            <span style={{ fontSize: 14, fontWeight: 600, color: "#111111" }}>{fmt(ten.securityDeposit)}</span>
+            <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111111" }}>{fmt(ten.securityDeposit)}</span>
           )}
         </td>
         <td style={{ padding: "14px 20px" }}>
           <div style={{ display: "flex", gap: 6 }}>
-            <button onClick={() => openEdit(ten)} style={{ background: "#fafafa", border: `1px solid ${theme.border}`, borderRadius: 7, padding: "6px 12px", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "#374151", display: "flex", alignItems: "center", gap: 5, fontFamily: "inherit" }}>
+            <button onClick={() => openEdit(ten)} style={{ background: "#fafafa", border: `1px solid ${theme.border}`, borderRadius: 7, padding: "6px 12px", cursor: "pointer", fontSize: "0.75rem", fontWeight: 600, color: "#374151", display: "flex", alignItems: "center", gap: 5, fontFamily: "inherit" }}>
               <Icon name="edit" size={13} /> {t.editBtn}
             </button>
-            <button onClick={() => setDeleteTarget(ten)} style={{ ...dangerIconBtnStyle, fontSize: 12 }}>
+            <button onClick={() => setDeleteTarget(ten)} style={{ ...dangerIconBtnStyle, fontSize: "0.75rem" }}>
               <Icon name="trash" size={13} />
             </button>
           </div>
@@ -1408,10 +1408,10 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
 
       {/* Status filter (persisted across sessions) */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-        <span style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px" }}>{t.tenFilterStatus}</span>
+        <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px" }}>{t.tenFilterStatus}</span>
         {[["current", t.tenFilterCurrent], ["past", t.tenFilterPast]].map(([val, label]) => (
           <button key={val} onClick={() => setStatusFilter(val)}
-            style={{ padding: "5px 12px", borderRadius: 7, border: "1px solid", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
+            style={{ padding: "5px 12px", borderRadius: 7, border: "1px solid", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
               borderColor: statusFilter === val ? "#111111" : "#eaeaea",
               background: statusFilter === val ? "#f5f5f5" : "#fff",
               color: statusFilter === val ? "#111111" : "#6b7280" }}>
@@ -1425,10 +1425,10 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
 
       {/* Display by toggle */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-        <span style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px" }}>{t.displayBy}</span>
+        <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px" }}>{t.displayBy}</span>
         {[["none", t.displayAll], ["unit", t.displayByUnit]].map(([val, label]) => (
           <button key={val} onClick={() => setGroupBy(val)}
-            style={{ padding: "5px 12px", borderRadius: 7, border: "1px solid", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
+            style={{ padding: "5px 12px", borderRadius: 7, border: "1px solid", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
               borderColor: groupBy === val ? "#111111" : "#eaeaea",
               background: groupBy === val ? "#f5f5f5" : "#fff",
               color: groupBy === val ? "#111111" : "#6b7280" }}>
@@ -1440,18 +1440,18 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
       <div className="landlord-scroll" style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead style={{ background: theme.bgSubtle }}>
-            <tr style={{ color: "#6b7280", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
+            <tr style={{ color: "#6b7280", fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
               {[t.colTenant, t.colContact, t.colProperty, t.colMonthlyRent, t.colStatus, statusFilter === "past" ? t.colDepositRefunded : t.colSecurityDeposit, ""].map((h,i) => <th key={i} style={{ padding: "14px 20px", textAlign: "left", whiteSpace: "nowrap" }}>{h}</th>)}
             </tr>
           </thead>
           <tbody>
             {primaryTenants.length === 0 && secondaryTenants.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: "28px 20px", textAlign: "center", fontSize: 13, color: "#9ca3af" }}>{statusFilter === "past" ? t.tenNonePast : t.tenNoneToShow}</td></tr>
+              <tr><td colSpan={7} style={{ padding: "28px 20px", textAlign: "center", fontSize: "0.8125rem", color: "#9ca3af" }}>{statusFilter === "past" ? t.tenNonePast : t.tenNoneToShow}</td></tr>
             ) : groupBy === "none" ? (
               <>
                 {primaryTenants.map(ten => renderTenantRow(ten))}
                 {secondaryTenants.length > 0 && <>
-                  <tr><td colSpan={7} style={{ padding: "8px 20px", background: "#fafafa", borderTop: "2px solid #eaeaea", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".6px" }}>{t.statusFutureTenant}</td></tr>
+                  <tr><td colSpan={7} style={{ padding: "8px 20px", background: "#fafafa", borderTop: "2px solid #eaeaea", fontSize: "0.6875rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".6px" }}>{t.statusFutureTenant}</td></tr>
                   {secondaryTenants.map(ten => renderTenantRow(ten))}
                 </>}
               </>
@@ -1464,9 +1464,9 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
                       <td colSpan={7} style={{ padding: "14px 20px", background: "#fafafa", borderTop: "1px solid #eaeaea" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                           <span style={{ color: "#6b7280", display: "flex" }}><Icon name="building" size={16} /></span>
-                          <span style={{ fontSize: 16, fontWeight: 800, color: "#111111", letterSpacing: "-0.2px" }}>{prop?.address || t.tenNoProperty}</span>
-                          <span style={{ marginLeft: "auto", fontSize: 12, color: "#9ca3af", fontWeight: 600 }}>{t.dashUnitCount(unitList.length)} · {t.dashTenantCount(currentCount)}</span>
-                          {totalRent > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: "#9ca3af" }}>{fmt(totalRent)}{t.tenPerMo}</span>}
+                          <span style={{ fontSize: "1rem", fontWeight: 800, color: "#111111", letterSpacing: "-0.2px" }}>{prop?.address || t.tenNoProperty}</span>
+                          <span style={{ marginLeft: "auto", fontSize: "0.75rem", color: "#9ca3af", fontWeight: 600 }}>{t.dashUnitCount(unitList.length)} · {t.dashTenantCount(currentCount)}</span>
+                          {totalRent > 0 && <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#9ca3af" }}>{fmt(totalRent)}{t.tenPerMo}</span>}
                         </div>
                       </td>
                     </tr>
@@ -1476,8 +1476,8 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
                         <tr>
                           <td colSpan={7} style={{ padding: "8px 20px 8px 48px", background: "#f5f5f5", borderTop: "1px solid #eaeaea", borderLeft: "3px solid #e5e5e5" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                              <span style={{ fontSize: 13, fontWeight: 700, color: "#9ca3af" }}>{t.unit} {unit}</span>
-                              <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.dashTenantCount(current.length)}</span>
+                              <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#9ca3af" }}>{t.unit} {unit}</span>
+                              <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{t.dashTenantCount(current.length)}</span>
                             </div>
                           </td>
                         </tr>
@@ -1485,7 +1485,7 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
                         {future.length > 0 && (
                           <>
                             <tr>
-                              <td colSpan={7} style={{ padding: "6px 20px 6px 48px", background: "#fafafa", borderLeft: "3px solid #e5e5e5", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".6px" }}>
+                              <td colSpan={7} style={{ padding: "6px 20px 6px 48px", background: "#fafafa", borderLeft: "3px solid #e5e5e5", fontSize: "0.6875rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".6px" }}>
                                 {t.statusFutureTenant}
                               </td>
                             </tr>
@@ -1519,21 +1519,21 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
             <Inp label={t.moveInDateReq} value={form.moveInDate} onChange={v => setF("moveInDate",v)} type="date" />
             <Inp label={t.moveOutDate} value={form.moveOutDate||""} onChange={v => setF("moveOutDate",v)} type="date" />
             <Inp label={t.securityDepositLabel} value={form.securityDeposit} onChange={v => setF("securityDeposit",v)} type="number" placeholder="0" />
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#374151", alignSelf: "end", paddingBottom: 10 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.8125rem", fontWeight: 600, color: "#374151", alignSelf: "end", paddingBottom: 10 }}>
               <input type="checkbox" checked={form.securityDepositRefunded} onChange={e => setF("securityDepositRefunded", e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
               {t.colDepositRefunded}
             </label>
             <div style={{ gridColumn: "1 / -1", marginBottom: 16 }}>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.notesLabel}</label>
+              <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.notesLabel}</label>
               <textarea value={form.notes} onChange={e => setF("notes", e.target.value)} placeholder={t.notesPlaceholder} rows={3}
-                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16, padding: "12px 14px", background: "#fafafa", borderRadius: 9, border: `1px solid ${theme.border}` }}>
             <Toggle value={form.createLogin} onChange={v => setF("createLogin", v)} />
             <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#111111" }}>{t.createLoginLabel}</div>
-              <div style={{ fontSize: 12, color: "#6b7280" }}>{t.createLoginDesc}</div>
+              <div style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#111111" }}>{t.createLoginLabel}</div>
+              <div style={{ fontSize: "0.75rem", color: "#6b7280" }}>{t.createLoginDesc}</div>
             </div>
           </div>
           {form.createLogin && (
@@ -1541,7 +1541,7 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
               <Inp label={t.loginPassword} value={form.password} onChange={v => setF("password",v)} type="text" placeholder={t.tempPassword} />
             </div>
           )}
-          {addError && <div style={{ fontSize: 13, color: "#ef4444", marginTop: 12 }}>{addError}</div>}
+          {addError && <div style={{ fontSize: "0.8125rem", color: "#ef4444", marginTop: 12 }}>{addError}</div>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 16 }}>
             <Btn variant="secondary" onClick={() => { setShow(false); setAddError(""); }}>{t.cancel}</Btn>
             <Btn onClick={add} disabled={saving}>{saving ? t.creating : t.addTenant}</Btn>
@@ -1560,7 +1560,7 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
               options={[{ value: "", label: t.genderNone }, ...GENDERS.map(g => ({ value: g, label: t[`gender_${g}`] }))]} />
             <Sel label={t.navProperties} value={editForm.propertyId} onChange={v => setEF("propertyId",v)} options={[{value:"",label:t.noPropOption},...data.properties.map(p => ({value:p.id,label:p.address}))]} />
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>{t.unit}</div>
+              <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>{t.unit}</div>
               {(() => {
                 const propUnits = (data.units || []).filter(u => u.propertyId === editForm.propertyId);
                 return (
@@ -1572,7 +1572,7 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
                       setEF("unitId", uid || "");
                       setEF("unit", matched ? matched.unitNumber : "");
                     }}
-                    style={{ width: "100%", background: "#fff", color: "#111111", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "10px 14px", fontSize: 14, fontFamily: "inherit" }}
+                    style={{ width: "100%", background: "#fff", color: "#111111", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "10px 14px", fontSize: "0.875rem", fontFamily: "inherit" }}
                     disabled={!editForm.propertyId}
                   >
                     {!editForm.propertyId ? (
@@ -1602,25 +1602,25 @@ export const TenantsPage = ({ data, setData, t, refresh, user }) => {
             <Inp label={t.moveInDate} value={editForm.moveInDate} onChange={v => setEF("moveInDate",v)} type="date" />
             <Inp label={t.moveOutDate} value={editForm.moveOutDate} onChange={v => setEF("moveOutDate",v)} type="date" />
             <Inp label={t.securityDepositLabel} value={editForm.securityDeposit} onChange={v => setEF("securityDeposit",v)} type="number" placeholder="0" />
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#374151", alignSelf: "end", paddingBottom: 10 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.8125rem", fontWeight: 600, color: "#374151", alignSelf: "end", paddingBottom: 10 }}>
               <input type="checkbox" checked={!!editForm.securityDepositRefunded} onChange={e => setEF("securityDepositRefunded", e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
               {t.colDepositRefunded}
             </label>
             <div style={{ gridColumn: "1 / -1" }}>
               <Inp label={t.email} value={editForm.email} onChange={v => setEF("email",v)} type="email" placeholder="tenant@email.com" />
-              <div style={{ fontSize: 12, color: "#6b7280", marginTop: -8, marginBottom: 4 }}>{t.emailLoginNote}</div>
+              <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: -8, marginBottom: 4 }}>{t.emailLoginNote}</div>
             </div>
             <div style={{ gridColumn: "1 / -1", marginBottom: 16 }}>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.notesLabel}</label>
+              <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.notesLabel}</label>
               <textarea value={editForm.notes || ""} onChange={e => setEF("notes", e.target.value)} placeholder={t.notesPlaceholder} rows={3}
-                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical" }} />
             </div>
           </div>
           <div style={{ marginTop: 4, marginBottom: 4 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>{t.passwordReset}</div>
+            <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 8 }}>{t.passwordReset}</div>
             <Inp label={t.newPasswordLabel} value={editForm.password} onChange={v => setEF("password",v)} type="password" placeholder={t.minCharsPlaceholder} />
           </div>
-          {editError && <p style={{ color: "#ef4444", fontSize: 13, margin: "0 0 12px" }}>{editError}</p>}
+          {editError && <p style={{ color: "#ef4444", fontSize: "0.8125rem", margin: "0 0 12px" }}>{editError}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setEditTenant(null)}>{t.cancel}</Btn>
             <Btn onClick={saveEdit}>{editSaving ? t.saving : t.saveChanges}</Btn>
@@ -1774,36 +1774,36 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
               onClick={firstDoc ? () => setViewingDoc(firstDoc) : undefined}
               style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 116px), 1fr))", gap: 16, alignItems: "center", cursor: firstDoc ? "pointer" : "default" }}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", marginBottom: 6 }}>
+                <div style={{ fontSize: "1.125rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", marginBottom: 6 }}>
                   {prop?.address}{c.unit ? ` · ${c.unit}` : ""}
                 </div>
                 {(c.tenantIds || []).map(tid => {
                   const ten = data.tenants.find(t => t.id === tid);
                   return (
-                    <div key={tid} style={{ fontSize: 13, fontWeight: 500, color: "#9ca3af" }}>
+                    <div key={tid} style={{ fontSize: "0.8125rem", fontWeight: 500, color: "#9ca3af" }}>
                       {ten ? <TenantName tenant={ten} t={t} /> : "Unknown Tenant"}
                     </div>
                   );
                 })}
               </div>
               <div>
-                <div style={{ fontSize: 11, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 3 }}>{t.rent}</div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{fmt(c.rentAmount)}<span style={{ fontSize: 12, color: "#9ca3af", fontWeight: 400 }}>/mo</span></div>
-                <div style={{ fontSize: 12, color: "#6b7280" }}>{t.dueOf} {c.dueDay}{t.ofMonth}</div>
+                <div style={{ fontSize: "0.6875rem", color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 3 }}>{t.rent}</div>
+                <div style={{ fontSize: "1.25rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{fmt(c.rentAmount)}<span style={{ fontSize: "0.75rem", color: "#9ca3af", fontWeight: 400 }}>/mo</span></div>
+                <div style={{ fontSize: "0.75rem", color: "#6b7280" }}>{t.dueOf} {c.dueDay}{t.ofMonth}</div>
               </div>
               <div>
-                <div style={{ fontSize: 11, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 3 }}>{t.term}</div>
-                <div style={{ fontSize: 13, color: "#374151" }}>{fmtDate(c.startDate)}</div>
-                <div style={{ fontSize: 13, color: "#374151" }}>→ {fmtDate(c.endDate)}</div>
+                <div style={{ fontSize: "0.6875rem", color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 3 }}>{t.term}</div>
+                <div style={{ fontSize: "0.8125rem", color: "#374151" }}>{fmtDate(c.startDate)}</div>
+                <div style={{ fontSize: "0.8125rem", color: "#374151" }}>→ {fmtDate(c.endDate)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 11, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 3 }}>{t.colDaysRemaining}</div>
+                <div style={{ fontSize: "0.6875rem", color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 3 }}>{t.colDaysRemaining}</div>
                 {notStartedYet ? (
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.leaseUpcoming}</div>
+                  <div style={{ fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{t.leaseUpcoming}</div>
                 ) : !endDate || daysLeft <= 0 ? (
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Month to Month</div>
+                  <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Month to Month</div>
                 ) : (
-                  <div style={{ fontSize: 20, fontWeight: 700, color: daysLeft < 60 ? "#ef4444" : "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{daysLeft} {t.daysRemaining}</div>
+                  <div style={{ fontSize: "1.25rem", fontWeight: 700, color: daysLeft < 60 ? "#ef4444" : "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{daysLeft} {t.daysRemaining}</div>
                 )}
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
@@ -1812,7 +1812,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
                   <Btn variant="secondary" size="sm" icon="edit" onClick={(e) => { e.stopPropagation(); openEdit(c); }}>{t.editBtn}</Btn>
                   <button
                     onClick={(e) => { e.stopPropagation(); setDeleteTarget(c); }}
-                    style={{ ...dangerIconBtnStyle, fontSize: 13 }}
+                    style={{ ...dangerIconBtnStyle, fontSize: "0.8125rem" }}
                     aria-label={t.leaseDeleteAction}
                   >
                     <Icon name="trash" size={14} />
@@ -1827,10 +1827,10 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
         <Modal title={t.editLeaseTitle} onClose={closeEdit} wide>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div style={{ gridColumn: "1 / -1" }}>
-              <div style={{ fontSize: 13, color: "#374151", fontWeight: 600, marginBottom: 6 }}>{t.colTenants}</div>
+              <div style={{ fontSize: "0.8125rem", color: "#374151", fontWeight: 600, marginBottom: 6 }}>{t.colTenants}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 180, overflowY: "auto", padding: "4px 0" }}>
                 {data.tenants.filter(ten => ten.status !== "previous tenant").map(ten => (
-                  <label key={ten.id} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14, color: "#111111" }}>
+                  <label key={ten.id} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: "0.875rem", color: "#111111" }}>
                     <input type="checkbox" checked={editForm.tenantIds.includes(ten.id)}
                       onChange={e => { const ids = e.target.checked ? [...editForm.tenantIds, ten.id] : editForm.tenantIds.filter(id => id !== ten.id); setEF("tenantIds", ids); }} />
                     <TenantName tenant={ten} t={t} />
@@ -1848,7 +1848,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
           {/* Documents section */}
           <div style={{ marginTop: 20, borderTop: "1px solid #f5f5f5", paddingTop: 16 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{t.docSectionTitle}</div>
+              <div style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#374151" }}>{t.docSectionTitle}</div>
               <div style={{ display: "flex", gap: 8 }}>
                 <input
                   ref={docFileRef}
@@ -1888,7 +1888,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
                   placeholder={t.docDriveLinkPlaceholder}
                   value={driveLinkInput}
                   onChange={e => setDriveLinkInput(e.target.value)}
-                  style={{ flex: 1, border: `1px solid ${theme.border}`, borderRadius: 8, padding: "8px 12px", fontSize: 13, fontFamily: "inherit", outline: "none" }}
+                  style={{ flex: 1, border: `1px solid ${theme.border}`, borderRadius: 8, padding: "8px 12px", fontSize: "0.8125rem", fontFamily: "inherit", outline: "none" }}
                 />
                 <Btn size="sm" onClick={async () => {
                   if (!driveLinkInput.trim() || !editContract) return;
@@ -1906,34 +1906,34 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
                 }}>{t.docAttach}</Btn>
               </div>
             )}
-            {docError && <div style={{ fontSize: 12, color: "#ef4444", marginBottom: 8 }}>{docError}</div>}
+            {docError && <div style={{ fontSize: "0.75rem", color: "#ef4444", marginBottom: 8 }}>{docError}</div>}
             {(() => {
               const contractDocs = (data.documents || []).filter(d => d.contractId === editContract?.id);
               if (contractDocs.length === 0) return (
-                <div style={{ fontSize: 13, color: "#9ca3af", fontStyle: "italic", padding: "4px 0" }}>{t.docNoDocuments}</div>
+                <div style={{ fontSize: "0.8125rem", color: "#9ca3af", fontStyle: "italic", padding: "4px 0" }}>{t.docNoDocuments}</div>
               );
               return contractDocs.map(doc => (
                 <div key={doc.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid #fafafa" }}>
-                  <span style={{ fontSize: 16 }}>{doc.driveLink ? "🔗" : "📄"}</span>
-                  <span style={{ flex: 1, fontSize: 13, color: "#374151", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <span style={{ fontSize: "1rem" }}>{doc.driveLink ? "🔗" : "📄"}</span>
+                  <span style={{ flex: 1, fontSize: "0.8125rem", color: "#374151", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {doc.driveLink ? (doc.driveLink.length > 50 ? doc.driveLink.slice(0, 50) + "…" : doc.driveLink) : doc.fileName}
                   </span>
                   <button
                     onClick={() => setViewingDoc(doc)}
-                    style={{ background: theme.accent, color: "#fff", border: "none", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}
+                    style={{ background: theme.accent, color: "#fff", border: "none", borderRadius: 7, padding: "5px 12px", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}
                   >{t.docView}</button>
                   <button
                     onClick={async () => {
                       const res = await fetch("/api/documents/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ documentId: doc.id }) });
                       if (res.ok) await refresh();
                     }}
-                    style={{ background: "none", border: "1px solid #fca5a5", borderRadius: 7, padding: "5px 10px", fontSize: 12, color: "#ef4444", cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}
+                    style={{ background: "none", border: "1px solid #fca5a5", borderRadius: 7, padding: "5px 10px", fontSize: "0.75rem", color: "#ef4444", cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}
                   >{t.docRemove}</button>
                 </div>
               ));
             })()}
           </div>
-          {editError && <div style={{ fontSize: 13, color: "#ef4444", marginTop: 8 }}>{editError}</div>}
+          {editError && <div style={{ fontSize: "0.8125rem", color: "#ef4444", marginTop: 8 }}>{editError}</div>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 12 }}>
             <Btn variant="secondary" onClick={closeEdit}>{t.cancel}</Btn>
             <Btn onClick={save}>{t.saveChanges}</Btn>
@@ -1943,19 +1943,19 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
       {viewingDoc && <DocViewer doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
       {deleteTarget && (
         <Modal title="Delete Lease" onClose={() => { if (!deleteSaving) { setDeleteTarget(null); setDeleteError(null); } }}>
-          <p style={{ margin: "0 0 12px", fontSize: 14, color: "#111111" }}>
+          <p style={{ margin: "0 0 12px", fontSize: "0.875rem", color: "#111111" }}>
             Are you sure you want to delete the lease for <strong>{data.properties.find(p => p.id === deleteTarget.propertyId)?.address || ""} · Unit {deleteTarget.unit}</strong>?
           </p>
-          <p style={{ margin: "0 0 16px", fontSize: 13, color: "#6b7280" }}>
+          <p style={{ margin: "0 0 16px", fontSize: "0.8125rem", color: "#6b7280" }}>
             This will remove the lease record and unlink any payments tied to it. Tenant profiles will not be deleted. This cannot be undone.
           </p>
-          {deleteError && <p style={{ margin: "0 0 12px", fontSize: 13, color: "#ef4444" }}>{deleteError}</p>}
+          {deleteError && <p style={{ margin: "0 0 12px", fontSize: "0.8125rem", color: "#ef4444" }}>{deleteError}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => { setDeleteTarget(null); setDeleteError(null); }} disabled={deleteSaving}>Cancel</Btn>
             <button
               onClick={confirmDelete}
               disabled={deleteSaving}
-              style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 8, padding: "10px 18px", cursor: deleteSaving ? "wait" : "pointer", fontSize: 14, fontWeight: 600, fontFamily: "inherit", opacity: deleteSaving ? 0.7 : 1 }}
+              style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 8, padding: "10px 18px", cursor: deleteSaving ? "wait" : "pointer", fontSize: "0.875rem", fontWeight: 600, fontFamily: "inherit", opacity: deleteSaving ? 0.7 : 1 }}
             >
               {deleteSaving ? "Deleting..." : "Delete Lease"}
             </button>
@@ -1966,12 +1966,12 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
         <Modal title={t.addLeaseTitle} onClose={() => { setForm(EMPTY_FORM); setShow(false); setAddError(null); }} wide>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div style={{ gridColumn: "1 / -1" }}>
-              <div style={{ fontSize: 13, color: "#374151", fontWeight: 600, marginBottom: 6 }}>{t.colTenant}</div>
+              <div style={{ fontSize: "0.8125rem", color: "#374151", fontWeight: 600, marginBottom: 6 }}>{t.colTenant}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 180, overflowY: "auto", padding: "4px 0" }}>
                 {data.tenants
                   .filter(ten => ten.status !== "previous tenant")
                   .map(ten => (
-                    <label key={ten.id} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14, color: "#111111" }}>
+                    <label key={ten.id} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: "0.875rem", color: "#111111" }}>
                       <input
                         type="checkbox"
                         checked={form.tenantIds.includes(ten.id)}
@@ -1994,7 +1994,7 @@ export const ContractsPage = ({ data, t, refresh, user }) => {
             <Inp label={t.endDate} value={form.endDate} onChange={v => setF("endDate",v)} type="date" />
             <Inp label={t.dueDayLabel} value={form.dueDay} onChange={v => setF("dueDay",v)} type="number" />
           </div>
-          {addError && <div style={{ fontSize: 13, color: "#ef4444", marginTop: 8 }}>{addError}</div>}
+          {addError && <div style={{ fontSize: "0.8125rem", color: "#ef4444", marginTop: 8 }}>{addError}</div>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 8 }}>
             <Btn variant="secondary" onClick={() => { setForm(EMPTY_FORM); setShow(false); setAddError(null); }}>{t.cancel}</Btn>
             <Btn onClick={add} disabled={adding}>{adding ? t.saving : t.createLease}</Btn>
@@ -2011,9 +2011,9 @@ const EMPTY_LEASE_FORM = { renterType: "tenant", tenantId: "", renterName: "", r
 
 // Label/value row for the spot detail modal. Renders an em-dash for anything empty so
 // the rows stay aligned instead of collapsing when a field is unset.
-const detailRowStyle = { display: "flex", justifyContent: "space-between", gap: 12, padding: "5px 0", fontSize: 13 };
+const detailRowStyle = { display: "flex", justifyContent: "space-between", gap: 12, padding: "5px 0", fontSize: "0.8125rem" };
 // Also used above the VEHICLE block in both lease modals.
-const detailSectionHeading = { fontSize: 12, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 10 };
+const detailSectionHeading = { fontSize: "0.75rem", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 10 };
 const DetailRow = ({ label, value }) => (
   <div style={detailRowStyle}>
     <span style={{ color: "#9ca3af" }}>{label}</span>
@@ -2039,7 +2039,7 @@ const ParkingLotDiagram = ({ spots, occBySpotId, onSelect, t }) => {
 
   return (
     <div style={{ background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 10 }}>
+      <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 10 }}>
         {t.parkLotDiagram}
       </div>
       {/* viewBox + preserveAspectRatio hold the lot's proportions at any width. */}
@@ -2071,7 +2071,7 @@ const ParkingLotDiagram = ({ spots, occBySpotId, onSelect, t }) => {
         })}
       </svg>
       {unplaced.length > 0 && (
-        <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 10, textAlign: "center" }}>
+        <div style={{ fontSize: "0.75rem", color: "#9ca3af", marginTop: 10, textAlign: "center" }}>
           {t.parkUnplaced(unplaced.map(s => s.label).join(", "))}
         </div>
       )}
@@ -2331,13 +2331,13 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
       <PageHeader title={t.parkTitle} subtitle={t.parkSubtitle(spots.length)} action={<Btn icon="plus" onClick={openAddSpot}>{t.parkAddSpot}</Btn>} />
 
       {spots.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#9ca3af", fontSize: 15, padding: "60px 0" }}>{t.parkNoSpots}</div>
+        <div style={{ textAlign: "center", color: "#9ca3af", fontSize: "0.9375rem", padding: "60px 0" }}>{t.parkNoSpots}</div>
       ) : (
         [...byProperty.entries()].map(([propertyId, propSpots]) => {
           const prop = data.properties.find(p => p.id === propertyId);
           return (
             <div key={propertyId} style={{ marginBottom: 28 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 10 }}>
+              <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 10 }}>
                 {prop?.address || t.parkUnknownProperty}
               </div>
               {/* Only lots whose spots carry a type can be drawn — placement is derived
@@ -2352,14 +2352,14 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
                     <div key={spot.id} style={{ background: "#fff", borderRadius: 12, padding: 16, border: `1px solid ${theme.border}` }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                         <div>
-                          <div style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>{spot.label}</div>
-                          {spot.type && <div style={{ fontSize: 12, color: "#6b7280" }}>{spot.type}</div>}
+                          <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>{spot.label}</div>
+                          {spot.type && <div style={{ fontSize: "0.75rem", color: "#6b7280" }}>{spot.type}</div>}
                           {(() => {
                             // "2019 Honda Civic" from whichever parts the active lease
                             // filled in; nothing renders if none are, and a vacant spot
                             // shows no vehicle at all.
                             const car = occ ? [occ.lease.carYear, occ.lease.carMake, occ.lease.carModel].filter(Boolean).join(" ") : "";
-                            return car ? <div style={{ fontSize: 12, color: "#111111", fontWeight: 600 }}>{car}</div> : null;
+                            return car ? <div style={{ fontSize: "0.75rem", color: "#111111", fontWeight: 600 }}>{car}</div> : null;
                           })()}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -2385,8 +2385,8 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
                       </div>
                       {occ ? (
                         <div style={{ borderTop: "1px solid #eaeaea", paddingTop: 10 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#111111" }}>{occ.name}<GenderMark gender={occ.gender} t={t} /></div>
-                          <div style={{ fontSize: 12, color: "#9ca3af", marginBottom: 8 }}>
+                          <div style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#111111" }}>{occ.name}<GenderMark gender={occ.gender} t={t} /></div>
+                          <div style={{ fontSize: "0.75rem", color: "#9ca3af", marginBottom: 8 }}>
                             {fmt(occ.lease.rate)}/mo &middot; {t.parkSince} {fmtDate(occ.lease.startDate)}
                           </div>
                           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -2420,7 +2420,7 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
           <Inp label={t.parkSpotLabel} value={spotForm.label} onChange={v => setSF("label", v)} placeholder="A12" />
           <Sel label={t.parkSpotType} value={spotForm.type} onChange={v => setSF("type", v)}
             options={[{ value: "", label: t.parkSpotTypeNone }, ...SPOT_TYPES.map(x => ({ value: x, label: x }))]} />
-          {spotError && <p style={{ color: "#ef4444", fontSize: 13 }}>{spotError}</p>}
+          {spotError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{spotError}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => { setShowSpotModal(false); setEditingSpot(null); }}>{t.cancel}</Btn>
             <Btn onClick={saveSpot} disabled={savingSpot}>
@@ -2457,7 +2457,7 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
             </div>
             <Inp label={t.parkCarYear} value={leaseForm.carYear} onChange={v => setLF("carYear", v)} type="number" placeholder="2019" />
           </div>
-          {leaseError && <p style={{ color: "#ef4444", fontSize: 13 }}>{leaseError}</p>}
+          {leaseError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{leaseError}</p>}
           <Btn onClick={saveLease} disabled={savingLease}>{savingLease ? t.creating : t.parkAddLease}</Btn>
         </Modal>
       )}
@@ -2475,7 +2475,7 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
             </div>
             <Inp label={t.parkCarYear} value={leaseEditForm.carYear} onChange={v => setLEF("carYear", v)} type="number" placeholder="2019" />
           </div>
-          {leaseEditError && <p style={{ color: "#ef4444", fontSize: 13 }}>{leaseEditError}</p>}
+          {leaseEditError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{leaseEditError}</p>}
           {/* Delete sits apart from Save/Cancel: it destroys the record rather
               than editing it, and End Parking Lease is the routine way to close
               one out. */}
@@ -2491,8 +2491,8 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
 
       {deleteLeaseTarget && (
         <Modal title={t.parkDeleteLeaseTitle} onClose={() => setDeleteLeaseTarget(null)}>
-          <p style={{ fontSize: 14, color: "#374151" }}>{t.parkDeleteLeaseConfirm(deleteLeaseTarget.nameText)}</p>
-          {deleteLeaseError && <p style={{ color: "#ef4444", fontSize: 13 }}>{deleteLeaseError}</p>}
+          <p style={{ fontSize: "0.875rem", color: "#374151" }}>{t.parkDeleteLeaseConfirm(deleteLeaseTarget.nameText)}</p>
+          {deleteLeaseError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{deleteLeaseError}</p>}
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setDeleteLeaseTarget(null)}>{t.cancel}</Btn>
             <Btn onClick={confirmDeleteLease} disabled={deletingLease}>{deletingLease ? t.deleting : t.parkDeleteLease}</Btn>
@@ -2502,8 +2502,8 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
 
       {deleteTarget && (
         <Modal title={t.parkDeleteSpotTitle} onClose={() => setDeleteTarget(null)}>
-          <p style={{ fontSize: 14, color: "#374151" }}>{t.parkDeleteSpotConfirm(deleteTarget.label)}</p>
-          {deleteError && <p style={{ color: "#ef4444", fontSize: 13 }}>{deleteError}</p>}
+          <p style={{ fontSize: "0.875rem", color: "#374151" }}>{t.parkDeleteSpotConfirm(deleteTarget.label)}</p>
+          {deleteError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{deleteError}</p>}
           <div style={{ display: "flex", gap: 8 }}>
             <Btn variant="secondary" onClick={() => setDeleteTarget(null)}>{t.cancel}</Btn>
             <Btn onClick={confirmDeleteSpot} disabled={deleting}>{deleting ? t.deleting : t.parkDeleteSpot}</Btn>
@@ -2555,7 +2555,7 @@ export const ParkingPage = ({ data, t, refresh, user }) => {
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 12 }}>{t.parkSpotVacantHint}</div>
+                  <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginBottom: 12 }}>{t.parkSpotVacantHint}</div>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <Btn size="sm" variant="secondary" onClick={() => { close(); openEditSpot(spot); }}>{t.parkEditSpot}</Btn>
                     <Btn size="sm" variant="secondary" onClick={() => { close(); openAddLease(spot); }}>{t.parkAddLease}</Btn>
@@ -2877,7 +2877,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
               minHeight: 44, padding: "8px 16px", borderRadius: 9, border: "none",
               background: activeTab === "tracker" ? "#111111" : "transparent",
               color: activeTab === "tracker" ? "#fff" : "#6b7280",
-              fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+              fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
             }}
           >
             {t.zelleTabTracker}
@@ -2889,13 +2889,13 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
               minHeight: 44, padding: "8px 16px", borderRadius: 9, border: "none",
               background: activeTab === "zelle" ? "#111111" : "transparent",
               color: activeTab === "zelle" ? "#fff" : "#6b7280",
-              fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+              fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
               display: "inline-flex", alignItems: "center", gap: 8,
             }}
           >
             <span>{t.zelleTabInbox}</span>
             {pendingZelleCount > 0 && (
-              <span style={{ fontSize: 11, fontWeight: 700, padding: "1px 7px", borderRadius: 12, background: "#f59e0b", color: "#fff" }}>
+              <span style={{ fontSize: "0.6875rem", fontWeight: 700, padding: "1px 7px", borderRadius: 12, background: "#f59e0b", color: "#fff" }}>
                 {pendingZelleCount}
               </span>
             )}
@@ -2904,17 +2904,17 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
       )}
       {activeTab === "zelle" && zelleInbox ? zelleInbox : (
       <>
-      {payError && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#dc2626" }}>{payError}</div>}
+      {payError && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 16px", marginBottom: 16, fontSize: "0.8125rem", color: "#dc2626" }}>{payError}</div>}
       {/* Property filter (persisted across sessions) */}
       <PropertyFilterBar chips={filterChips} hidden={hiddenProps} setHidden={setHiddenProps} t={t} />
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
         <button onClick={saveChanges} disabled={saving || !hasChanges}
-          style={{ minHeight: 44, padding: "9px 22px", borderRadius: 8, border: "none", background: hasChanges ? "#111111" : "#eaeaea", color: hasChanges ? "#fff" : "#9ca3af", fontSize: 14, fontWeight: 600, cursor: (saving || !hasChanges) ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
+          style={{ minHeight: 44, padding: "9px 22px", borderRadius: 8, border: "none", background: hasChanges ? "#111111" : "#eaeaea", color: hasChanges ? "#fff" : "#9ca3af", fontSize: "0.875rem", fontWeight: 600, cursor: (saving || !hasChanges) ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
           {saving ? t.saving : t.saveChanges}
         </button>
         {hasChanges && (
           <button onClick={() => setEdits({})}
-            style={{ minHeight: 44, padding: "9px 16px", borderRadius: 8, border: `1px solid ${theme.border}`, background: "#fff", color: "#6b7280", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+            style={{ minHeight: 44, padding: "9px 16px", borderRadius: 8, border: `1px solid ${theme.border}`, background: "#fff", color: "#6b7280", fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
             {t.discard}
           </button>
         )}
@@ -2922,7 +2922,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
       <div className="ld-table-scroll" style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 780 }}>
           <thead style={{ background: theme.bgSubtle }}>
-            <tr style={{ color: "#6b7280", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
+            <tr style={{ color: "#6b7280", fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
               <th className="ld-sticky-col-head" style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.colTenant}</th>
               <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.payZelleName}</th>
               <th style={{ padding: "14px 18px", textAlign: "left", whiteSpace: "nowrap" }}>{t.rent}</th>
@@ -2932,7 +2932,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
               ))}
             </tr>
             <tr style={{ borderTop: "1px solid #eaeaea", background: "#f5f5f5" }}>
-              <td className="ld-sticky-col-sub" style={{ padding: "5px 18px", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", whiteSpace: "nowrap" }}>
+              <td className="ld-sticky-col-sub" style={{ padding: "5px 18px", fontSize: "0.6875rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".5px", whiteSpace: "nowrap" }}>
                 {t.paySelectAll}
               </td>
               <td colSpan={3} />
@@ -2958,7 +2958,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
             {grouped.map(({ unit, tenants }) => (
               <Fragment key={unit?.id || "unassigned"}>
                 <tr>
-                  <td colSpan={colCount} style={{ padding: "8px 18px", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".6px", background: "#fafafa", borderTop: "1px solid #eaeaea" }}>
+                  <td colSpan={colCount} style={{ padding: "8px 18px", fontSize: "0.6875rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".6px", background: "#fafafa", borderTop: "1px solid #eaeaea" }}>
                     {unit ? t.payUnitLabel(unit.unitNumber) : t.payUnassigned}
                   </td>
                 </tr>
@@ -2970,23 +2970,23 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
                     <tr key={tenant.id} style={{ borderTop: "1px solid #f5f5f5", background: "transparent" }}>
                       <td className="ld-sticky-col" style={{ padding: "12px 18px", whiteSpace: "nowrap" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                          <div style={{ width: 30, height: 30, flexShrink: 0, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700 }}>{(tenant.name || "?").charAt(0)}</div>
+                          <div style={{ width: 30, height: 30, flexShrink: 0, borderRadius: "50%", background: "linear-gradient(135deg,#111111,#000000)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.75rem", fontWeight: 700 }}>{(tenant.name || "?").charAt(0)}</div>
                           <Link href={routes.tenant(tenant)}
-                            style={{ fontSize: 14, fontWeight: 600, color: "#111111", cursor: "pointer", textDecoration: "underline dotted", textUnderlineOffset: 3 }}>
+                            style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111111", cursor: "pointer", textDecoration: "underline dotted", textUnderlineOffset: 3 }}>
                             <TenantName tenant={tenant} t={t} />
                           </Link>
                         </div>
                       </td>
-                      <td style={{ padding: "12px 18px", fontSize: 13, color: "#6b7280", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 18px", fontSize: "0.8125rem", color: "#6b7280", whiteSpace: "nowrap" }}>
                         {tenant.zelleName || <span style={{ color: "#d1d5db" }}>-</span>}
                       </td>
-                      <td style={{ padding: "12px 18px", fontSize: 14, fontWeight: 600, color: "#111111", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 18px", fontSize: "0.875rem", fontWeight: 600, color: "#111111", whiteSpace: "nowrap" }}>
                         {rentAmount ? fmt(rentAmount) : <span style={{ color: "#d1d5db" }}>-</span>}
                       </td>
-                      <td style={{ padding: "12px 18px", fontSize: 14, fontWeight: 600, color: "#111111", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px 18px", fontSize: "0.875rem", fontWeight: 600, color: "#111111", whiteSpace: "nowrap" }}>
                         {totalAmount ? fmt(totalAmount) : <span style={{ color: "#d1d5db" }}>-</span>}
                         {parkingAmount > 0 && (
-                          <div style={{ fontSize: 12, fontWeight: 500, color: "#6b7280", marginTop: 2 }}>{t.payInclParking(fmt(parkingAmount))}</div>
+                          <div style={{ fontSize: "0.75rem", fontWeight: 500, color: "#6b7280", marginTop: 2 }}>{t.payInclParking(fmt(parkingAmount))}</div>
                         )}
                       </td>
                       {months.map(month => {
@@ -3013,10 +3013,10 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
                   const unitTotal = tenants.reduce((s, ten) => s + monthlyTotal(ten), 0);
                   return unitTotal > 0 ? (
                     <tr style={{ borderTop: "1px solid #eaeaea", background: "#fafafa" }}>
-                      <td className="ld-sticky-col-head" style={{ padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#6b7280" }}>{t.payTotal}</td>
+                      <td className="ld-sticky-col-head" style={{ padding: "8px 18px", fontSize: "0.8125rem", fontWeight: 700, color: "#6b7280" }}>{t.payTotal}</td>
                       <td />
-                      <td style={{ padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#111111" }}>{fmt(unitRent)}</td>
-                      <td style={{ padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#111111" }}>{fmt(unitTotal)}</td>
+                      <td style={{ padding: "8px 18px", fontSize: "0.8125rem", fontWeight: 700, color: "#111111" }}>{fmt(unitRent)}</td>
+                      <td style={{ padding: "8px 18px", fontSize: "0.8125rem", fontWeight: 700, color: "#111111" }}>{fmt(unitTotal)}</td>
                       <td colSpan={months.length} />
                     </tr>
                   ) : null;
@@ -3025,7 +3025,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
             ))}
             {data.tenants.length === 0 && (
               <tr>
-                <td colSpan={colCount} style={{ padding: 48, textAlign: "center", color: "#9ca3af", fontSize: 15 }}>{t.payNoTenants}</td>
+                <td colSpan={colCount} style={{ padding: 48, textAlign: "center", color: "#9ca3af", fontSize: "0.9375rem" }}>{t.payNoTenants}</td>
               </tr>
             )}
           </tbody>
@@ -3038,8 +3038,8 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
       <div style={{ marginTop: 28 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 10 }}>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>{t.payRecords}</div>
-            <div style={{ fontSize: 13, color: "#9ca3af" }}>{t.payRecordsSub(sortedPayments.length)}</div>
+            <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>{t.payRecords}</div>
+            <div style={{ fontSize: "0.8125rem", color: "#9ca3af" }}>{t.payRecordsSub(sortedPayments.length)}</div>
           </div>
           {sortedPayments.length > PAYMENT_PAGE_SIZE && (
             <Btn size="sm" variant="ghost" onClick={() => setShowAllPayments(v => !v)}>
@@ -3048,14 +3048,14 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
           )}
         </div>
         {sortedPayments.length === 0 ? (
-          <div style={{ textAlign: "center", color: "#9ca3af", fontSize: 14, padding: "30px 0", background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12 }}>{t.payNoRecords}</div>
+          <div style={{ textAlign: "center", color: "#9ca3af", fontSize: "0.875rem", padding: "30px 0", background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12 }}>{t.payNoRecords}</div>
         ) : (
           <div className="ld-table-scroll" style={{ background: "#fff", border: `1px solid ${theme.border}`, borderRadius: 12 }}>
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
               <thead>
                 <tr style={{ background: "#fafafa", borderBottom: "1px solid #eaeaea" }}>
                   {[t.tenant, t.payAmount, t.payDueDate, t.payPaidDate, t.colStatus, t.colType, ""].map((h, i) => (
-                    <th key={i} style={{ padding: "10px 14px", textAlign: i === 6 ? "right" : "left", fontSize: 12, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".4px" }}>{h}</th>
+                    <th key={i} style={{ padding: "10px 14px", textAlign: i === 6 ? "right" : "left", fontSize: "0.75rem", fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".4px" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -3064,12 +3064,12 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
                   const ten = data.tenants.find(x => x.id === p.tenantId);
                   return (
                     <tr key={p.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                      <td style={{ padding: "11px 14px", fontSize: 14, fontWeight: 500 }}>{ten ? <TenantName tenant={ten} t={t} /> : "—"}</td>
-                      <td style={{ padding: "11px 14px", fontSize: 14, fontWeight: 600 }}>{fmt(p.amount)}</td>
-                      <td style={{ padding: "11px 14px", fontSize: 13, color: "#6b7280" }}>{fmtDate(p.dueDate)}</td>
-                      <td style={{ padding: "11px 14px", fontSize: 13, color: "#6b7280" }}>{p.paidDate ? fmtDate(p.paidDate) : "—"}</td>
+                      <td style={{ padding: "11px 14px", fontSize: "0.875rem", fontWeight: 500 }}>{ten ? <TenantName tenant={ten} t={t} /> : "—"}</td>
+                      <td style={{ padding: "11px 14px", fontSize: "0.875rem", fontWeight: 600 }}>{fmt(p.amount)}</td>
+                      <td style={{ padding: "11px 14px", fontSize: "0.8125rem", color: "#6b7280" }}>{fmtDate(p.dueDate)}</td>
+                      <td style={{ padding: "11px 14px", fontSize: "0.8125rem", color: "#6b7280" }}>{p.paidDate ? fmtDate(p.paidDate) : "—"}</td>
                       <td style={{ padding: "11px 14px" }}><Badge status={p.status} t={t} /></td>
-                      <td style={{ padding: "11px 14px", fontSize: 13, color: "#6b7280" }}>{p.type || "—"}</td>
+                      <td style={{ padding: "11px 14px", fontSize: "0.8125rem", color: "#6b7280" }}>{p.type || "—"}</td>
                       <td style={{ padding: "11px 14px", textAlign: "right", whiteSpace: "nowrap" }}>
                         <button onClick={() => openEditPay(p)} style={iconBtn} title={t.payEdit}><Icon name="edit" size={13} /></button>
                         <button onClick={() => setDeletePay(p)} style={dangerIconBtnStyle} title={t.payDelete}><Icon name="trash" size={13} /></button>
@@ -3096,7 +3096,7 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
             <Sel label={t.colType} value={payForm.type} onChange={v => setPF("type", v)}
               options={[{ value: "", label: t.payTypeNone }, ...PAYMENT_TYPES.map(x => ({ value: x, label: x === "one-time" ? t.payType_oneTime : t.payType_recurring }))]} />
           </div>
-          {editPayError && <p style={{ color: "#ef4444", fontSize: 13 }}>{editPayError}</p>}
+          {editPayError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{editPayError}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setEditPay(null)}>{t.cancel}</Btn>
             <Btn onClick={savePayEdit} disabled={savingPay}>{savingPay ? t.saving : t.saveChanges}</Btn>
@@ -3106,14 +3106,14 @@ export const PaymentsPage = ({ data, t, refresh, zelleInbox = null }) => {
 
       {deletePay && (
         <Modal title={t.payDeleteTitle} onClose={() => setDeletePay(null)}>
-          <p style={{ fontSize: 14, color: "#374151" }}>
+          <p style={{ fontSize: "0.875rem", color: "#374151" }}>
             {t.payDeleteConfirm(
               (() => { const ten = data.tenants.find(x => x.id === deletePay.tenantId); return ten ? tenantFullName(ten) + genderSuffix(ten) : "—"; })(),
               fmt(deletePay.amount),
               fmtDate(deletePay.dueDate),
             )}
           </p>
-          {deletePayError && <p style={{ color: "#ef4444", fontSize: 13 }}>{deletePayError}</p>}
+          {deletePayError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{deletePayError}</p>}
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setDeletePay(null)}>{t.cancel}</Btn>
             <Btn onClick={confirmDeletePay} disabled={deletingPay}>{deletingPay ? t.deleting : t.payDelete}</Btn>
@@ -3140,7 +3140,7 @@ const AttachmentChip = ({ att }) => {
       {isImage && url ? (
         <img src={url} alt={att.fileName} style={{ width: 56, height: 56, objectFit: "cover", display: "block" }} />
       ) : (
-        <span style={{ fontSize: 12, color: "#374151", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{att.fileName}</span>
+        <span style={{ fontSize: "0.75rem", color: "#374151", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{att.fileName}</span>
       )}
     </a>
   );
@@ -3423,28 +3423,28 @@ const CommentThread = ({ request, comments, viewer, setData, L }) => {
     const isLandlord = c.authorType === "landlord";
     return (
       <div key={c.id} style={{ display: "flex", gap: 10, padding: "8px 0", marginLeft: isReply ? 34 : 0 }}>
-        <div style={{ width: 26, height: 26, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, background: isLandlord ? "linear-gradient(135deg,#111111,#000000)" : "linear-gradient(135deg,#6b7280,#4b5563)" }}>
+        <div style={{ width: 26, height: 26, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.75rem", fontWeight: 700, background: isLandlord ? "linear-gradient(135deg,#111111,#000000)" : "linear-gradient(135deg,#6b7280,#4b5563)" }}>
           {(c.authorName || "?").charAt(0).toUpperCase()}
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#111111" }}>{c.authorName || "—"}</span>
-            {isLandlord && <span style={{ fontSize: 10, fontWeight: 700, color: "#000000", background: "#f5f5f5", padding: "1px 6px", borderRadius: 99, textTransform: "uppercase", letterSpacing: ".3px" }}>{L.landlord}</span>}
-            <span style={{ fontSize: 11, color: "#9ca3af" }}>{fmtDate((c.createdAt || "").split("T")[0])}</span>
+            <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#111111" }}>{c.authorName || "—"}</span>
+            {isLandlord && <span style={{ fontSize: "0.625rem", fontWeight: 700, color: "#000000", background: "#f5f5f5", padding: "1px 6px", borderRadius: 99, textTransform: "uppercase", letterSpacing: ".3px" }}>{L.landlord}</span>}
+            <span style={{ fontSize: "0.6875rem", color: "#9ca3af" }}>{fmtDate((c.createdAt || "").split("T")[0])}</span>
           </div>
           {deleted ? (
-            <p style={{ margin: "3px 0 0", fontSize: 13, color: "#9ca3af", fontStyle: "italic" }}>{L.deleted}</p>
+            <p style={{ margin: "3px 0 0", fontSize: "0.8125rem", color: "#9ca3af", fontStyle: "italic" }}>{L.deleted}</p>
           ) : (
-            <p style={{ margin: "3px 0 0", fontSize: 14, color: "#334155", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{c.body}</p>
+            <p style={{ margin: "3px 0 0", fontSize: "0.875rem", color: "#334155", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{c.body}</p>
           )}
-          {!deleted && c.bodyZh && <p style={{ margin: "5px 0 0", fontSize: 13, color: "#000000", background: "#f5f5f5", borderRadius: 7, padding: "6px 9px", whiteSpace: "pre-wrap" }}>{c.bodyZh}</p>}
+          {!deleted && c.bodyZh && <p style={{ margin: "5px 0 0", fontSize: "0.8125rem", color: "#000000", background: "#f5f5f5", borderRadius: 7, padding: "6px 9px", whiteSpace: "pre-wrap" }}>{c.bodyZh}</p>}
           {!deleted && (
             <div style={{ display: "flex", gap: 12, marginTop: 5, alignItems: "center" }}>
               {!isReply && <button onClick={() => { setReplyTo(replyTo === c.id ? null : c.id); setReplyBody(""); }} style={commentLinkStyle}>{L.reply}</button>}
               {!c.bodyZh && (isMine(c) || viewer.authorType === "landlord") && <button onClick={() => translate(c)} disabled={translating[c.id]} style={{ ...commentLinkStyle, color: translating[c.id] ? "#9ca3af" : "#111111" }}>{translating[c.id] ? L.translating : L.translate}</button>}
               {isMine(c) && (confirmId === c.id ? (
                 <span style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
-                  <span style={{ fontSize: 12, color: "#6b7280" }}>{L.deleteConfirm}</span>
+                  <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{L.deleteConfirm}</span>
                   <button onClick={() => remove(c)} style={{ ...commentLinkStyle, color: "#dc2626", fontWeight: 700 }}>{L.delete}</button>
                   <button onClick={() => setConfirmId(null)} style={commentLinkStyle}>{L.cancel}</button>
                 </span>
@@ -3468,20 +3468,20 @@ const CommentThread = ({ request, comments, viewer, setData, L }) => {
 
   return (
     <div style={{ marginTop: 14, borderTop: "1px solid #f5f5f5", paddingTop: 10 }}>
-      <button onClick={() => setOpen(o => !o)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 600, color: "#6b7280", display: "inline-flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontSize: 11, color: "#9ca3af" }}>{open ? "▾" : "▸"}</span>
+      <button onClick={() => setOpen(o => !o)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit", fontSize: "0.8125rem", fontWeight: 600, color: "#6b7280", display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <span style={{ fontSize: "0.6875rem", color: "#9ca3af" }}>{open ? "▾" : "▸"}</span>
         {liveCount > 0 ? L.show(liveCount) : L.heading}
       </button>
       {open && (
         <div style={{ marginTop: 8 }}>
-          {topLevel.length === 0 && <div style={{ fontSize: 13, color: "#9ca3af", padding: "4px 0 10px" }}>{L.none}</div>}
+          {topLevel.length === 0 && <div style={{ fontSize: "0.8125rem", color: "#9ca3af", padding: "4px 0 10px" }}>{L.none}</div>}
           {topLevel.map(top => (
             <div key={top.id}>
               {renderComment(top, false)}
               {repliesOf(top.id).map(r => renderComment(r, true))}
             </div>
           ))}
-          {error && <div style={{ fontSize: 12, color: "#dc2626", marginTop: 8 }}>{error}</div>}
+          {error && <div style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: 8 }}>{error}</div>}
           <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
             <input value={body} onChange={e => setBody(e.target.value)} placeholder={L.placeholder}
               onKeyDown={e => { if (e.key === "Enter" && body.trim() && !posting) postTop(); }}
@@ -3494,9 +3494,9 @@ const CommentThread = ({ request, comments, viewer, setData, L }) => {
   );
 };
 
-const commentLinkStyle = { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 600, color: "#111111" };
-const commentInputStyle = { flex: 1, padding: "8px 12px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 13, color: "#111111", outline: "none", fontFamily: "inherit", boxSizing: "border-box" };
-const commentSendStyle = (disabled) => ({ padding: "8px 16px", borderRadius: 8, border: "none", background: disabled ? "#eaeaea" : "#111111", color: disabled ? "#9ca3af" : "#fff", fontSize: 13, fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer", fontFamily: "inherit", whiteSpace: "nowrap", flexShrink: 0 });
+const commentLinkStyle = { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit", fontSize: "0.75rem", fontWeight: 600, color: "#111111" };
+const commentInputStyle = { flex: 1, padding: "8px 12px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: "0.8125rem", color: "#111111", outline: "none", fontFamily: "inherit", boxSizing: "border-box" };
+const commentSendStyle = (disabled) => ({ padding: "8px 16px", borderRadius: 8, border: "none", background: disabled ? "#eaeaea" : "#111111", color: disabled ? "#9ca3af" : "#fff", fontSize: "0.8125rem", fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer", fontFamily: "inherit", whiteSpace: "nowrap", flexShrink: 0 });
 
 // Outlined red icon-button for row-level delete actions. Call sites override fontSize.
 const dangerIconBtnStyle = { background: "#fff", border: "1px solid #fca5a5", borderRadius: 7, padding: "6px 10px", cursor: "pointer", fontWeight: 600, color: "#ef4444", display: "flex", alignItems: "center", fontFamily: "inherit" };
@@ -3540,21 +3540,21 @@ const TodoCard = ({ request, tenantName, sub, closedText, typeText, priorityColo
       }}>
       <div style={{ width: 3, borderRadius: 3, background: priorityColor || "#eaeaea", flexShrink: 0 }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ margin: "0 0 6px", fontSize: 14, color: "#111111", fontWeight: 500, lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{request.description}</p>
+        <p style={{ margin: "0 0 6px", fontSize: "0.875rem", color: "#111111", fontWeight: 500, lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{request.description}</p>
         {/* Shown whenever a translation exists, regardless of the UI language:
             the point is that a bilingual landlord can read the card without
             opening it. Clamped to 2 lines like the original so a long request
             can't make one card tower over the rest of the column. */}
         {request.descriptionZh && (
-          <p style={{ margin: "0 0 6px", fontSize: 13, color: "#4b5563", lineHeight: 1.4, background: "#f7f7f8", borderRadius: 6, padding: "5px 8px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{request.descriptionZh}</p>
+          <p style={{ margin: "0 0 6px", fontSize: "0.8125rem", color: "#4b5563", lineHeight: 1.4, background: "#f7f7f8", borderRadius: 6, padding: "5px 8px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{request.descriptionZh}</p>
         )}
-        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>{tenantName}</div>
-        <div style={{ fontSize: 12, color: "#9ca3af", marginBottom: closedText || typeText || commentCount || attachmentCount ? 8 : 0 }}>{sub}</div>
+        <div style={{ fontSize: "0.75rem", color: "#6b7280", marginBottom: 6 }}>{tenantName}</div>
+        <div style={{ fontSize: "0.75rem", color: "#9ca3af", marginBottom: closedText || typeText || commentCount || attachmentCount ? 8 : 0 }}>{sub}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          {closedText && <span style={{ background: "#ecfdf5", color: "#047857", padding: "1px 8px", borderRadius: 99, fontSize: 11, fontWeight: 600 }}>{closedText}</span>}
-          {typeText && <span style={{ background: "#f3f4f6", color: "#111111", padding: "1px 8px", borderRadius: 99, fontSize: 11, fontWeight: 600 }}>{typeText}</span>}
-          {commentCount > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12, color: "#9ca3af" }}><Icon name="mail" size={12} />{commentCount}</span>}
-          {attachmentCount > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12, color: "#9ca3af" }}><Icon name="file" size={12} />{attachmentCount}</span>}
+          {closedText && <span style={{ background: "#ecfdf5", color: "#047857", padding: "1px 8px", borderRadius: 99, fontSize: "0.6875rem", fontWeight: 600 }}>{closedText}</span>}
+          {typeText && <span style={{ background: "#f3f4f6", color: "#111111", padding: "1px 8px", borderRadius: 99, fontSize: "0.6875rem", fontWeight: 600 }}>{typeText}</span>}
+          {commentCount > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: "0.75rem", color: "#9ca3af" }}><Icon name="mail" size={12} />{commentCount}</span>}
+          {attachmentCount > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: "0.75rem", color: "#9ca3af" }}><Icon name="file" size={12} />{attachmentCount}</span>}
         </div>
       </div>
     </div>
@@ -3566,12 +3566,12 @@ const TodoColumn = ({ id, title, count, emptyText, children }) => {
   return (
     <div style={{ flex: "1 0 300px", minWidth: 300, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 4px 12px" }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>{title}</span>
-        <span style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", background: "#f3f4f6", borderRadius: 99, padding: "1px 9px" }}>{count}</span>
+        <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "#111111" }}>{title}</span>
+        <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#6b7280", background: "#f3f4f6", borderRadius: 99, padding: "1px 9px" }}>{count}</span>
       </div>
       <div ref={setNodeRef} style={{ background: isOver ? "#f0f0f0" : "#fafafa", borderRadius: 12, padding: 10, display: "grid", gap: 10, alignContent: "start", minHeight: 120, flex: 1, transition: "background .15s" }}>
         {children}
-        {count === 0 && <div style={{ textAlign: "center", padding: "24px 0", color: "#cbcbcb", fontSize: 13 }}>{emptyText}</div>}
+        {count === 0 && <div style={{ textAlign: "center", padding: "24px 0", color: "#cbcbcb", fontSize: "0.8125rem" }}>{emptyText}</div>}
       </div>
     </div>
   );
@@ -3798,7 +3798,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
         return (
           <Modal title={t.todoDetailTitle} onClose={() => setDetailId(null)} wide>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 4 }}>
-              <p style={{ margin: 0, fontSize: 16, color: "#111111", fontWeight: 600, flex: 1, whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{m.description}</p>
+              <p style={{ margin: 0, fontSize: "1rem", color: "#111111", fontWeight: 600, flex: 1, whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{m.description}</p>
               {!m.descriptionZh && (
                 <button
                   onClick={async () => {
@@ -3810,25 +3810,25 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
                     }
                   }}
                   disabled={cardTranslating[m.id]}
-                  style={{ fontSize: 11, fontWeight: 600, color: cardTranslating[m.id] ? "#9ca3af" : "#111111", background: "none", border: "1px solid #e5e5e5", borderRadius: 6, padding: "3px 9px", cursor: cardTranslating[m.id] ? "not-allowed" : "pointer", whiteSpace: "nowrap", fontFamily: "inherit", flexShrink: 0 }}>
+                  style={{ fontSize: "0.6875rem", fontWeight: 600, color: cardTranslating[m.id] ? "#9ca3af" : "#111111", background: "none", border: "1px solid #e5e5e5", borderRadius: 6, padding: "3px 9px", cursor: cardTranslating[m.id] ? "not-allowed" : "pointer", whiteSpace: "nowrap", fontFamily: "inherit", flexShrink: 0 }}>
                   {cardTranslating[m.id] ? t.maintTranslating : t.maintTranslateChinese}
                 </button>
               )}
             </div>
-            {m.descriptionZh && <p style={{ margin: "0 0 10px", fontSize: 14, color: "#000000", background: "#f5f5f5", borderRadius: 7, padding: "8px 11px", whiteSpace: "pre-wrap" }}>{m.descriptionZh}</p>}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, fontSize: 13, color: "#6b7280", margin: "8px 0 14px" }}>
+            {m.descriptionZh && <p style={{ margin: "0 0 10px", fontSize: "0.875rem", color: "#000000", background: "#f5f5f5", borderRadius: 7, padding: "8px 11px", whiteSpace: "pre-wrap" }}>{m.descriptionZh}</p>}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, fontSize: "0.8125rem", color: "#6b7280", margin: "8px 0 14px" }}>
               <span>{ten ? <TenantName tenant={ten} t={t} /> : "—"}</span>
               <span>{prop?.address}{m.unit ? ` · ${m.unit}` : ""}</span>
               <span>{fmtDate(m.date)}</span>
               {/* Null on open tickets and on ones closed before closed_at existed. */}
               {m.closedDate && <span style={{ fontWeight: 600 }}>{t.maintClosedOn(fmtDate(m.closedDate))}</span>}
               {m.priority && <span style={{ color: pColors[m.priority], fontWeight: 600 }}>{pLabels[m.priority]}</span>}
-              {m.type && <span style={{ background: "#f3f4f6", color: "#111111", padding: "1px 8px", borderRadius: 99, fontSize: 12, fontWeight: 600 }}>{m.type}</span>}
+              {m.type && <span style={{ background: "#f3f4f6", color: "#111111", padding: "1px 8px", borderRadius: 99, fontSize: "0.75rem", fontWeight: 600 }}>{m.type}</span>}
             </div>
             <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: attachments.length ? 14 : 4 }}>
               <Badge status={m.status} t={t} />
               <select value={m.status} onChange={e => updateStatus(m.id, e.target.value, m.closedAt)}
-                style={{ padding: "6px 10px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: 12, color: "#374151", cursor: "pointer", fontFamily: "inherit", outline: "none" }}>
+                style={{ padding: "6px 10px", border: `1px solid ${theme.border}`, borderRadius: 8, fontSize: "0.75rem", color: "#374151", cursor: "pointer", fontFamily: "inherit", outline: "none" }}>
                 <option value="new">{t.statusNew}</option>
                 <option value="in-progress">{t.statusInProgress}</option>
                 <option value="closed">{t.statusClosed}</option>
@@ -3855,10 +3855,10 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
 
       {editReq && (
         <Modal title={t.todoEditTitle} onClose={() => setEditReq(null)}>
-          <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintDescription}</label>
+          <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintDescription}</label>
           <textarea value={editReqForm.description} onChange={e => setERF("description", e.target.value)} rows={4}
             placeholder={t.maintDescriptionPlaceholder}
-            style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", marginBottom: 12 }} />
+            style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", marginBottom: 12 }} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Sel label={t.maintType} value={editReqForm.type} onChange={v => setERF("type", v)}
               options={[{ value: "", label: t.maintTypeSelect }, ...(data.maintenanceTypes || []).map(mt => ({ value: mt.name, label: mt.name }))]} />
@@ -3866,7 +3866,7 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
               options={[{ value: "", label: "—" }, { value: "high", label: t.priorityHigh }, { value: "medium", label: t.priorityMedium }, { value: "low", label: t.priorityLow }]} />
           </div>
           <Inp label={t.maintUnit} value={editReqForm.unit} onChange={v => setERF("unit", v)} />
-          {editReqError && <p style={{ color: "#ef4444", fontSize: 13 }}>{editReqError}</p>}
+          {editReqError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{editReqError}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setEditReq(null)}>{t.cancel}</Btn>
             <Btn onClick={saveReqEdit} disabled={savingReq}>{savingReq ? t.saving : t.saveChanges}</Btn>
@@ -3876,8 +3876,8 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
 
       {deleteReq && (
         <Modal title={t.todoDeleteTitle} onClose={() => setDeleteReq(null)}>
-          <p style={{ fontSize: 14, color: "#374151" }}>{t.todoDeleteConfirm(attachmentPathsFor(deleteReq.id).length)}</p>
-          {deleteReqError && <p style={{ color: "#ef4444", fontSize: 13 }}>{deleteReqError}</p>}
+          <p style={{ fontSize: "0.875rem", color: "#374151" }}>{t.todoDeleteConfirm(attachmentPathsFor(deleteReq.id).length)}</p>
+          {deleteReqError && <p style={{ color: "#ef4444", fontSize: "0.8125rem" }}>{deleteReqError}</p>}
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setDeleteReq(null)}>{t.cancel}</Btn>
             <Btn onClick={confirmDeleteReq} disabled={deletingReq}>{deletingReq ? t.deleting : t.todoDeleteRequest}</Btn>
@@ -3891,9 +3891,9 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
           {/* Tenant + Unit */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 4 }}>
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintTenant} *</label>
+              <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintTenant} *</label>
               <select value={form.tenantId} onChange={e => setF("tenantId", e.target.value)}
-                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
                 <option value="">{t.maintSelectTenant}</option>
                 {visibleTenants.filter(ten => ten.status === "current tenant" || ten.status === "future tenant").map(ten => (
                   <option key={ten.id} value={ten.id}>{tenantFullName(ten) + genderSuffix(ten)}</option>
@@ -3901,8 +3901,8 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
               </select>
             </div>
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintUnit}</label>
-              <div style={{ padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: selectedUnit !== "—" ? "#111111" : "#9ca3af", background: "#fafafa" }}>
+              <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintUnit}</label>
+              <div style={{ padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: selectedUnit !== "—" ? "#111111" : "#9ca3af", background: "#fafafa" }}>
                 {selectedUnit}
               </div>
             </div>
@@ -3916,9 +3916,9 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
               { value: "closed", label: t.statusClosed },
             ]} />
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintType}</label>
+              <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintType}</label>
               <select value={form.type} onChange={e => { if (e.target.value === "__add__") { setShowAddType(true); } else { setF("type", e.target.value); } }}
-                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
+                style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }}>
                 <option value="">{t.maintTypeSelect}</option>
                 {(data.maintenanceTypes || []).map(mt => (
                   <option key={mt.id} value={mt.name}>{mt.name}</option>
@@ -3933,10 +3933,10 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
                     onKeyDown={e => { if (e.key === "Enter") addType(); if (e.key === "Escape") { setShowAddType(false); setNewTypeName(""); } }}
                     placeholder={t.maintNewTypePlaceholder}
                     autoFocus
-                    style={{ flex: 1, padding: "8px 12px", border: "1px solid #111111", borderRadius: 8, fontSize: 14, color: "#111111", outline: "none", fontFamily: "inherit" }}
+                    style={{ flex: 1, padding: "8px 12px", border: "1px solid #111111", borderRadius: 8, fontSize: "0.875rem", color: "#111111", outline: "none", fontFamily: "inherit" }}
                   />
                   <button onClick={addType} disabled={addingType || !newTypeName.trim()}
-                    style={{ padding: "8px 14px", background: theme.accent, color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: addingType || !newTypeName.trim() ? "not-allowed" : "pointer", opacity: addingType || !newTypeName.trim() ? 0.6 : 1, fontFamily: "inherit" }}>
+                    style={{ padding: "8px 14px", background: theme.accent, color: "#fff", border: "none", borderRadius: 8, fontSize: "0.8125rem", fontWeight: 600, cursor: addingType || !newTypeName.trim() ? "not-allowed" : "pointer", opacity: addingType || !newTypeName.trim() ? 0.6 : 1, fontFamily: "inherit" }}>
                     {t.maintAddTypeSave}
                   </button>
                 </div>
@@ -3947,32 +3947,32 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
           {/* Description */}
           <div style={{ marginBottom: 4 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{t.maintDescription} *</label>
+              <label style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#374151" }}>{t.maintDescription} *</label>
               <button onClick={translate} disabled={translateState === "loading" || !form.description.trim()}
-                style={{ fontSize: 12, fontWeight: 600, color: translateState === "loading" ? "#9ca3af" : "#111111", background: "none", border: "none", cursor: translateState === "loading" || !form.description.trim() ? "not-allowed" : "pointer", padding: 0, fontFamily: "inherit", opacity: !form.description.trim() ? 0.5 : 1 }}>
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: translateState === "loading" ? "#9ca3af" : "#111111", background: "none", border: "none", cursor: translateState === "loading" || !form.description.trim() ? "not-allowed" : "pointer", padding: 0, fontFamily: "inherit", opacity: !form.description.trim() ? 0.5 : 1 }}>
                 {translateState === "loading" ? t.maintTranslating : t.maintTranslateChinese}
               </button>
             </div>
             <textarea value={form.description} onChange={e => { setF("description", e.target.value); if (translateState === "done") setTranslateState("idle"); }}
               placeholder={t.maintDescriptionPlaceholder} rows={4}
-              style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5 }} />
+              style={{ width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5 }} />
           </div>
 
           {/* Chinese translation */}
           {(translateState === "done" || form.descriptionZh) && (
             <div style={{ marginBottom: 16 }}>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintTranslatedLabel}</label>
+              <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>{t.maintTranslatedLabel}</label>
               <textarea value={form.descriptionZh} onChange={e => setF("descriptionZh", e.target.value)} rows={3}
-                style={{ width: "100%", padding: "10px 14px", border: "1px solid #e5e5e5", borderRadius: 9, fontSize: 14, color: "#111111", background: "#f5f5f5", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5 }} />
+                style={{ width: "100%", padding: "10px 14px", border: "1px solid #e5e5e5", borderRadius: 9, fontSize: "0.875rem", color: "#111111", background: "#f5f5f5", boxSizing: "border-box", outline: "none", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5 }} />
             </div>
           )}
 
           {/* Attachments */}
           <div style={{ marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{t.maintAttachments}</label>
+              <label style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#374151" }}>{t.maintAttachments}</label>
               <button onClick={() => fileInputRef.current?.click()}
-                style={{ fontSize: 12, fontWeight: 600, color: "#111111", background: "none", border: "1px solid #e5e5e5", borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: "inherit" }}>
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: "#111111", background: "none", border: "1px solid #e5e5e5", borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: "inherit" }}>
                 + {t.maintAddFiles}
               </button>
               <input ref={fileInputRef} type="file" multiple onChange={handleFileAdd} style={{ display: "none" }} accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt" />
@@ -3984,17 +3984,17 @@ export const MaintenancePage = ({ data, setData, t, refresh, user }) => {
                     {f.previewUrl ? (
                       <img src={f.previewUrl} alt={f.file.name} style={{ width: 64, height: 64, objectFit: "cover", display: "block" }} />
                     ) : (
-                      <span style={{ fontSize: 12, color: "#374151", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.file.name}</span>
+                      <span style={{ fontSize: "0.75rem", color: "#374151", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.file.name}</span>
                     )}
                     <button onClick={() => removeFile(idx)}
-                      style={{ position: f.previewUrl ? "absolute" : "static", top: 2, right: 2, background: "rgba(0,0,0,0.5)", border: "none", borderRadius: "50%", width: 18, height: 18, cursor: "pointer", color: "#fff", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, padding: 0 }}>×</button>
+                      style={{ position: f.previewUrl ? "absolute" : "static", top: 2, right: 2, background: "rgba(0,0,0,0.5)", border: "none", borderRadius: "50%", width: 18, height: 18, cursor: "pointer", color: "#fff", fontSize: "0.6875rem", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, padding: 0 }}>×</button>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {submitError && <div style={{ fontSize: 13, color: "#ef4444", marginBottom: 12 }}>{submitError}</div>}
+          {submitError && <div style={{ fontSize: "0.8125rem", color: "#ef4444", marginBottom: 12 }}>{submitError}</div>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => { setShowModal(false); resetModal(); }}>{t.cancel}</Btn>
             <Btn onClick={submit} disabled={submitting || !form.tenantId || !form.description.trim()}>{submitting ? t.maintSubmitting : t.maintNewRequest}</Btn>
@@ -4033,12 +4033,12 @@ export const EmailPage = ({ data, setData, t, refresh, user }) => {
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ width: 42, height: 42, borderRadius: 11, background: s[r.key] ? "var(--ld-accent-tint, rgba(17,17,17,.1))" : theme.bgSubtle, display: "flex", alignItems: "center", justifyContent: "center", color: s[r.key] ? theme.accent : theme.textFaint }}><Icon name="mail" size={19} /></div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#111111" }}>{r.label}</div>
-                <div style={{ fontSize: 13, color: "#6b7280" }}>{r.desc}</div>
+                <div style={{ fontSize: "0.9375rem", fontWeight: 600, color: "#111111" }}>{r.label}</div>
+                <div style={{ fontSize: "0.8125rem", color: "#6b7280" }}>{r.desc}</div>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <button onClick={() => setEditing(editing===r.key?null:r.key)} style={{ padding: "7px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, background: "#fff", fontSize: 13, color: "#374151", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}>
+              <button onClick={() => setEditing(editing===r.key?null:r.key)} style={{ padding: "7px 14px", border: `1px solid ${theme.border}`, borderRadius: 8, background: "#fff", fontSize: "0.8125rem", color: "#374151", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6 }}>
                 <Icon name="edit" size={14} />{t.editTemplate}
               </button>
               <Toggle value={s[r.key]} onChange={v => updS(r.key, v)} />
@@ -4048,11 +4048,11 @@ export const EmailPage = ({ data, setData, t, refresh, user }) => {
         {editing && (
           <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #111111" }}>
             <div style={{ marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h4 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#111111" }}>{t.editTemplateLabel} {reminders.find(r => r.key===editing)?.label}</h4>
-              <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.variablesNote}</span>
+              <h4 style={{ margin: 0, fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>{t.editTemplateLabel} {reminders.find(r => r.key===editing)?.label}</h4>
+              <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{t.variablesNote}</span>
             </div>
             <textarea value={s.templates[reminders.find(r => r.key===editing)?.tKey]} onChange={e => updT(reminders.find(r => r.key===editing)?.tKey, e.target.value)}
-              style={{ width: "100%", minHeight: 160, padding: "12px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 13, color: "#374151", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box", outline: "none", lineHeight: 1.6 }} />
+              style={{ width: "100%", minHeight: 160, padding: "12px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.8125rem", color: "#374151", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box", outline: "none", lineHeight: 1.6 }} />
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
               <Btn size="sm" onClick={saveTemplate}>{t.saveTemplate}</Btn>
             </div>
@@ -4080,38 +4080,38 @@ export const TenantDashboard = ({ data, user }) => {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Your Unit</h3>
+          <h3 style={{ margin: "0 0 16px", fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Your Unit</h3>
           <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
             <div style={{ width: 50, height: 50, background: "linear-gradient(135deg,#111111,#1a1a1a)", borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff", flexShrink: 0 }}><Icon name="home" size={24} /></div>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#111111" }}>{property?.address}</div>
-              <div style={{ fontSize: 13, color: "#6b7280" }}>{property?.city}, {property?.state} {property?.zip}</div>
-              <div style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>{tenant?.unit} · {property?.type}</div>
+              <div style={{ fontSize: "1rem", fontWeight: 700, color: "#111111" }}>{property?.address}</div>
+              <div style={{ fontSize: "0.8125rem", color: "#6b7280" }}>{property?.city}, {property?.state} {property?.zip}</div>
+              <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginTop: 2 }}>{tenant?.unit} · {property?.type}</div>
             </div>
           </div>
           {contract && (
             <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {[["Lease Start", fmtDate(contract.startDate)],["Lease End", fmtDate(contract.endDate)]].map(([lbl,val]) => (
                 <div key={lbl} style={{ background: "#fafafa", borderRadius: 9, padding: "10px 12px" }}>
-                  <div style={{ fontSize: 11, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 2 }}>{lbl}</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#111111" }}>{val}</div>
+                  <div style={{ fontSize: "0.6875rem", color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 2 }}>{lbl}</div>
+                  <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111111" }}>{val}</div>
                 </div>
               ))}
             </div>
           )}
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Recent Payments</h3>
+          <h3 style={{ margin: "0 0 16px", fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Recent Payments</h3>
           {payments.slice(0,4).map(p => (
             <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #fafafa" }}>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#111111" }}>{fmt(p.amount)}</div>
-                <div style={{ fontSize: 12, color: "#9ca3af" }}>Due {fmtDate(p.dueDate)}</div>
+                <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111111" }}>{fmt(p.amount)}</div>
+                <div style={{ fontSize: "0.75rem", color: "#9ca3af" }}>Due {fmtDate(p.dueDate)}</div>
               </div>
               <Badge status={p.status} t={T.en} />
             </div>
           ))}
-          {payments.length === 0 && <p style={{ color: "#9ca3af", fontSize: 14 }}>No payment history yet.</p>}
+          {payments.length === 0 && <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>No payment history yet.</p>}
         </div>
       </div>
     </div>
@@ -4151,28 +4151,28 @@ export const PaymentPortal = ({ data, setData, user, refresh }) => {
   return (
     <div>
       <PageHeader title="Payment Portal" subtitle="ACH payments & bank account management" />
-      {success && <div style={{ background:"#dcfce7",border:"1px solid #86efac",borderRadius:12,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:10,color:"#166534",fontSize:14,fontWeight:600 }}><Icon name="check" size={18} />Payment initiated! ACH transfer processing (1-3 business days).</div>}
+      {success && <div style={{ background:"#dcfce7",border:"1px solid #86efac",borderRadius:12,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:10,color:"#166534",fontSize:"0.875rem",fontWeight:600 }}><Icon name="check" size={18} />Payment initiated! ACH transfer processing (1-3 business days).</div>}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
             <div style={{ width: 44, height: 44, borderRadius: 11, background: tenant.bankConnected?"rgba(34,197,94,.1)":"#fafafa", display: "flex", alignItems: "center", justifyContent: "center", color: tenant.bankConnected?"#22c55e":"#9ca3af" }}><Icon name="bank" size={21} /></div>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>Bank Account</div>
-              <div style={{ fontSize: 13, color: tenant.bankConnected?"#22c55e":"#9ca3af", fontWeight: 500 }}>{tenant.bankConnected?"✓ Connected & verified":"Not connected"}</div>
+              <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>Bank Account</div>
+              <div style={{ fontSize: "0.8125rem", color: tenant.bankConnected?"#22c55e":"#9ca3af", fontWeight: 500 }}>{tenant.bankConnected?"✓ Connected & verified":"Not connected"}</div>
             </div>
           </div>
           {step !== "bank" ? (
             tenant.bankConnected ? (
               <div>
                 <div style={{ background: "#fafafa", borderRadius: 10, padding: "14px 16px", marginBottom: 16 }}>
-                  <div style={{ fontSize: 13, color: "#6b7280" }}>Account ending in <strong>••••4521</strong></div>
-                  <div style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>Chase Bank · Checking</div>
+                  <div style={{ fontSize: "0.8125rem", color: "#6b7280" }}>Account ending in <strong>••••4521</strong></div>
+                  <div style={{ fontSize: "0.8125rem", color: "#6b7280", marginTop: 2 }}>Chase Bank · Checking</div>
                 </div>
                 <Btn variant="secondary" size="sm" icon="edit" onClick={() => setStep("bank")}>Update Account</Btn>
               </div>
             ) : (
               <div>
-                <p style={{ color: "#6b7280", fontSize: 14, marginBottom: 16 }}>Connect your bank account to enable ACH payments.</p>
+                <p style={{ color: "#6b7280", fontSize: "0.875rem", marginBottom: 16 }}>Connect your bank account to enable ACH payments.</p>
                 <Btn icon="bank" onClick={() => setStep("bank")}>Connect Bank Account</Btn>
               </div>
             )
@@ -4195,9 +4195,9 @@ export const PaymentPortal = ({ data, setData, user, refresh }) => {
               <div style={{ display: "flex", gap: 12 }}>
                 <div style={{ width: 42, height: 42, borderRadius: 11, background: tenant.recurringPayment?"rgba(17,17,17,.1)":"#fafafa", display: "flex", alignItems: "center", justifyContent: "center", color: tenant.recurringPayment?"#111111":"#9ca3af" }}><Icon name="refresh" size={19} /></div>
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>Auto-Pay</div>
-                  <div style={{ fontSize: 13, color: "#6b7280" }}>Pay {fmt(contract.rentAmount)} on the {contract.dueDay}{contract.dueDay===1?"st":"th"}</div>
-                  <div style={{ fontSize: 12, color: tenant.recurringPayment?"#111111":"#9ca3af", marginTop: 3, fontWeight: 500 }}>{tenant.recurringPayment?"Enabled":"Disabled"}</div>
+                  <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>Auto-Pay</div>
+                  <div style={{ fontSize: "0.8125rem", color: "#6b7280" }}>Pay {fmt(contract.rentAmount)} on the {contract.dueDay}{contract.dueDay===1?"st":"th"}</div>
+                  <div style={{ fontSize: "0.75rem", color: tenant.recurringPayment?"#111111":"#9ca3af", marginTop: 3, fontWeight: 500 }}>{tenant.recurringPayment?"Enabled":"Disabled"}</div>
                 </div>
               </div>
               <Toggle value={tenant.recurringPayment} onChange={toggleRecurring} />
@@ -4207,18 +4207,18 @@ export const PaymentPortal = ({ data, setData, user, refresh }) => {
             <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
               <div style={{ width: 42, height: 42, borderRadius: 11, background: "rgba(59,130,246,.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3b82f6" }}><Icon name="dollar" size={19} /></div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>Make a Payment</div>
-                <div style={{ fontSize: 13, color: "#6b7280" }}>One-time ACH transfer</div>
+                <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>Make a Payment</div>
+                <div style={{ fontSize: "0.8125rem", color: "#6b7280" }}>One-time ACH transfer</div>
               </div>
             </div>
             <div style={{ background: "#fafafa", borderRadius: 10, padding: "14px 16px", marginBottom: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 13, color: "#6b7280" }}>Amount</span>
-                <span style={{ fontSize: 15, fontWeight: 700, color: "#111111" }}>{fmt(contract.rentAmount)}</span>
+                <span style={{ fontSize: "0.8125rem", color: "#6b7280" }}>Amount</span>
+                <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>{fmt(contract.rentAmount)}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 13, color: "#6b7280" }}>To</span>
-                <span style={{ fontSize: 13, color: "#374151" }}>Brian Zhang (Landlord)</span>
+                <span style={{ fontSize: "0.8125rem", color: "#6b7280" }}>To</span>
+                <span style={{ fontSize: "0.8125rem", color: "#374151" }}>Brian Zhang (Landlord)</span>
               </div>
             </div>
             <Btn onClick={makePayment} icon="bank">{tenant.bankConnected?"Submit ACH Payment":"Bank Account Required"}</Btn>
@@ -4260,29 +4260,29 @@ export const TenantMaintenancePage = ({ data, setData, user, refresh }) => {
   return (
     <div>
       <PageHeader title="Maintenance Requests" subtitle="Submit and track repair requests" />
-      {success && <div style={{ background:"#dcfce7",border:"1px solid #86efac",borderRadius:12,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:10,color:"#166534",fontSize:14,fontWeight:600 }}><Icon name="check" size={18} />Request submitted! Your landlord will be notified.</div>}
+      {success && <div style={{ background:"#dcfce7",border:"1px solid #86efac",borderRadius:12,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:10,color:"#166534",fontSize:"0.875rem",fontWeight:600 }}><Icon name="check" size={18} />Request submitted! Your landlord will be notified.</div>}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 20 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: "1px solid var(--ld-border, #f5f5f5)" }}>
-          <h3 style={{ margin: "0 0 18px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>New Request</h3>
+          <h3 style={{ margin: "0 0 18px", fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>New Request</h3>
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>Description</label>
+            <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 }}>Description</label>
             <textarea value={form.description} onChange={e => setForm(f => ({...f,description:e.target.value}))} placeholder="Describe the issue in detail..." rows={5}
-              style={{ width: "100%", padding: "11px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", resize: "vertical", boxSizing: "border-box", outline: "none", fontFamily: "inherit", lineHeight: 1.5 }} />
+              style={{ width: "100%", padding: "11px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", resize: "vertical", boxSizing: "border-box", outline: "none", fontFamily: "inherit", lineHeight: 1.5 }} />
           </div>
           <Sel label="Priority" value={form.priority} onChange={v => setForm(f => ({...f,priority:v}))} options={[{value:"low",label:"Low"},{value:"medium",label:"Medium"},{value:"high",label:"High"}]} />
           <Btn icon="plus" onClick={submit}>Submit Request</Btn>
         </div>
         <div>
-          <h3 style={{ margin: "0 0 14px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>My Requests</h3>
+          <h3 style={{ margin: "0 0 14px", fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>My Requests</h3>
           <div style={{ display: "grid", gap: 12 }}>
             {myReqs.map(m => {
               return (
                 <div key={m.id} style={{ background: "#fff", borderRadius: 12, padding: "16px 18px", border: "1px solid var(--ld-border, #f5f5f5)", display: "flex", gap: 12 }}>
                   <div style={{ width: 3, borderRadius: 3, background: PRIORITY_COLORS[m.priority], flexShrink: 0 }} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, color: "#111111", marginBottom: 6 }}>{m.description}</div>
+                    <div style={{ fontSize: "0.875rem", color: "#111111", marginBottom: 6 }}>{m.description}</div>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <span style={{ fontSize: 12, color: "#9ca3af" }}>{fmtDate(m.date)}</span>
+                      <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{fmtDate(m.date)}</span>
                       <Badge status={m.status} t={T.en} />
                     </div>
                     <CommentThread request={m} comments={data.maintenanceComments || []} viewer={commentViewer} setData={setData} L={commentLabels} />
@@ -4290,7 +4290,7 @@ export const TenantMaintenancePage = ({ data, setData, user, refresh }) => {
                 </div>
               );
             })}
-            {myReqs.length === 0 && <p style={{ color: "#9ca3af", fontSize: 14 }}>No requests submitted yet.</p>}
+            {myReqs.length === 0 && <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>No requests submitted yet.</p>}
           </div>
         </div>
       </div>
@@ -4317,36 +4317,36 @@ const TenantLeasePage = ({ data, user }) => {
           <div style={{ display: "flex", gap: 14, marginBottom: 22 }}>
             <div style={{ width: 52, height: 52, background: "linear-gradient(135deg,#111111,#1a1a1a)", borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}><Icon name="file" size={24} /></div>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Lease Agreement</div>
-              <div style={{ fontSize: 13, color: "#6b7280" }}>{property?.address} · {tenant?.unit}</div>
+              <div style={{ fontSize: "1.125rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Lease Agreement</div>
+              <div style={{ fontSize: "0.8125rem", color: "#6b7280" }}>{property?.address} · {tenant?.unit}</div>
             </div>
           </div>
           {[["Tenant", user.name],["Address",`${property?.address}, ${property?.city}`],["Unit",contract.unit],["Monthly Rent",fmt(contract.rentAmount)],["Due Day",`${contract.dueDay}${contract.dueDay===1?"st":"th"} of month`],["Start",fmtDate(contract.startDate)],["End",fmtDate(contract.endDate)],["Status",<Badge key="lease-status" status={contract.status} t={T.en} />]].map(([lbl,val]) => (
             <div key={lbl} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: "1px solid #fafafa" }}>
-              <span style={{ fontSize: 13, color: "#6b7280" }}>{lbl}</span>
-              <span style={{ fontSize: 14, fontWeight: 500, color: "#111111" }}>{val}</span>
+              <span style={{ fontSize: "0.8125rem", color: "#6b7280" }}>{lbl}</span>
+              <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "#111111" }}>{val}</span>
             </div>
           ))}
         </div>
         <div>
           <div style={{ background: notStartedYet ? "#f5f5f5" : daysLeft<60?"#fef2f2":"#f0fdf4", borderRadius: 14, padding: 24, border: `1px solid ${notStartedYet ? "#9ca3af" : daysLeft<60?"#fca5a5":"#86efac"}`, marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: notStartedYet ? "#000000" : daysLeft<60?"#991b1b":"#166534", fontWeight: 600, marginBottom: 6 }}>LEASE EXPIRY</div>
+            <div style={{ fontSize: "0.8125rem", color: notStartedYet ? "#000000" : daysLeft<60?"#991b1b":"#166534", fontWeight: 600, marginBottom: 6 }}>LEASE EXPIRY</div>
             {notStartedYet ? (
               <>
-                <div style={{ fontSize: 32, fontWeight: 800, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Upcoming</div>
-                <div style={{ fontSize: 14, color: "#000000" }}>Starts {fmtDate(contract.startDate)}</div>
+                <div style={{ fontSize: "2rem", fontWeight: 800, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Upcoming</div>
+                <div style={{ fontSize: "0.875rem", color: "#000000" }}>Starts {fmtDate(contract.startDate)}</div>
               </>
             ) : (
               <>
-                <div style={{ fontSize: 36, fontWeight: 800, color: daysLeft<60?"#ef4444":"#22c55e", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{daysLeft} days</div>
-                <div style={{ fontSize: 14, color: daysLeft<60?"#991b1b":"#166534" }}>Expires {fmtDate(contract.endDate)}</div>
+                <div style={{ fontSize: "2.25rem", fontWeight: 800, color: daysLeft<60?"#ef4444":"#22c55e", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{daysLeft} days</div>
+                <div style={{ fontSize: "0.875rem", color: daysLeft<60?"#991b1b":"#166534" }}>Expires {fmtDate(contract.endDate)}</div>
               </>
             )}
           </div>
           <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid var(--ld-border, #f5f5f5)" }}>
-            <h4 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 700, color: "#111111" }}>Landlord Contact</h4>
-            <p style={{ margin: 0, fontSize: 14, color: "#374151" }}>Brian Zhang</p>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#6b7280" }}>brian@property.com</p>
+            <h4 style={{ margin: "0 0 12px", fontSize: "0.9375rem", fontWeight: 700, color: "#111111" }}>Landlord Contact</h4>
+            <p style={{ margin: 0, fontSize: "0.875rem", color: "#374151" }}>Brian Zhang</p>
+            <p style={{ margin: "4px 0 0", fontSize: "0.8125rem", color: "#6b7280" }}>brian@property.com</p>
           </div>
         </div>
       </div>
@@ -4363,17 +4363,17 @@ export const PaymentHistoryPage = ({ data, user }) => {
       <div style={{ background: "#fff", borderRadius: 14, border: "1px solid var(--ld-border, #f5f5f5)", overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead style={{ background: theme.bgSubtle }}>
-            <tr style={{ color: "#6b7280", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
+            <tr style={{ color: "#6b7280", fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: ".5px" }}>
               {["Amount","Due Date","Paid Date","Type","ACH Status","Status"].map(h => <th key={h} style={{ padding: "14px 20px", textAlign: "left" }}>{h}</th>)}
             </tr>
           </thead>
           <tbody>
             {payments.map(p => (
               <tr key={p.id} style={{ borderTop: "1px solid #fafafa" }}>
-                <td style={{ padding:"14px 20px",fontSize:16,fontWeight:700,color:"#111111",fontFamily:"'Inter',system-ui,-apple-system,sans-serif" }}>{fmt(p.amount)}</td>
-                <td style={{ padding:"14px 20px",fontSize:13,color:"#6b7280" }}>{fmtDate(p.dueDate)}</td>
-                <td style={{ padding:"14px 20px",fontSize:13,color:"#6b7280" }}>{fmtDate(p.paidDate)}</td>
-                <td style={{ padding:"14px 20px",fontSize:12,color:"#6b7280",textTransform:"capitalize" }}>{p.type}</td>
+                <td style={{ padding:"14px 20px",fontSize:"1rem",fontWeight:700,color:"#111111",fontFamily:"'Inter',system-ui,-apple-system,sans-serif" }}>{fmt(p.amount)}</td>
+                <td style={{ padding:"14px 20px",fontSize:"0.8125rem",color:"#6b7280" }}>{fmtDate(p.dueDate)}</td>
+                <td style={{ padding:"14px 20px",fontSize:"0.8125rem",color:"#6b7280" }}>{fmtDate(p.paidDate)}</td>
+                <td style={{ padding:"14px 20px",fontSize:"0.75rem",color:"#6b7280",textTransform:"capitalize" }}>{p.type}</td>
                 <td style={{ padding:"14px 20px" }}>{p.achStatus?<Badge status={p.achStatus} t={T.en} />:<span style={{ color:"#d1d5db" }}>—</span>}</td>
                 <td style={{ padding:"14px 20px" }}><Badge status={p.status} t={T.en} /></td>
               </tr>
@@ -4461,7 +4461,7 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
       unassigned: { bg: "rgba(148,163,184,.15)", color: "#6b7280", label: "Unassigned" },
     };
     const s = styles[role] || styles.unassigned;
-    return <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, textTransform: "uppercase", letterSpacing: ".5px", background: s.bg, color: s.color }}>{s.label}</span>;
+    return <span style={{ fontSize: "0.6875rem", fontWeight: 700, padding: "3px 9px", borderRadius: 20, textTransform: "uppercase", letterSpacing: ".5px", background: s.bg, color: s.color }}>{s.label}</span>;
   };
 
   return (
@@ -4474,20 +4474,20 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
           <thead>
             <tr style={{ background: "#fafafa" }}>
               {["Name", "Email", "Role", ""].map(h => (
-                <th key={h} style={{ padding: "12px 20px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px" }}>{h}</th>
+                <th key={h} style={{ padding: "12px 20px", textAlign: "left", fontSize: "0.6875rem", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: ".5px" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {allUsers.map(u => (
               <tr key={u.id} style={{ borderTop: "1px solid #fafafa" }}>
-                <td style={{ padding: "14px 20px", fontSize: 14, fontWeight: 600, color: "#111111" }}>{u.displayName}</td>
-                <td style={{ padding: "14px 20px", fontSize: 13, color: "#6b7280" }}>{u.email || "—"}</td>
+                <td style={{ padding: "14px 20px", fontSize: "0.875rem", fontWeight: 600, color: "#111111" }}>{u.displayName}</td>
+                <td style={{ padding: "14px 20px", fontSize: "0.8125rem", color: "#6b7280" }}>{u.email || "—"}</td>
                 <td style={{ padding: "14px 20px" }}><RoleBadge role={u.role} /></td>
                 <td style={{ padding: "14px 20px", textAlign: "right" }}>
                   {u.id !== currentUser?.authId && (
                     <button onClick={() => { setDeleteError(null); setConfirmDelete(u); }}
-                      style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, padding: "4px 8px", borderRadius: 6 }}
+                      style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.8125rem", padding: "4px 8px", borderRadius: 6 }}
                       onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#9ca3af"}>
                       <Icon name="trash" size={14} /> Delete
                     </button>
@@ -4501,12 +4501,12 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
 
       {/* Create admin form */}
       <div style={{ maxWidth: 520 }}>
-        <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Create Admin User</h3>
+        <h3 style={{ margin: "0 0 16px", fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>Create Admin User</h3>
         <div style={{ background: "#fff", borderRadius: 14, padding: 28, border: "1px solid var(--ld-border, #f5f5f5)" }}>
           <Inp label={t.adminName} value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
           <Inp label={t.adminEmail} value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} type="email" />
           <Inp label={t.adminPassword} value={form.password} onChange={v => setForm(f => ({ ...f, password: v }))} type="password" placeholder={t.minCharsPlaceholder} />
-          {msg && <p style={{ fontSize: 13, margin: "8px 0", color: msg.error ? "#ef4444" : "#22c55e" }}>{msg.text}</p>}
+          {msg && <p style={{ fontSize: "0.8125rem", margin: "8px 0", color: msg.error ? "#ef4444" : "#22c55e" }}>{msg.text}</p>}
           <Btn onClick={handleSubmit} disabled={loading} style={{ marginTop: 8 }}>
             {loading ? t.adminCreating : t.adminCreateBtn}
           </Btn>
@@ -4515,11 +4515,11 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
 
       {confirmDelete && (
         <Modal title="Delete User" onClose={() => setConfirmDelete(null)}>
-          <p style={{ margin: "0 0 8px", fontSize: 14, color: "#374151" }}>
+          <p style={{ margin: "0 0 8px", fontSize: "0.875rem", color: "#374151" }}>
             Are you sure you want to delete <strong>{confirmDelete.displayName}</strong>?
           </p>
-          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#9ca3af" }}>This will permanently remove their account and cannot be undone.</p>
-          {deleteError && <p style={{ margin: "0 0 12px", fontSize: 13, color: "#ef4444" }}>{deleteError}</p>}
+          <p style={{ margin: "0 0 20px", fontSize: "0.8125rem", color: "#9ca3af" }}>This will permanently remove their account and cannot be undone.</p>
+          {deleteError && <p style={{ margin: "0 0 12px", fontSize: "0.8125rem", color: "#ef4444" }}>{deleteError}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <Btn variant="secondary" onClick={() => setConfirmDelete(null)} disabled={deleting}>Cancel</Btn>
             <Btn onClick={handleDelete} disabled={deleting} style={{ background: "#ef4444" }}>{deleting ? "Deleting..." : "Delete"}</Btn>
@@ -4533,8 +4533,8 @@ export const AdminUsersPage = ({ t, user: currentUser, refresh }) => {
 // ─── TENANT PROFILE PAGE ──────────────────────────────────────────────────────
 export const TenantProfilePage = ({ user, setUser }) => {
   const cardStyle = { background: "#fff", borderRadius: 14, padding: 28, border: "1px solid var(--ld-border, #f5f5f5)", marginBottom: 20 };
-  const headStyle = { margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", paddingBottom: 14, borderBottom: "1px solid #f5f5f5" };
-  const msgStyle = (err) => ({ fontSize: 13, marginTop: 8, color: err ? "#ef4444" : "#22c55e" });
+  const headStyle = { margin: "0 0 20px", fontSize: "1rem", fontWeight: 700, color: "#111111", fontFamily: "'Inter',system-ui,-apple-system,sans-serif", paddingBottom: 14, borderBottom: "1px solid #f5f5f5" };
+  const msgStyle = (err) => ({ fontSize: "0.8125rem", marginTop: 8, color: err ? "#ef4444" : "#22c55e" });
   const tenantMx = useTenantMutations();
 
   // ── Name ──
@@ -4595,8 +4595,8 @@ export const TenantProfilePage = ({ user, setUser }) => {
     setPwSaving(false);
   };
 
-  const inputStyle = { width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: 14, color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" };
-  const labelStyle = { display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 };
+  const inputStyle = { width: "100%", padding: "10px 14px", border: `1px solid ${theme.border}`, borderRadius: 9, fontSize: "0.875rem", color: "#111111", background: "#fff", boxSizing: "border-box", outline: "none", fontFamily: "inherit" };
+  const labelStyle = { display: "block", fontSize: "0.8125rem", fontWeight: 600, color: "#374151", marginBottom: 6 };
 
   return (
     <div style={{ maxWidth: 580 }}>
@@ -4616,7 +4616,7 @@ export const TenantProfilePage = ({ user, setUser }) => {
       {/* Email */}
       <div style={cardStyle}>
         <h3 style={headStyle}>Change Email</h3>
-        <p style={{ margin: "0 0 16px", fontSize: 13, color: "#6b7280" }}>Current email: <strong style={{ color: "#111111" }}>{user.email}</strong></p>
+        <p style={{ margin: "0 0 16px", fontSize: "0.8125rem", color: "#6b7280" }}>Current email: <strong style={{ color: "#111111" }}>{user.email}</strong></p>
         <label style={labelStyle}>New Email Address</label>
         <input value={newEmail} onChange={e => setNewEmail(e.target.value)} type="email" style={{ ...inputStyle, marginBottom: 12 }} />
         <label style={labelStyle}>Current Password (to confirm)</label>

@@ -10,15 +10,15 @@ import {
 import { fmtDate } from '@/lib/format'
 
 const card = { background: '#fff', borderRadius: 14, padding: 22, border: '1px solid var(--ld-border, #f5f5f5)' }
-const emptyState = { ...card, textAlign: 'center', color: '#9ca3af', fontSize: 14, padding: 40 }
-const sectionHeading = { fontSize: 17, fontWeight: 700, color: '#111111', margin: '0 0 14px', fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }
-const redChip = { fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#fee2e2', color: '#991b1b' }
-const readyChip = { fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#fef3c7', color: '#92400e', letterSpacing: '.3px' }
-const appliedChip = { fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#ecfdf5', color: '#065f46', letterSpacing: '.3px' }
-const detailRow = { display: 'flex', justifyContent: 'space-between', gap: 16, padding: '7px 0', borderBottom: '1px solid #fafafa', fontSize: 14 }
-const errorBox = { fontSize: 12, color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 12px' }
-const confirmNoteBox = { fontSize: 13, color: '#1e3a8a', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }
-const warnNoteBox = { fontSize: 12, color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', marginBottom: 14 }
+const emptyState = { ...card, textAlign: 'center', color: '#9ca3af', fontSize: "0.875rem", padding: 40 }
+const sectionHeading = { fontSize: "1.0625rem", fontWeight: 700, color: '#111111', margin: '0 0 14px', fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }
+const redChip = { fontSize: "0.6875rem", fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: '#fee2e2', color: '#991b1b' }
+const readyChip = { fontSize: "0.6875rem", fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#fef3c7', color: '#92400e', letterSpacing: '.3px' }
+const appliedChip = { fontSize: "0.6875rem", fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: '#ecfdf5', color: '#065f46', letterSpacing: '.3px' }
+const detailRow = { display: 'flex', justifyContent: 'space-between', gap: 16, padding: '7px 0', borderBottom: '1px solid #fafafa', fontSize: "0.875rem" }
+const errorBox = { fontSize: "0.75rem", color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 12px' }
+const confirmNoteBox = { fontSize: "0.8125rem", color: '#1e3a8a', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }
+const warnNoteBox = { fontSize: "0.75rem", color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '8px 12px', marginBottom: 14 }
 
 const PLACEHOLDER_DOMAIN = '@placeholder.local'
 
@@ -40,9 +40,9 @@ const Stat = ({ label, value, sub, icon, color = '#111111' }) => (
   <div style={{ background: '#fff', borderRadius: 14, padding: '20px 22px', border: '1px solid var(--ld-border, #f5f5f5)', boxShadow: '0 1px 3px rgba(0,0,0,.04)' }}>
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
       <div>
-        <p style={{ margin: '0 0 6px', color: '#6b7280', fontSize: 13, fontWeight: 500 }}>{label}</p>
-        <p style={{ margin: 0, fontSize: 28, fontWeight: 700, color: '#111111', fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{value}</p>
-        {sub && <p style={{ margin: '4px 0 0', fontSize: 12, color: '#9ca3af' }}>{sub}</p>}
+        <p style={{ margin: '0 0 6px', color: '#6b7280', fontSize: "0.8125rem", fontWeight: 500 }}>{label}</p>
+        <p style={{ margin: 0, fontSize: "1.75rem", fontWeight: 700, color: '#111111', fontFamily: "'Inter',system-ui,-apple-system,sans-serif" }}>{value}</p>
+        {sub && <p style={{ margin: '4px 0 0', fontSize: "0.75rem", color: '#9ca3af' }}>{sub}</p>}
       </div>
       <div style={{ width: 42, height: 42, borderRadius: 11, background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color }}><Icon name={icon} size={20} /></div>
     </div>
@@ -63,7 +63,7 @@ const RenewalStatusPill = ({ status, t }) => {
   const s = RENEWAL_STATUS_STYLE[status] || RENEWAL_STATUS_STYLE.draft
   const label = t[`renewalStatus_${status}`] || status
   return (
-    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: s.bg, color: s.text, textTransform: 'uppercase', letterSpacing: '.4px' }}>{label}</span>
+    <span style={{ fontSize: "0.6875rem", fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: s.bg, color: s.text, textTransform: 'uppercase', letterSpacing: '.4px' }}>{label}</span>
   )
 }
 
@@ -71,7 +71,7 @@ const RenewalStatusPill = ({ status, t }) => {
 const SignerRow = ({ name, email, t }) => {
   const bad = isPlaceholderEmail(email)
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151', padding: '3px 0' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: "0.8125rem", color: '#374151', padding: '3px 0' }}>
       <Icon name="users" size={14} />
       <span style={{ fontWeight: 600 }}>{name}</span>
       <span style={{ color: bad ? '#991b1b' : '#6b7280' }}>{email || t.renewalNoEmail}</span>
@@ -140,16 +140,16 @@ const PrepareRenewalModal = ({ due, user, t, onClose, onDone }) => {
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '.4px', marginBottom: 8 }}>{t.renewalSigners}</div>
+        <div style={{ fontSize: "0.75rem", fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '.4px', marginBottom: 8 }}>{t.renewalSigners}</div>
         {due.signers.map(s => <SignerRow key={s.tenantId} name={s.name} email={s.email} t={t} />)}
-        <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 8 }}>{t.renewalCountersignNote}</div>
+        <div style={{ fontSize: "0.75rem", color: '#9ca3af', marginTop: 8 }}>{t.renewalCountersignNote}</div>
       </div>
 
       {phase === 'prepared' && prepared && (
         <div style={{ ...card, marginBottom: 16, background: '#fafbfc' }}>
-          <div style={{ fontSize: 13, color: '#166534', fontWeight: 600, marginBottom: 10 }}>{t.renewalPreparedReady}</div>
+          <div style={{ fontSize: "0.8125rem", color: '#166534', fontWeight: 600, marginBottom: 10 }}>{t.renewalPreparedReady}</div>
           {(prepared.signers || []).map(s => (
-            <div key={s.tenantId || s.email} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '5px 0', fontSize: 13 }}>
+            <div key={s.tenantId || s.email} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '5px 0', fontSize: "0.8125rem" }}>
               <span style={{ color: '#374151' }}>{s.email}</span>
               {s.embedSrc
                 ? <a href={s.embedSrc} target="_blank" rel="noopener noreferrer" style={{ color: '#1e40af', fontWeight: 600, textDecoration: 'none' }}>{t.renewalPreviewLink}</a>
@@ -159,7 +159,7 @@ const PrepareRenewalModal = ({ due, user, t, onClose, onDone }) => {
         </div>
       )}
 
-      {err && <p style={{ color: '#ef4444', fontSize: 13, margin: '8px 0 0' }}>{err}</p>}
+      {err && <p style={{ color: '#ef4444', fontSize: "0.8125rem", margin: '8px 0 0' }}>{err}</p>}
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}>
         <Btn variant="secondary" onClick={onClose}>{t.cancel}</Btn>
@@ -223,7 +223,7 @@ const AdvanceLeaseModal = ({ item, user, t, onClose, onDone }) => {
             href={signedDocUrl}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ fontSize: 13, fontWeight: 600, color: '#1e40af', textDecoration: 'none' }}
+            style={{ fontSize: "0.8125rem", fontWeight: 600, color: '#1e40af', textDecoration: 'none' }}
           >
             {t.renewalViewSignedPdf}
           </a>
@@ -236,7 +236,7 @@ const AdvanceLeaseModal = ({ item, user, t, onClose, onDone }) => {
         {t.renewalAdvanceConfirmNote.replace('{date}', fmtDate(renewal.newTermEnd))}
       </div>
 
-      {err && <p style={{ color: '#ef4444', fontSize: 13, margin: '8px 0 0' }}>{err}</p>}
+      {err && <p style={{ color: '#ef4444', fontSize: "0.8125rem", margin: '8px 0 0' }}>{err}</p>}
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}>
         <Btn variant="secondary" onClick={onClose} disabled={busy}>{t.cancel}</Btn>
@@ -254,18 +254,18 @@ const DueCard = ({ due, t, onPrepare }) => (
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
       <div style={{ minWidth: 0, flex: '1 1 248px', overflowWrap: 'anywhere' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#111111' }}>{due.propertyAddress || t.renewalUnknownProperty}</div>
+          <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: '#111111' }}>{due.propertyAddress || t.renewalUnknownProperty}</div>
           {due.urgent && (
             <span style={{ ...redChip, textTransform: 'uppercase', letterSpacing: '.4px' }}>{t.renewalUrgent}</span>
           )}
         </div>
-        <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 10 }}>
+        <div style={{ fontSize: "0.8125rem", color: '#6b7280', marginBottom: 10 }}>
           {t.renewalEndsOn}: {fmtDate(due.contract.endDate)} · {t.renewalDaysLeft.replace('{n}', due.daysLeft)}
         </div>
         <div style={{ marginBottom: 10 }}>
           {due.signers.map(s => <SignerRow key={s.tenantId} name={s.name} email={s.email} t={t} />)}
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, fontSize: 13, color: '#374151' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, fontSize: "0.8125rem", color: '#374151' }}>
           <span>{t.renewalNewTerm}: <strong>{fmtDate(due.term.newTermStart)} – {fmtDate(due.term.newTermEnd)}</strong></span>
           <span>{t.renewalCarriedRent}: <strong>{fmtMoney(due.contract.rentAmount)}</strong></span>
         </div>
@@ -273,7 +273,7 @@ const DueCard = ({ due, t, onPrepare }) => (
       <div style={{ flexShrink: 0, textAlign: 'right' }}>
         <Btn icon="file" onClick={() => onPrepare(due)} disabled={due.blocked}>{t.renewalPrepare}</Btn>
         {due.blocked && (
-          <div style={{ fontSize: 12, color: '#991b1b', marginTop: 8, maxWidth: 180 }}>{t.renewalBlockedHint}</div>
+          <div style={{ fontSize: "0.75rem", color: '#991b1b', marginTop: 8, maxWidth: 180 }}>{t.renewalBlockedHint}</div>
         )}
       </div>
     </div>
@@ -299,7 +299,7 @@ const InFlightRow = ({
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
         <div style={{ minWidth: 0, flex: '1 1 240px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#111111' }}>{propertyAddress || t.renewalUnknownProperty}</div>
+            <div style={{ fontSize: "0.9375rem", fontWeight: 600, color: '#111111' }}>{propertyAddress || t.renewalUnknownProperty}</div>
             {readyToAdvance && <span style={readyChip}>{t.renewalReadyToAdvanceBadge}</span>}
             {renewal.appliedToContract && (
               <span style={appliedChip}>
@@ -309,7 +309,7 @@ const InFlightRow = ({
               </span>
             )}
           </div>
-          <div style={{ fontSize: 13, color: '#6b7280' }}>
+          <div style={{ fontSize: "0.8125rem", color: '#6b7280' }}>
             {signerNames || '—'} · {fmtDate(renewal.newTermStart)} – {fmtDate(renewal.newTermEnd)} · {fmtMoney(renewal.rentAmount)}
           </div>
           {signedDocUrl && (
@@ -318,7 +318,7 @@ const InFlightRow = ({
                 href={signedDocUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ fontSize: 13, fontWeight: 600, color: '#1e40af', textDecoration: 'none' }}
+                style={{ fontSize: "0.8125rem", fontWeight: 600, color: '#1e40af', textDecoration: 'none' }}
               >
                 {t.renewalViewSignedPdf}
               </a>
