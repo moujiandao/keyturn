@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Btn, Icon } from './property-management-app'
 import { fmt, fmtDate } from '@/lib/format'
 import { isPaidRent } from '@/lib/payments/status'
@@ -13,6 +13,72 @@ import {
 } from '@/lib/zelle/core'
 import { expectedMonthlyRent } from '@/lib/zelle/matcher'
 import { isZellePending, isZelleAutoPosted, isZelleResolved, ZELLE_CATEGORIES } from '@/lib/zelle/status'
+import {
+  buildLedgerRows,
+  filterLedgerRows,
+  summarizeLedger,
+  ledgerMonthOptions,
+  ledgerPropertyOptions,
+  formatMonthLabel,
+} from '@/lib/zelle/ledger'
+
+const money2 = (n) => fmt(n, { minimumFractionDigits: 2 })
+
+const ledgerFilterBar = {
+  background: '#fff',
+  border: '1px solid #eaeaea',
+  borderRadius: 12,
+  padding: 12,
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'flex-end',
+  gap: 10,
+  marginBottom: 12,
+}
+const ledgerStatGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+  gap: 10,
+  marginBottom: 12,
+}
+const ledgerStatCard = {
+  background: '#fff',
+  border: '1px solid #eaeaea',
+  borderRadius: 12,
+  padding: '10px 14px',
+}
+const ledgerStatLabel = { fontSize: '0.75rem', color: '#6b7280' }
+const ledgerStatValue = { fontSize: '1.125rem', fontWeight: 700, marginTop: 2, fontVariantNumeric: 'tabular-nums' }
+const ledgerTableWrap = {
+  background: '#fff',
+  border: '1px solid #eaeaea',
+  borderRadius: 12,
+  overflowX: 'auto',
+}
+const ledgerTable = { width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.8125rem' }
+const ledgerTh = {
+  padding: '10px 14px',
+  fontSize: '0.75rem',
+  fontWeight: 600,
+  color: '#6b7280',
+  borderBottom: '1px solid #eaeaea',
+  whiteSpace: 'nowrap',
+}
+const ledgerTd = { padding: '10px 14px', verticalAlign: 'top', borderTop: '1px solid #f3f4f6' }
+const ledgerPrimary = { fontWeight: 600, color: '#111827' }
+const ledgerMuted = { fontSize: '0.75rem', color: '#6b7280', marginTop: 2 }
+const ledgerAmountCell = { ...ledgerTd, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }
+const linkButton = {
+  background: 'none',
+  border: 0,
+  padding: 0,
+  color: '#2563eb',
+  fontSize: '0.8125rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+}
+const MATCH_COLOR = { exact: '#047857', short: '#dc2626', over: '#b45309' }
 
 const card = {
   background: '#fff',
@@ -174,13 +240,237 @@ function formatMonth(ymDate) {
   return String(ymDate).slice(0, 7)
 }
 
-export function ZelleInboxPanel({ data, t, refresh }) {
+function RawEmail({ ev, t }) {
+  return (
+    <div style={rawEmailBox}>
+      {ev.emailFrom && (
+        <div>
+          <strong>{t.zelleEmailFrom}:</strong> {ev.emailFrom}
+        </div>
+      )}
+      {ev.emailSubject && (
+        <div style={{ marginBottom: 8 }}>
+          <strong>{t.zelleEmailSubject}:</strong> {ev.emailSubject}
+        </div>
+      )}
+      {ev.rawBody || '-'}
+    </div>
+  )
+}
+
+// Bookkeeper ledger for Auto-Posted and History: one compact row per Zelle
+// transfer, amounts right-aligned against the tenant's expected rent.
+function ZelleLedgerTable({ rows, t, lang, filters, setFilters, expandedIds, toggleExpand, busyId, onUndo, showStatus }) {
+  const monthOptions = ledgerMonthOptions(rows)
+  const propertyOptions = ledgerPropertyOptions(rows)
+  const activeMonth = filters.month !== 'all' && monthOptions.includes(filters.month) ? filters.month : 'all'
+  const activeProperty =
+    filters.propertyId !== 'all' && propertyOptions.some((p) => p.id === filters.propertyId)
+      ? filters.propertyId
+      : 'all'
+  const activeFilters = { ...filters, month: activeMonth, propertyId: activeProperty }
+  const visible = filterLedgerRows(rows, activeFilters)
+  const stats = summarizeLedger(visible)
+  const setFilter = (patch) => setFilters({ ...activeFilters, ...patch })
+  const varianceColor = stats.variance === 0 ? '#047857' : stats.variance < 0 ? '#dc2626' : '#b45309'
+  const signedMoney = (n) => `${n > 0 ? '+' : n < 0 ? '-' : ''}${money2(Math.abs(n))}`
+
+  const matchLabel = (r) => {
+    if (r.match === 'exact') return t.zelleMatchExact
+    if (r.match === 'short') return t.zelleMatchShort(money2(Math.abs(r.diff)))
+    if (r.match === 'over') return t.zelleMatchOver(money2(r.diff))
+    return null
+  }
+
+  return (
+    <div>
+      <div style={ledgerFilterBar}>
+        <label className="ld-zelle-field" style={fieldWrap}>
+          <span style={fieldLabel}>{t.zelleFilterMonth}</span>
+          <select className="ld-zelle-control" style={controlStyle} value={activeFilters.month} onChange={(e) => setFilter({ month: e.target.value })}>
+            <option value="all">{t.zelleFilterAllMonths}</option>
+            {monthOptions.map((m) => (
+              <option key={m} value={m}>{formatMonthLabel(m, lang)}</option>
+            ))}
+          </select>
+        </label>
+        <label className="ld-zelle-field" style={{ ...fieldWrap, '--ld-zelle-field-min-w': '180px' }}>
+          <span style={fieldLabel}>{t.zelleFilterProperty}</span>
+          <select className="ld-zelle-control" style={controlStyle} value={activeFilters.propertyId} onChange={(e) => setFilter({ propertyId: e.target.value })}>
+            <option value="all">{t.zelleFilterAllProperties}</option>
+            {propertyOptions.map((p) => (
+              <option key={p.id} value={p.id}>{p.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className="ld-zelle-field" style={fieldWrap}>
+          <span style={fieldLabel}>{t.zelleFilterMatch}</span>
+          <select className="ld-zelle-control" style={controlStyle} value={activeFilters.match} onChange={(e) => setFilter({ match: e.target.value })}>
+            <option value="all">{t.zelleFilterAllMatches}</option>
+            <option value="exact">{t.zelleFilterExact}</option>
+            <option value="variance">{t.zelleFilterVariance}</option>
+          </select>
+        </label>
+        <label className="ld-zelle-field" style={{ ...fieldWrap, flex: 1, '--ld-zelle-field-min-w': '220px' }}>
+          <span style={fieldLabel}>&nbsp;</span>
+          <input
+            type="search"
+            aria-label={t.zelleSearchPlaceholder}
+            className="ld-zelle-control"
+            style={controlStyle}
+            value={activeFilters.query}
+            placeholder={t.zelleSearchPlaceholder}
+            onChange={(e) => setFilter({ query: e.target.value })}
+          />
+        </label>
+      </div>
+
+      <div style={ledgerStatGrid}>
+        <div style={ledgerStatCard}>
+          <div style={ledgerStatLabel}>{t.zelleStatReceived}</div>
+          <div style={ledgerStatValue}>{money2(stats.received)}</div>
+        </div>
+        <div style={ledgerStatCard}>
+          <div style={ledgerStatLabel}>{t.zelleStatExpected}</div>
+          <div style={ledgerStatValue}>{money2(stats.expected)}</div>
+        </div>
+        <div style={ledgerStatCard}>
+          <div style={ledgerStatLabel}>{t.zelleStatVariance}</div>
+          <div style={{ ...ledgerStatValue, color: varianceColor }}>{signedMoney(stats.variance)}</div>
+        </div>
+        <div style={ledgerStatCard}>
+          <div style={ledgerStatLabel}>{t.zelleStatRows}</div>
+          <div style={ledgerStatValue}>{stats.count}</div>
+        </div>
+      </div>
+
+      {visible.length === 0 ? (
+        <div style={emptyBox}>{t.zelleNoFilteredRows}</div>
+      ) : (
+        <div style={ledgerTableWrap}>
+          <table style={ledgerTable}>
+            <thead>
+              <tr>
+                <th style={ledgerTh}>{t.zelleColUnit}</th>
+                <th style={ledgerTh}>{t.zelleColTenant}</th>
+                <th style={ledgerTh}>{t.zelleColDate}</th>
+                <th style={ledgerTh}>{t.zelleColMemo}</th>
+                <th style={{ ...ledgerTh, textAlign: 'right' }}>{t.zelleColPaidExpected}</th>
+                <th style={ledgerTh}>{t.zelleColMatch}</th>
+                <th style={{ ...ledgerTh, textAlign: 'right' }}>{t.zelleColActions}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map((r) => {
+                const ev = r.event
+                const isOpen = Boolean(expandedIds[r.id])
+                const isBusy = busyId === r.id
+                const label = matchLabel(r)
+                const reasonLabel = ev.matchReason ? t[`zelleReason_${ev.matchReason}`] || ev.matchReason : null
+                return (
+                  <Fragment key={r.id}>
+                    <tr>
+                      <td style={{ ...ledgerTd, whiteSpace: 'nowrap' }}>
+                        <div style={ledgerPrimary}>{r.unitLabel || '-'}</div>
+                        {r.propertyLabel && <div style={ledgerMuted}>{r.propertyLabel}</div>}
+                      </td>
+                      <td style={ledgerTd}>
+                        {r.tenantNames.length > 0 ? (
+                          <>
+                            <div style={ledgerPrimary}>{r.tenantNames.join(', ')}</div>
+                            {r.payerDiffers && <div style={ledgerMuted}>{t.zelleVia(r.payerName)}</div>}
+                          </>
+                        ) : (
+                          <>
+                            <div style={ledgerPrimary}>{r.payerName || t.zelleUnknownPayer}</div>
+                            <div style={ledgerMuted}>{t.zelleNotPosted}</div>
+                          </>
+                        )}
+                      </td>
+                      <td style={{ ...ledgerTd, whiteSpace: 'nowrap' }}>
+                        {r.sentDate ? (
+                          <>
+                            <div>{t.zelleSentPrefix} {fmtDate(r.sentDate)}</div>
+                            {r.receivedDate && r.receivedDate !== r.sentDate && (
+                              <div style={ledgerMuted}>{t.zelleEmailPrefix} {fmtDate(r.receivedDate)}</div>
+                            )}
+                          </>
+                        ) : r.receivedDate ? (
+                          <div>{t.zelleEmailPrefix} {fmtDate(r.receivedDate)}</div>
+                        ) : (
+                          '-'
+                        )}
+                      </td>
+                      <td style={{ ...ledgerTd, maxWidth: 200, overflowWrap: 'anywhere' }}>
+                        {r.memo ? r.memo : <span style={{ color: '#9ca3af' }}>{t.zelleNoMemo}</span>}
+                      </td>
+                      <td style={ledgerAmountCell}>
+                        <div style={{ fontWeight: 700, color: '#111827' }}>{money2(r.amount)}</div>
+                        {r.groupSize > 1 && <div style={ledgerMuted}>{t.zelleGroupTotal(money2(r.groupPaid), r.groupSize)}</div>}
+                        {r.expected != null && <div style={ledgerMuted}>{t.zelleOfExpected(money2(r.expected))}</div>}
+                      </td>
+                      <td style={ledgerTd}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                          {label && (
+                            <span style={{ ...pillBase, background: '#fff', border: '1px solid #e5e7eb', color: MATCH_COLOR[r.match] }}>
+                              {label}
+                            </span>
+                          )}
+                          <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{t[`zelleCat_${r.category}`] || r.category}</span>
+                        </div>
+                        {showStatus && <div style={ledgerMuted}>{t[`zelleStatus_${r.status}`] || r.status}</div>}
+                      </td>
+                      <td style={{ ...ledgerTd, textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+                          <button type="button" aria-expanded={isOpen} style={linkButton} onClick={() => toggleExpand(r.id)}>
+                            {isOpen ? t.zelleHideEmail : t.zelleViewEmail}
+                          </button>
+                          {ev.status === 'auto_posted' && (
+                            <Btn size="sm" variant="secondary" disabled={isBusy} onClick={() => onUndo(ev)}>
+                              {isBusy ? t.zelleUndoing : t.zelleUndo}
+                            </Btn>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                    {isOpen && (
+                      <tr>
+                        <td colSpan={7} style={{ ...ledgerTd, background: '#fafafa' }}>
+                          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: '0.75rem', color: '#6b7280' }}>
+                            {r.txnId && (
+                              <span>
+                                {t.zelleTxnLabel}: <code>{r.txnId}</code>
+                              </span>
+                            )}
+                            {reasonLabel && (
+                              <span>
+                                {t.zelleMatchRuleLabel}: <strong style={{ color: '#111827' }}>{reasonLabel}</strong>
+                              </span>
+                            )}
+                          </div>
+                          <RawEmail ev={ev} t={t} />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function ZelleInboxPanel({ data, t, lang, refresh }) {
   const [subTab, setSubTab] = useState('needs_review')
   const [expandedIds, setExpandedIds] = useState({})
   const [drafts, setDrafts] = useState({})
   const [busyId, setBusyId] = useState(null)
   const [error, setError] = useState(null)
   const [notice, setNotice] = useState(null)
+  const [ledgerFilters, setLedgerFilters] = useState({ month: 'all', propertyId: 'all', match: 'all', query: '' })
 
   const mx = useZelleMutations()
   const events = data.zelleEvents || []
@@ -483,6 +773,26 @@ export function ZelleInboxPanel({ data, t, refresh }) {
         )
       ) : visibleEvents.length === 0 ? (
         <div style={emptyBox}>{emptyMessage}</div>
+      ) : subTab === 'auto_posted' || subTab === 'history' ? (
+        <ZelleLedgerTable
+          rows={buildLedgerRows({
+            events: visibleEvents,
+            payments,
+            tenants,
+            units: data.units || [],
+            properties,
+            parkingLeases,
+          })}
+          t={t}
+          lang={lang}
+          filters={ledgerFilters}
+          setFilters={setLedgerFilters}
+          expandedIds={expandedIds}
+          toggleExpand={toggleExpand}
+          busyId={busyId}
+          onUndo={handleUndo}
+          showStatus={subTab === 'history'}
+        />
       ) : (
         visibleEvents.map((ev) => {
           const statusStyle = STATUS_STYLE[ev.status] || STATUS_STYLE.needs_review
@@ -944,21 +1254,7 @@ export function ZelleInboxPanel({ data, t, refresh }) {
                 </div>
               )}
 
-              {isExpanded && (
-                <div style={rawEmailBox}>
-                  {ev.emailFrom && (
-                    <div>
-                      <strong>{t.zelleEmailFrom}:</strong> {ev.emailFrom}
-                    </div>
-                  )}
-                  {ev.emailSubject && (
-                    <div style={{ marginBottom: 8 }}>
-                      <strong>{t.zelleEmailSubject}:</strong> {ev.emailSubject}
-                    </div>
-                  )}
-                  {ev.rawBody || '-'}
-                </div>
-              )}
+              {isExpanded && <RawEmail ev={ev} t={t} />}
             </div>
           )
         })
