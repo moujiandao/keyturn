@@ -30,7 +30,7 @@ export function Logo({ size = 30, withWordmark = true, color = palette.text }) {
           sideways. Note `display` is left to the stylesheet, not set inline, or
           the media query could not override it. */}
       {withWordmark && (
-        <span className="pm-wordmark" style={{ fontSize: size * 0.62, fontWeight: 800, letterSpacing: tracking.brand, color }}>
+        <span className="pm-wordmark" style={{ fontSize: `${Number(((size * 0.62) / 16).toFixed(6))}rem`, fontWeight: 800, letterSpacing: tracking.brand, color }}>
           {APP_NAME}
         </span>
       )}

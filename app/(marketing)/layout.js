@@ -40,7 +40,7 @@ function Header() {
   )
 }
 
-const navLink = { color: palette.textMuted, textDecoration: 'none', fontSize: 15, fontWeight: 600 }
+const navLink = { color: palette.textMuted, textDecoration: 'none', fontSize: '0.9375rem', fontWeight: 600 }
 
 function Footer() {
   return (
@@ -48,11 +48,11 @@ function Footer() {
       <div style={{ ...container, padding: '40px 24px', display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'space-between', alignItems: 'center' }}>
         <Logo size={26} />
         <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-          <Link href="/#features" className="pm-navlink" style={{ ...navLink, fontSize: 14 }}>Features</Link>
-          <Link href="/pricing" className="pm-navlink" style={{ ...navLink, fontSize: 14 }}>Pricing</Link>
-          <Link href="/login" className="pm-navlink" style={{ ...navLink, fontSize: 14 }}>Log in</Link>
+          <Link href="/#features" className="pm-navlink" style={{ ...navLink, fontSize: '0.875rem' }}>Features</Link>
+          <Link href="/pricing" className="pm-navlink" style={{ ...navLink, fontSize: '0.875rem' }}>Pricing</Link>
+          <Link href="/login" className="pm-navlink" style={{ ...navLink, fontSize: '0.875rem' }}>Log in</Link>
         </div>
-        <span style={{ color: palette.textFaint, fontSize: 13 }}>© {new Date().getFullYear()} {APP_NAME}</span>
+        <span style={{ color: palette.textFaint, fontSize: '0.8125rem' }}>© {new Date().getFullYear()} {APP_NAME}</span>
       </div>
     </footer>
   )

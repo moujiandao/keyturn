@@ -35,7 +35,7 @@ function Hero() {
         <span
           style={{
             display: 'inline-block',
-            fontSize: 13,
+            fontSize: '0.8125rem',
             fontWeight: 650,
             color: palette.accentHover,
             background: palette.accentTint,
@@ -50,7 +50,7 @@ function Hero() {
         {/* No hardcoded <br />: `balance` keeps the headline lines even across viewports. */}
         <h1
           style={{
-            fontSize: 'clamp(40px, 6vw, 70px)',
+            fontSize: 'clamp(2.5rem, 6vw, 4.25rem)',
             lineHeight: 1.04,
             fontWeight: 800,
             letterSpacing: tracking.display,
@@ -64,7 +64,7 @@ function Hero() {
         </h1>
         <p
           style={{
-            fontSize: 'clamp(17px, 2vw, 20px)',
+            fontSize: 'clamp(1.0625rem, 2.25vw, 1.25rem)',
             color: palette.textMuted,
             lineHeight: 1.55,
             maxWidth: 620,
@@ -123,7 +123,7 @@ function ProductMock() {
         {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
           <span key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />
         ))}
-        <span style={{ marginLeft: 12, fontSize: 12, fontWeight: 500, color: palette.textMuted }}>{APP_NAME} / Dashboard</span>
+        <span style={{ marginLeft: 12, fontSize: '0.75rem', fontWeight: 500, color: palette.textMuted }}>{APP_NAME} / Dashboard</span>
       </div>
       <div style={{ display: 'flex', minHeight: 316 }}>
         {/* White left rail matching components/sidebar.jsx. `display` is owned by
@@ -131,7 +131,7 @@ function ProductMock() {
         <div
           className="pm-mock-sidebar"
           style={{
-            width: 184,
+            width: 196,
             flexShrink: 0,
             background: palette.surface,
             borderRight: `1px solid ${palette.border}`,
@@ -160,7 +160,7 @@ function ProductMock() {
                 <path d="M10 21v-6h4v6" />
               </svg>
             </span>
-            <span style={{ fontSize: 14, fontWeight: 800, letterSpacing: tracking.brand, color: palette.text }}>
+            <span style={{ fontSize: '0.875rem', fontWeight: 800, letterSpacing: tracking.brand, color: palette.text }}>
               {APP_NAME}
             </span>
           </div>
@@ -168,7 +168,7 @@ function ProductMock() {
             <div
               key={label}
               style={{
-                fontSize: 13,
+                fontSize: '0.8125rem',
                 fontWeight: i === 0 ? 700 : 600,
                 color: i === 0 ? palette.accentHover : palette.textMuted,
                 background: i === 0 ? palette.accentTint : 'transparent',
@@ -194,13 +194,13 @@ function ProductMock() {
                   padding: '15px 18px',
                 }}
               >
-                <div style={{ fontSize: 12, fontWeight: 500, color: palette.textMuted, marginBottom: 6 }}>{label}</div>
-                <div style={{ fontSize: 22, fontWeight: 750, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums', color: palette.text }}>{value}</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 500, color: palette.textMuted, marginBottom: 6 }}>{label}</div>
+                <div style={{ fontSize: '1.375rem', fontWeight: 750, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums', color: palette.text }}>{value}</div>
               </div>
             ))}
           </div>
           <div style={{ background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: radius.md, padding: 18 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: palette.text, marginBottom: 12 }}>Unit Transitions - Next 6 Months</div>
+            <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: palette.text, marginBottom: 12 }}>Unit Transitions - Next 6 Months</div>
             {MOCK_ROWS.map(([unit, detail, status, fg, bg]) => (
               <div
                 key={unit}
@@ -214,13 +214,13 @@ function ProductMock() {
                   borderTop: `1px solid ${palette.borderSoft}`,
                 }}
               >
-                <span style={{ fontSize: 13, color: palette.text }}>
+                <span style={{ fontSize: '0.8125rem', color: palette.text }}>
                   <strong style={{ fontWeight: 650 }}>{unit}</strong>
                   <span style={{ color: palette.textMuted }}> · {detail}</span>
                 </span>
                 <span
                   style={{
-                    fontSize: 12,
+                    fontSize: '0.75rem',
                     fontWeight: 650,
                     color: fg,
                     background: bg,
@@ -265,10 +265,10 @@ function Turnover() {
     <section style={{ padding: '92px 0 0' }}>
       <div style={container}>
         <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px' }}>
-          <h2 style={{ fontSize: 'clamp(30px, 4vw, 44px)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px', color: palette.text }}>
+          <h2 style={{ fontSize: 'clamp(1.875rem, 4.2vw, 2.75rem)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px', color: palette.text }}>
             How one turnover goes
           </h2>
-          <p style={{ fontSize: 18, color: palette.textMuted, lineHeight: 1.5, margin: 0 }}>
+          <p style={{ fontSize: '1.125rem', color: palette.textMuted, lineHeight: 1.5, margin: 0 }}>
             One unit, from the day notice arrives to the day the next tenants get their keys.
           </p>
         </div>
@@ -283,11 +283,11 @@ function Turnover() {
                 padding: '24px 22px',
               }}
             >
-              <div style={{ fontSize: 13, fontWeight: 750, color: palette.accent, letterSpacing: '0.06em', fontVariantNumeric: 'tabular-nums', marginBottom: 12 }}>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 750, color: palette.accent, letterSpacing: '0.06em', fontVariantNumeric: 'tabular-nums', marginBottom: 12 }}>
                 {String(i + 1).padStart(2, '0')}
               </div>
-              <h3 style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.015em', margin: '0 0 10px', color: palette.text }}>{s.title}</h3>
-              <p style={{ fontSize: 15, color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>{s.body}</p>
+              <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, letterSpacing: '-0.015em', margin: '0 0 10px', color: palette.text }}>{s.title}</h3>
+              <p style={{ fontSize: '0.9375rem', color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>{s.body}</p>
             </div>
           ))}
         </div>
@@ -333,7 +333,7 @@ function ZelleSpotlight() {
           <span
             style={{
               display: 'inline-block',
-              fontSize: 13,
+              fontSize: '0.8125rem',
               fontWeight: 650,
               color: palette.accentHover,
               background: palette.accentTint,
@@ -345,10 +345,10 @@ function ZelleSpotlight() {
           >
             No payment processors. No 3% fees.
           </span>
-          <h2 id="zelle-heading" style={{ fontSize: 'clamp(30px, 4vw, 44px)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px', color: palette.text, textWrap: 'balance' }}>
+          <h2 id="zelle-heading" style={{ fontSize: 'clamp(1.875rem, 4.2vw, 2.75rem)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px', color: palette.text, textWrap: 'balance' }}>
             Keep Zelle. Ditch the payment portal.
           </h2>
-          <p style={{ fontSize: 18, color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>
+          <p style={{ fontSize: '1.125rem', color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>
             Other property software pushes tenants onto card networks, ACH middlemen, and 5-day payout holds. Keyturn lets tenants keep paying straight to your bank while automating the ledger behind the scenes.
           </p>
         </div>
@@ -376,7 +376,7 @@ function ZelleSpotlight() {
                     style={{
                       width: '22%',
                       padding: '16px 20px',
-                      fontSize: 12,
+                      fontSize: '0.75rem',
                       fontWeight: 700,
                       letterSpacing: '0.04em',
                       textTransform: 'uppercase',
@@ -392,7 +392,7 @@ function ZelleSpotlight() {
                     style={{
                       width: '41%',
                       padding: '16px 20px',
-                      fontSize: 14,
+                      fontSize: '0.875rem',
                       fontWeight: 750,
                       color: palette.accentHover,
                       background: palette.accentTint,
@@ -404,7 +404,7 @@ function ZelleSpotlight() {
                       <span>{APP_NAME} + Zelle</span>
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: '0.6875rem',
                           fontWeight: 700,
                           color: '#fff',
                           background: palette.accent,
@@ -421,7 +421,7 @@ function ZelleSpotlight() {
                     style={{
                       width: '37%',
                       padding: '16px 20px',
-                      fontSize: 14,
+                      fontSize: '0.875rem',
                       fontWeight: 700,
                       color: palette.textMuted,
                       background: palette.bgSubtle,
@@ -442,7 +442,7 @@ function ZelleSpotlight() {
                         scope="row"
                         style={{
                           padding: '16px 20px',
-                          fontSize: 14,
+                          fontSize: '0.875rem',
                           fontWeight: 700,
                           color: palette.text,
                           verticalAlign: 'top',
@@ -454,7 +454,7 @@ function ZelleSpotlight() {
                       <td
                         style={{
                           padding: '16px 20px',
-                          fontSize: 14,
+                          fontSize: '0.875rem',
                           lineHeight: 1.5,
                           color: palette.text,
                           fontWeight: 500,
@@ -485,7 +485,7 @@ function ZelleSpotlight() {
                       <td
                         style={{
                           padding: '16px 20px',
-                          fontSize: 14,
+                          fontSize: '0.875rem',
                           lineHeight: 1.5,
                           color: palette.textMuted,
                           verticalAlign: 'top',
@@ -552,10 +552,10 @@ function Features() {
     <section id="features" style={{ padding: '92px 0' }}>
       <div style={container}>
         <div style={{ textAlign: 'center', maxWidth: 660, margin: '0 auto 52px' }}>
-          <h2 style={{ fontSize: 'clamp(30px, 4vw, 44px)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px', color: palette.text }}>
+          <h2 style={{ fontSize: 'clamp(1.875rem, 4.2vw, 2.75rem)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px', color: palette.text }}>
             Built around the turnover, not the lease
           </h2>
-          <p style={{ fontSize: 18, color: palette.textMuted, lineHeight: 1.5, margin: 0 }}>
+          <p style={{ fontSize: '1.125rem', color: palette.textMuted, lineHeight: 1.5, margin: 0 }}>
             Most property software assumes tenants stay for years. Keyturn is built for portfolios that turn over every season.
           </p>
         </div>
@@ -595,8 +595,8 @@ function FeatureCard({ icon, title, body }) {
       >
         <FeatureIcon name={icon} />
       </div>
-      <h3 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.015em', margin: '0 0 10px', color: palette.text }}>{title}</h3>
-      <p style={{ fontSize: 15, color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>{body}</p>
+      <h3 style={{ fontSize: '1.125rem', fontWeight: 700, letterSpacing: '-0.015em', margin: '0 0 10px', color: palette.text }}>{title}</h3>
+      <p style={{ fontSize: '0.9375rem', color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>{body}</p>
     </div>
   )
 }
@@ -631,10 +631,10 @@ function ClosingCta() {
           textAlign: 'center',
         }}
       >
-        <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px' }}>
+        <h2 style={{ fontSize: 'clamp(1.75rem, 4.2vw, 2.625rem)', fontWeight: 800, letterSpacing: tracking.heading, margin: '0 0 14px' }}>
           Get ahead of the next move-out
         </h2>
-        <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.74)', maxWidth: 560, margin: '0 auto 28px', lineHeight: 1.5 }}>
+        <p style={{ fontSize: '1.125rem', color: 'rgba(255,255,255,0.74)', maxWidth: 560, margin: '0 auto 28px', lineHeight: 1.5 }}>
           Put in your move-out dates and see the next six months. Free to start, no credit card required.
         </p>
         <Link href="/signup" className="pm-btn pm-btn-primary" style={btnStyle('primary', 'lg')}>

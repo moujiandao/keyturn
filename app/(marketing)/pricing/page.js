@@ -60,10 +60,10 @@ export default function PricingPage() {
     <section style={{ padding: '80px 0 96px' }}>
       <div style={container}>
         <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 56px' }}>
-          <h1 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 800, letterSpacing: tracking.display, margin: '0 0 18px' }}>
+          <h1 style={{ fontSize: 'clamp(2.25rem, 5.2vw, 3.5rem)', fontWeight: 800, letterSpacing: tracking.display, margin: '0 0 18px' }}>
             A plan for every portfolio
           </h1>
-          <p style={{ fontSize: 19, color: palette.textMuted, lineHeight: 1.5, margin: 0 }}>
+          <p style={{ fontSize: '1.1875rem', color: palette.textMuted, lineHeight: 1.5, margin: 0 }}>
             Start free and upgrade as you grow. No credit card to begin.
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function PricingPage() {
           ))}
         </div>
 
-        <p style={{ textAlign: 'center', color: palette.textFaint, fontSize: 14, marginTop: 40 }}>
+        <p style={{ textAlign: 'center', color: palette.textFaint, fontSize: '0.875rem', marginTop: 40 }}>
           Prices in USD. Paid plans are billed monthly and can be cancelled anytime.
         </p>
 
@@ -110,14 +110,14 @@ const FAQS = [
 function Faq() {
   return (
     <div style={{ maxWidth: 760, margin: '88px auto 0' }}>
-      <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 36px)', fontWeight: 800, letterSpacing: tracking.heading, textAlign: 'center', margin: '0 0 36px' }}>
+      <h2 style={{ fontSize: 'clamp(1.625rem, 3.7vw, 2.25rem)', fontWeight: 800, letterSpacing: tracking.heading, textAlign: 'center', margin: '0 0 36px' }}>
         Frequently asked questions
       </h2>
       <div>
         {FAQS.map(({ q, a }) => (
           <div key={q} style={{ padding: '22px 0', borderTop: `1px solid ${palette.border}` }}>
-            <h3 style={{ fontSize: 17, fontWeight: 700, margin: '0 0 8px' }}>{q}</h3>
-            <p style={{ fontSize: 15, color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>{a}</p>
+            <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, margin: '0 0 8px' }}>{q}</h3>
+            <p style={{ fontSize: '0.9375rem', color: palette.textMuted, lineHeight: 1.55, margin: 0 }}>{a}</p>
           </div>
         ))}
       </div>
@@ -147,7 +147,7 @@ function PlanCard({ tier }) {
             transform: 'translateX(-50%)',
             background: palette.accent,
             color: '#fff',
-            fontSize: 12,
+            fontSize: '0.75rem',
             fontWeight: 700,
             letterSpacing: '0.02em',
             padding: '5px 14px',
@@ -157,11 +157,11 @@ function PlanCard({ tier }) {
           Most popular
         </span>
       )}
-      <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px' }}>{name}</h2>
-      <p style={{ fontSize: 14, color: palette.textMuted, minHeight: 40, margin: '0 0 18px' }}>{blurb}</p>
+      <h2 style={{ fontSize: '1.375rem', fontWeight: 700, margin: '0 0 6px' }}>{name}</h2>
+      <p style={{ fontSize: '0.875rem', color: palette.textMuted, minHeight: '2.75rem', margin: '0 0 18px' }}>{blurb}</p>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 22 }}>
-        <span style={{ fontSize: 44, fontWeight: 800, letterSpacing: tracking.display }}>{price}</span>
-        <span style={{ fontSize: 15, color: palette.textMuted }}>{cadence}</span>
+        <span style={{ fontSize: '2.75rem', fontWeight: 800, letterSpacing: tracking.display }}>{price}</span>
+        <span style={{ fontSize: '0.9375rem', color: palette.textMuted }}>{cadence}</span>
       </div>
       <Link
         href="/signup"
@@ -171,11 +171,11 @@ function PlanCard({ tier }) {
         {cta}
       </Link>
       {featuresLabel && (
-        <p style={{ fontSize: 13, fontWeight: 600, color: palette.text, margin: '26px 0 12px' }}>{featuresLabel}</p>
+        <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: palette.text, margin: '26px 0 12px' }}>{featuresLabel}</p>
       )}
       <ul style={{ listStyle: 'none', padding: 0, margin: featuresLabel ? 0 : '26px 0 0', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {features.map((f) => (
-          <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 15, color: palette.textMuted }}>
+          <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.9375rem', color: palette.textMuted }}>
             <Check />
             <span>{f}</span>
           </li>

@@ -34,7 +34,7 @@ a {
 }
 
 /* Scale root typography by 12.5% (16px -> 18px default) for comfortable reading on iPad
-   and desktop; all authenticated app and auth font sizes use rem so they scale together. */
+   and desktop; marketing, auth, and authenticated app font sizes use rem so they scale together. */
 html {
   font-size: 112.5%;
   scroll-behavior: smooth;
@@ -98,7 +98,7 @@ html {
     display: none;
   }
 
-  /* The fake sidebar is a fixed 184px of chrome. On a phone that leaves too little
+  /* The fake sidebar is a fixed 196px of chrome. On a phone that leaves too little
      room for the panel it exists to frame, so drop it and give the transitions
      list the full width. */
   .pm-mock-sidebar {
